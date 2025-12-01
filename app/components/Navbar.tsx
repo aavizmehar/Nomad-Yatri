@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { IoIosArrowDown } from "react-icons/io";
 import { HiMenu, HiX } from "react-icons/hi";
-
+import Image from "next/image";
 const Navbar: React.FC = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [expOpen, setExpOpen] = useState(false);
@@ -16,7 +16,11 @@ const Navbar: React.FC = () => {
         
         {/* Logo */}
         <Link href="/" className="text-xl font-bold text-gray-900">
-          Nomad Yatri
+        <Image
+         src="/nomadlogo.svg"
+         height={140}
+         width={140}
+         />
         </Link>
 
         {/* Desktop Menu */}
@@ -32,10 +36,10 @@ const Navbar: React.FC = () => {
 
             <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-white shadow-lg py-3 px-4 rounded-lg w-56 mt-2">
               <ul className="space-y-2 text-sm">
-                <li><Link href="/volunteer-programs" className="hover:text-blue-600">Volunteer Programs</Link></li>
-                <li><Link href="/work-exchange" className="hover:text-blue-600">Work Exchange</Link></li>
-                <li><Link href="/digital-nomad-stays" className="hover:text-blue-600">Digital Nomad Stays</Link></li>
-                <li><Link href="/cultural-experiences" className="hover:text-blue-600">Cultural Experiences</Link></li>
+                <li><Link href="/experiences/volunteer-programs" className="hover:text-blue-600">Volunteer Programs</Link></li>
+                <li><Link href="/experiences/work-exchange" className="hover:text-blue-600">Work Exchange</Link></li>
+                <li><Link href="/experiences/digital-nomad-stays" className="hover:text-blue-600">Digital Nomad Stays</Link></li>
+                <li><Link href="/experiences/cultural-experiences" className="hover:text-blue-600">Cultural Experiences</Link></li>
               </ul>
             </div>
           </div>
@@ -101,10 +105,10 @@ const Navbar: React.FC = () => {
             </button>
             {expOpen && (
               <ul className="pl-4 space-y-2 text-sm">
-                <li><Link href="/volunteer-programs">Volunteer Programs</Link></li>
-                <li><Link href="/work-exchange">Work Exchange</Link></li>
-                <li><Link href="/digital-nomad-stays">Digital Nomad Stays</Link></li>
-                <li><Link href="/cultural-experiences">Cultural Experiences</Link></li>
+                <li><Link href="/experiences/volunteer-programs">Volunteer Programs</Link></li>
+                <li><Link href="/experiences/work-exchange">Work Exchange</Link></li>
+                <li><Link href="/experiences/digital-nomad-stays">Digital Nomad Stays</Link></li>
+                <li><Link href="/experiences/cultural-experiences">Cultural Experiences</Link></li>
               </ul>
             )}
           </div>

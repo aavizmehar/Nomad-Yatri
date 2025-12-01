@@ -169,7 +169,7 @@ const HomeContent: React.FC = () => {
       </section>
 
       {/* ================= FINAL CTA ================= */}
-      <section className="py-20 bg-gray-900 text-white text-center">
+      <section className="p-10 bg-gray-900 text-white text-center">
         <h2 className="text-3xl font-bold">
           Join India’s Fastest Growing Responsible Travel Community
         </h2>
