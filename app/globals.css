@@ -1,7 +1,27 @@
 @import "tailwindcss";
 body {
-  font-family: poppins, sans-serif;
+  font-family:var(--font-poppins);
+  /* font-family:var(--font-montserrat); */
+  
 }
+:root {
+  /* Brand Primary Colors */
+  --color-primary: #D49159;
+  --color-primary-dark: #CD7643;
+
+  /* Secondary / Support Colors */
+  --color-secondary-1: #6F3925;
+  --color-secondary-2: #396A6B;
+  --color-secondary-3: #314E4D;
+
+  /* Neutral Colors */
+  --color-neutral-dark: #1A2627;
+
+  /* Text Colors */
+  --color-text-light: #ffffff;
+  --color-text-dark: #1a1a1a;
+}
+
 /* Responsive container */
 .container {
   width: 100%;
@@ -28,4 +48,7 @@ body {
     max-width: 100%;
     padding: 0 8px;
   }
+}
+.bg-primary {
+  background-color: var(--color-primary);
 }

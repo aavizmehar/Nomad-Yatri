@@ -129,7 +129,7 @@ const HomeContent: React.FC = () => {
       </section>
 
       {/* ================= IMPACT STATISTICS ================= */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold">Our Impact</h2>
 
