@@ -20,6 +20,7 @@ const Navbar: React.FC = () => {
          src="/nomadlogo.svg"
          height={140}
          width={140}
+         alt="logo nomad yatra"
          />
         </Link>
 
