@@ -15,7 +15,7 @@ app.get("/", (req, res) => res.send("Nomad-Yatri API running"));
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-const sequelize = require("./config/db");
+const sequelize = require("./db");
 
 sequelize.authenticate()
   .then(() => console.log("Database connected"))
