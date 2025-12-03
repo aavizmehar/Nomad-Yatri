@@ -1,22 +1,20 @@
-require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+const sequelize = require("./db");
+const hostAuth = require("./routes/hostAuth");
+require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// Routes placeholder
-app.get("/", (req, res) => res.send("Nomad-Yatri API running"));
+// routes
+app.use("/api/host", hostAuth);
 
-// Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-const sequelize = require("./db");
+// sync database
+sequelize.sync().then(() => {
+  console.log("Database synced");
+});
 
-sequelize.authenticate()
-  .then(() => console.log("Database connected"))
-  .catch((err) => console.log("DB error:", err));
+app.listen(process.env.PORT, () =>
+  console.log(`Server running on port ${process.env.PORT}`)
+);
