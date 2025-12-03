@@ -162,10 +162,10 @@ const Navbar: React.FC = () => {
 
           {/* Auth Buttons */}
           <div className="flex flex-col gap-3 mt-2">
-            <AuthButton type="host" action="login" className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" onClick={handleMobileLinkClick} />
-            <AuthButton type="host" action="register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" onClick={handleMobileLinkClick} />
-            <AuthButton type="volunteer" action="login" className="px-4 py-2 rounded-lg border border-green-600 hover:bg-green-50 transition" onClick={handleMobileLinkClick} />
-            <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition" onClick={handleMobileLinkClick} />
+            <AuthButton type="host" action="login" className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
+            <AuthButton type="host" action="register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
+            <AuthButton type="volunteer" action="login" className="px-4 py-2 rounded-lg border border-green-600 hover:bg-green-50 transition" />
+            <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"/>
           </div>
         </div>
       )}
