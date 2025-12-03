@@ -138,19 +138,26 @@ const Navbar: React.FC = () => {
 
           <Link href="/pricing" className="block py-2">Pricing</Link>
 
+         {/* Become a Host Button */}
           <Link 
-            href="/host/become"
-            className="block bg-blue-600 text-white text-center py-2 rounded-lg"
+            href="/host/login"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            Become a Host
+            login Host
+          </Link><Link 
+            href="/host/register"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            register as Host
           </Link>
 
-          <Link href="/login" className="block py-2">Login</Link>
+          {/* Login/Register */}
+          <Link href="volunteer/login" className="hover:text-blue-600">volunteer Login</Link>
           <Link 
-            href="/register"
-            className="block bg-gray-800 text-white text-center py-2 rounded-lg"
+            href="volunteer/register"
+            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900"
           >
-            Register
+            volunteer Register
           </Link>
 
         </div>
