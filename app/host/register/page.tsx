@@ -14,25 +14,6 @@ export default function HostRegister() {
     contactInfo: "",
   });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const res = await fetch("/api/host/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        photos: form.photos.split(","), // Convert CSV → array
-      }),
-    });
-
-    const data = await res.json();
-    console.log(data);
-  };
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-neutral-100">
@@ -41,7 +22,7 @@ export default function HostRegister() {
           Register as a Host (Free)
         </h2>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4">
           {[
             { label: "Name", name: "name" },
             { label: "Property / NGO Name", name: "propertyName" },
@@ -62,7 +43,6 @@ export default function HostRegister() {
                 type={type}
                 name={name}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                onChange={handleChange}
               />
             </div>
           ))}
