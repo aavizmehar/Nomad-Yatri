@@ -2,19 +2,18 @@
 
 import React from "react";
 import Link from "next/link";
+import AuthButton from "./AuthButton";
 
 const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
-
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full min-h-[80vh] bg-cover bg-center bg-no-repeat flex items-center"
-        style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+      <section className=" relative w-full min-h-[80vh] bg-cover bg-center bg-no-repeat flex items-center"
+        style={{ backgroundImage: "url('./heroimg.jpg')" }}
       >
-        <div className="absolute inset-0 bg-black opacity-50" />
+        <div className="absolute inset-0 bg-black opacity-30" />
 
-        <div className="relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+        <div className="p-20 mt-45 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
+          <h1 className="font-bold leading-tight">
             Travel with Purpose. Live with Impact.
           </h1>
 
@@ -30,19 +29,13 @@ const HomeContent: React.FC = () => {
             >
               Start Exploring
             </Link>
+            <AuthButton type="host" action="register" />
 
-            <Link
-              href="/host/become"
-              className="bg-white text-gray-900 hover:bg-gray-200 px-6 py-3 rounded-lg font-semibold"
-            >
-              Become a Host (Free)
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* ================= WHY CHOOSE SECTION ================= */}
-      <section className="py-16 container mx-auto px-6">
+      <section className="mt-20 p-20 container mx-auto">
         <h2 className="text-3xl font-bold text-center">Why Choose Nomad Yatri</h2>
         <p className="text-center text-gray-600 mt-4 max-w-2xl mx-auto">
           We are India’s first platform that blends:
@@ -54,17 +47,15 @@ const HomeContent: React.FC = () => {
             "Authentic hostels & homestays",
             "Work-exchange & skill-based stays",
             "Digital nomad communities",
-            "Affordable travel opportunities",
-            "Travel cheap. Travel deep. Travel with purpose."
+            "Affordable travel opportunities"
           ].map((item, index) => (
-            <div key={index} className="p-6 bg-gray-100 rounded-xl shadow hover:shadow-lg transition">
-              <p className="text-lg">{item}</p>
+            <div key={index} className="p-3 bg-[#D49159] text-white rounded-xl shadow hover:shadow-lg transition">
+              <p className="text-lg text-center">{item}</p>
             </div>
           ))}
         </div>
+        <h3 className="mt-20 text-center"><i> "Travel cheap. Travel deep. Travel with purpose."</i></h3>
       </section>
-
-      {/* ================= FEATURED EXPERIENCES ================= */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center">Featured Experiences</h2>
@@ -170,10 +161,10 @@ const HomeContent: React.FC = () => {
 
       {/* ================= FINAL CTA ================= */}
       <section className="p-10 bg-gray-900 text-white text-center">
-        <h2 className="text-3xl font-bold">
+        <h2 className="text-3xl font-bold py-7 px-10">
           Join India’s Fastest Growing Responsible Travel Community
         </h2>
-
+<p>India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
         <Link
           href="/register"
           className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold"
