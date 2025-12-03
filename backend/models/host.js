@@ -1,4 +1,3 @@
-
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db");
 
@@ -11,6 +10,33 @@ const Host = sequelize.define("Host", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  PropertyName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  Location: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  AccomodationType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  Meals: {
+    type: DataTypes.STRING,
+  },
+  WorkRequired: {
+    type: DataTypes.STRING,
+  },
+  Capacity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  Contact: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
   email: {
     type: DataTypes.STRING,

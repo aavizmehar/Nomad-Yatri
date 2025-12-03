@@ -9,7 +9,7 @@ const router = express.Router();
 // REGISTER
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, PropertyName, Location, AccomodationType, Meals, WorkRequired, Capacity, Contact, password } = req.body;
 
     // check existing
     const exists = await Host.findOne({ where: { email } });
@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
     const hashed = await bcrypt.hash(password, 10);
 
     // create host
-    await Host.create({ name, email, password: hashed });
+    await Host.create({ name, PropertyName, Location, AccomodationType, Meals, WorkRequired, Capacity, Contact, password: hashed });
 
     res.json({ message: "Host registered successfully" });
   } catch (error) {
