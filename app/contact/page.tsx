@@ -21,17 +21,19 @@ const ContactPage = () => {
     // State for form submission handling
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+};
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form Submitted:', formData);
-        // In a real app, send data to the API here
-        alert("Thank you! Your message has been sent.");
-        setFormData({ name: '', email: '', message: '' });
-    };
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Form Submitted:', formData);
+    // In a real app, send data to the API here
+    alert("Thank you! Your message has been sent.");
+    setFormData({ name: '', email: '', message: '' });
+};
+
 
     return (
         <div className="pt-20 pb-16 bg-gray-50 min-h-screen font-inter">
@@ -123,7 +125,7 @@ const ContactPage = () => {
                                 value={formData.message}
                                 onChange={handleChange}
                                 required
-                                rows="5"
+                                rows={5}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-none"
                                 placeholder="How can we help you?"
                             ></textarea>

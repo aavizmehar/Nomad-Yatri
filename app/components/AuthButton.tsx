@@ -6,6 +6,7 @@ type AuthAction = "login" | "register";
 interface AuthButtonProps {
   type: AuthType;
   action: AuthAction;
+  className?: string;
 }
 
 const styles: Record<AuthType, string> = {
@@ -29,3 +30,4 @@ export default function AuthButton({ type, action }: AuthButtonProps) {
     </Link>
   );
 }
+

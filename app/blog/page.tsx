@@ -34,7 +34,7 @@ const blogCategories = [
 
 const BlogPage = () => {
     // Placeholder function for filtering or navigation, demonstrating interactivity
-    const handleCategoryClick = (categoryName) => {
+    const handleCategoryClick = (categoryName: string) => {
         console.log(`Filtering blog posts by: ${categoryName}`);
         // In a real app, this would update state or navigate the user.
     };
