@@ -41,7 +41,7 @@ const HostLogin = () => {
           </button>
         </form>
         {/* <Link href="/forgot-pass">Forgot Password?</Link> */}
-        <p>Dont have an account?<Link href="host/register"> Sign up here.</Link>
+        {/* <p>Dont have an account?<Link href="host/register"> Sign up here.</Link> */}
         </p>   </div>
     </section>
   );
