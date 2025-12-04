@@ -33,9 +33,6 @@ const Navbar: React.FC = () => {
   const UserProfileIcon = () => (
     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
   );
-
-
-
   // 
   return (
     <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
@@ -145,7 +142,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md shadow-lg px-6 py-4 space-y-3 transition-all duration-300">
+        <div className="md:hidden h-[100vh] bg-white/95 backdrop-blur-md shadow-lg px-6 py-4 space-y-3 transition-all duration-300">
 
           <Link href="/" className="block py-2 font-medium" onClick={handleMobileLinkClick}>Home</Link>
 
@@ -203,9 +200,9 @@ const Navbar: React.FC = () => {
           <Link href="/pricing" className="block py-2 font-medium" onClick={handleMobileLinkClick}>Pricing</Link>
 
           {/* Auth Buttons */}
-          <div className="flex flex-col gap-3 mt-2">
-            <AuthButton type="host" action="login" className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
-            <AuthButton type="host" action="register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
+          <div className="flex flex-col gap-3 mt-2" onClick={handleMobileLinkClick}>
+            <AuthButton type="host" action="login"  className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
+            <AuthButton type="host" action="register"  className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
             <AuthButton type="volunteer" action="login" className="px-4 py-2 rounded-lg border border-green-600 hover:bg-green-50 transition" />
             <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition" />
           </div>
