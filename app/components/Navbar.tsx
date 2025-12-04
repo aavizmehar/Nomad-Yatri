@@ -18,20 +18,36 @@ const Navbar: React.FC = () => {
     setExpOpen(false);
     setCommOpen(false);
   };
+  // 
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLinkClick = () => {
+    setIsOpen(false); // Close menu after link click
+  };
+  // New: Profile Icon (Replacement for Host/Volunteer Buttons)
+  const UserProfileIcon = () => (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+  );
+
+
+
+  // 
   return (
-    <nav className="w-full bg-white/90 backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
-      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+    <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
+      <div className="container mx-auto flex items-center justify-between px-5 ">
         <Link href="/" className="flex items-center" onClick={handleMobileLinkClick}>
-          <Image src="/nomadlogo.svg" height={50} width={50} alt="Nomad Yatra Logo" />
-          <span className="ml-2 font-bold text-xl text-gray-900 tracking-wide">Nomad Yatra</span>
+          <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatra Logo" />
+          <span className=" font-[1000] text-3xl text-[#cd7643] tracking-wide"><i>Nomad Yatra</i></span>
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-6 font-medium text-gray-700">
+        <div className="hidden md:flex items-center space-x-6 text-[#1a2627] font-bold">
           <Link href="/" className="hover:text-blue-600 transition-colors duration-200">Home</Link>
 
-          {/* Experiences Dropdown */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-blue-600 transition-colors duration-200">
               Experiences <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
@@ -46,7 +62,6 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Community Dropdown */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-blue-600 transition-colors duration-200">
               Community <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
@@ -63,33 +78,60 @@ const Navbar: React.FC = () => {
           <Link href="/pricing" className="hover:text-blue-600 transition-colors duration-200">Pricing</Link>
 
           {/* Auth Buttons */}
-          <div className="flex items-center gap-3">
-            {/* Host Dropdown */}
-            <div className="relative group">
-              <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex items-center gap-1">
-                Host <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
-              </button>
-              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <ul className="flex flex-col py-2">
-                  <li><AuthButton type="host" action="login" className="w-full px-4 py-2 text-left" /></li>
-                  <li><AuthButton type="host" action="register" className="w-full px-4 py-2 text-left" /></li>
-                </ul>
-              </div>
-            </div>
+          <div className="relative inline-block">
+            {/* Profile Icon Button - Primary Trigger */}
+            <button
+              onClick={handleToggle}
+              className="p-3 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition duration-150 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              aria-expanded={isOpen}
+              aria-haspopup="true"
+            >
+              <UserProfileIcon />
+              <IoIosArrowDown className={`ml-1 transform ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+            </button>
 
-            {/* Volunteer Dropdown */}
-            <div className="relative group">
-              <button className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition flex items-center gap-1">
-                Volunteer <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
-              </button>
-              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <ul className="flex flex-col py-2">
-                  <li><AuthButton type="volunteer" action="login" className="w-full px-4 py-2 text-left" /></li>
-                  <li><AuthButton type="volunteer" action="register" className="w-full px-4 py-2 text-left" /></li>
+            {/* Dropdown Menu Content */}
+            {isOpen && (
+              <div
+                className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 
+                                transition duration-300 transform origin-top-right animate-fade-in"
+              >
+                <ul className="flex flex-col space-y-1">
+
+                  {/* Host Actions Group */}
+                  <p className="text-xs text-gray-500 uppercase font-semibold pt-1 px-2">Host</p>
+                  <li className="rounded-lg overflow-hidden">
+                    <AuthButton type="host" action="login" onClick={handleLinkClick}>Host Login</AuthButton>
+                  </li>
+                  <li className="rounded-lg overflow-hidden">
+                    <AuthButton type="host" action="register" onClick={handleLinkClick}>Host Register</AuthButton>
+                  </li>
+
+                  <div className="border-t border-gray-100 my-2"></div>
+
+                  {/* Volunteer Actions Group */}
+                  <p className="text-xs text-gray-500 uppercase font-semibold px-2">Volunteer</p>
+                  <li className="rounded-lg overflow-hidden">
+                    <AuthButton type="volunteer" action="login" onClick={handleLinkClick}>Volunteer Login</AuthButton>
+                  </li>
+                  <li className="rounded-lg overflow-hidden">
+                    <AuthButton type="volunteer" action="register" onClick={handleLinkClick}>Volunteer Register</AuthButton>
+                  </li>
                 </ul>
               </div>
-            </div>
+            )}
+
+            {/* Optional: Click outside listener (using simple window click for context) */}
+            {isOpen && (
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close menu"
+              ></div>
+            )}
+
           </div>
+          {/*  */}
         </div>
 
         {/* Mobile Menu Button */}
@@ -165,7 +207,7 @@ const Navbar: React.FC = () => {
             <AuthButton type="host" action="login" className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
             <AuthButton type="host" action="register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
             <AuthButton type="volunteer" action="login" className="px-4 py-2 rounded-lg border border-green-600 hover:bg-green-50 transition" />
-            <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"/>
+            <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition" />
           </div>
         </div>
       )}

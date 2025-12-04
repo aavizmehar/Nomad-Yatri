@@ -162,9 +162,9 @@ const HomeContent: React.FC = () => {
       {/* ================= FINAL CTA ================= */}
       <section className="p-10 bg-gray-900 text-white text-center">
         <h2 className="text-3xl font-bold py-7 px-10">
-          Join India’s Fastest Growing Responsible Travel Community
+          Join India’s Fastest Growing Travel Community
         </h2>
-<p>India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
+<p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
         <Link
           href="/register"
           className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold"

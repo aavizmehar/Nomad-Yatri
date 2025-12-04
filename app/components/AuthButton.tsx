@@ -10,21 +10,21 @@ interface AuthButtonProps {
 }
 
 const styles: Record<AuthType, string> = {
-  host: "bg-[#396a6b] hover:bg-[#CD7643] text-white w-fit ",
-  volunteer: "bg-[#CD7643] hover:bg-[#314E4D] text-white w-fit",
+  host: "text-black font-bold ",
+  volunteer: "text-black font-bold ",
 };
 
 export default function AuthButton({ type, action }: AuthButtonProps) {
   const formattedText =
     action.charAt(0).toUpperCase() +
-    action.slice(1);
+    action.slice(1) + " as " + type.charAt(0).toUpperCase()+ type.slice(1);
 
   const href = `/${type}/${action}`;
 
   return (
     <Link
       href={href}
-      className={`${styles[type]} px-4 py-2 rounded-lg font-medium transition`}
+      className={`${styles[type]} font-[8px] hover:text-green-700`}
     >
       {formattedText}
     </Link>
