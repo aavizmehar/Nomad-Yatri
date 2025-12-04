@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex items-center justify-between px-5 ">
         <Link href="/" className="flex items-center" onClick={handleMobileLinkClick}>
           <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatra Logo" />
-          <span className=" font-[1000] text-3xl text-[#cd7643] tracking-wide"><i>Nomad Yatra</i></span>
+          <span className=" font-[1000] text-3xl text-[#cd7643] tracking-wide"><i>Nomad <span className="text-[#396a6b]">Yatra</span></i></span>
         </Link>
 
         <div className="hidden md:flex items-center space-x-6 text-[#1a2627] font-bold">
