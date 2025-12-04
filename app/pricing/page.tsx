@@ -100,9 +100,24 @@ const CustomLink: React.FC<CustomLinkProps> = ({ href, className, children }) =>
         {children}
     </a>
 );
+interface Plan {
+    name: string;
+    price: number | string;
+    unit: string;
+    tagline: string;
+    buttonText: string;
+    buttonClass: string;
+    isPopular: boolean;
+    features: string[];
+    excluded: string[];
+}
+
+interface PricingCardProps {
+  plan: Plan;
+}
 
 // Reusable Pricing Card Component
-const PricingCard = ({ plan }) => {
+const PricingCard = ({ plan }: PricingCardProps ) => {
     const isPopular = plan.isPopular;
     
     return (

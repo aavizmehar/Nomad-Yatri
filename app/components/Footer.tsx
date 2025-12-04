@@ -1,7 +1,12 @@
 import React from "react";
 // Since the environment can be restrictive, we will use a self-contained CustomLink
 // to replace next/link, preventing potential module resolution errors.
-const CustomLink = ({ href, className = "", children }) => (
+type CustomLinkProps = {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+};
+const CustomLink = ({ href, className = "", children }: CustomLinkProps) => (
     <a href={href} className={className}>
         {children}
     </a>

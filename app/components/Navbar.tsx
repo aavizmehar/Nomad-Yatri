@@ -89,7 +89,7 @@ const Navbar: React.FC = () => {
 
             {/* Dropdown Menu Content */}
             {isOpen && (
-              <div
+              <div onClick={handleLinkClick}
                 className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 
                                 transition duration-300 transform origin-top-right animate-fade-in"
               >
@@ -98,10 +98,10 @@ const Navbar: React.FC = () => {
                   {/* Host Actions Group */}
                   <p className="text-xs text-gray-500 uppercase font-semibold pt-1 px-2">Host</p>
                   <li className="rounded-lg overflow-hidden">
-                    <AuthButton type="host" action="login" onClick={handleLinkClick}>Host Login</AuthButton>
+                    <AuthButton type="host" action="login" />
                   </li>
                   <li className="rounded-lg overflow-hidden">
-                    <AuthButton type="host" action="register" onClick={handleLinkClick}>Host Register</AuthButton>
+                    <AuthButton type="host" action="register"/>
                   </li>
 
                   <div className="border-t border-gray-100 my-2"></div>
@@ -109,10 +109,10 @@ const Navbar: React.FC = () => {
                   {/* Volunteer Actions Group */}
                   <p className="text-xs text-gray-500 uppercase font-semibold px-2">Volunteer</p>
                   <li className="rounded-lg overflow-hidden">
-                    <AuthButton type="volunteer" action="login" onClick={handleLinkClick}>Volunteer Login</AuthButton>
+                    <AuthButton type="volunteer" action="login"/>
                   </li>
                   <li className="rounded-lg overflow-hidden">
-                    <AuthButton type="volunteer" action="register" onClick={handleLinkClick}>Volunteer Register</AuthButton>
+                    <AuthButton type="volunteer" action="register"/>
                   </li>
                 </ul>
               </div>
@@ -201,8 +201,8 @@ const Navbar: React.FC = () => {
 
           {/* Auth Buttons */}
           <div className="flex flex-col gap-3 mt-2" onClick={handleMobileLinkClick}>
-            <AuthButton type="host" action="login"  className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
-            <AuthButton type="host" action="register"  className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
+            <AuthButton type="host" action="login" className="px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 transition" />
+            <AuthButton type="host" action="register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition" />
             <AuthButton type="volunteer" action="login" className="px-4 py-2 rounded-lg border border-green-600 hover:bg-green-50 transition" />
             <AuthButton type="volunteer" action="register" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition" />
           </div>
