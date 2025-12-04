@@ -4,9 +4,6 @@ const CompassIcon = () => (
 const TargetIcon = () => (
   <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9h-3M12 9v3m0 3v3m0-3h3m-3 0h-3"></path></svg>
 );
-const PeopleIcon = () => (
-  <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5m3-8a3 3 0 10-6 0m6 0a3 3 0 11-6 0M9 16l-1.5 1.5M15 16l1.5 1.5"></path></svg>
-);
 
 const problemPoints = [
   "Travelers looking for meaningful experiences",
@@ -99,8 +96,7 @@ const AboutUsPage = () => {
         {/* 4. OUR TEAM */}
         <section>
           <div className="text-center mb-12">
-            <PeopleIcon />
-            <h2 className="text-4xl font-extrabold text-gray-900 mt-2">Meet Our Core Team</h2>
+           <h2 className="text-4xl font-extrabold text-gray-900 mt-2">Meet Our Core Team</h2>
             <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
               The leaders driving our mission to create a purpose-travel movement across India.
             </p>

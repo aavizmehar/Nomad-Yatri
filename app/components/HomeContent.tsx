@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import AuthButton from "./AuthButton";
-
+import PrimaryBtn from "./PrimaryBtn";
 const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
@@ -23,13 +23,10 @@ const HomeContent: React.FC = () => {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/volunteer-programs"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
-            >
-              Start Exploring
-            </Link>
-            <AuthButton type="host" action="register" />
+           
+<PrimaryBtn text="Start Exploring" action="experiences/volunteer-programs"  />
+<PrimaryBtn text="Register as Host" action="host/register" className="bg-green-600 hover:bg-green-500"  />
+
 
           </div>
         </div>
@@ -165,12 +162,9 @@ const HomeContent: React.FC = () => {
           Join India’s Fastest Growing Travel Community
         </h2>
 <p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
-        <Link
-          href="/register"
-          className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold"
-        >
-          Sign Up Free
-        </Link>
+       
+<PrimaryBtn text="Sign Up Free" action="register"  />
+
       </section>
 
     </div>
