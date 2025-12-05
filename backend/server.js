@@ -1,6 +1,8 @@
 const express = require('express');
 const sequelize = require('./config/db');
 const cors = require('cors');
+
+const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -11,6 +13,8 @@ const applicationRoutes = require('./routes/application');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use('/api/admin', adminRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/hosts', hostRoutes);

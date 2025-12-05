@@ -1,60 +1,37 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function HostRegister() {
-  const [form, setForm] = useState({
-    name: "",
-    propertyName: "",
-    location: "",
-    accommodation: "",
-    meals: "",
-    workRequired: "",
-    capacity: "",
-    photos: "",
-    contactInfo: "",
-  });
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
+  const handleRegister = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, role: 'host' }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert('Host registered successfully!');
+      router.push('/host/login');
+    } else {
+      alert(data.error || 'Error registering');
+    }
+  };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-neutral-100">
-      <div className="w-full max-w-xl bg-white shadow-lg rounded-xl p-8">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          Register as a Host (Free)
-        </h2>
-
-        <form className="space-y-4">
-          {[
-            { label: "Name", name: "name" },
-            { label: "Property / NGO Name", name: "propertyName" },
-            { label: "Location", name: "location" },
-            { label: "Accommodation Type", name: "accommodation" },
-            { label: "Meals", name: "meals" },
-            { label: "Work Required", name: "workRequired" },
-            { label: "Capacity", name: "capacity", type: "number" },
-            { label: "Contact Info", name: "contactInfo" },
-            {
-              label: "Photos (comma separated URLs)",
-              name: "photos",
-            },
-          ].map(({ label, name, type = "text" }) => (
-            <div key={name}>
-              <label className="block text-sm font-medium mb-1">{label}</label>
-              <input
-                type={type}
-                name={name}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2"
-              />
-            </div>
-          ))}
-
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark"
-          >
-            Register as Host (Free)
-          </button>
-        </form>
-      </div>
-    </section>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-2xl mb-4">Host Register</h1>
+      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} className="border p-2 mb-2" />
+      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="border p-2 mb-2" />
+      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} className="border p-2 mb-2" />
+      <button onClick={handleRegister} className="bg-blue-500 text-white p-2">Register</button>
+    </div>
   );
 }
