@@ -1,21 +1,23 @@
-const express = require("express");
-const sequelize = require("./db");
-const hostAuth = require("./routes/hostAuth");
-const HostModel = require("./models/Host"); // <-- This just ensures the model is loaded and defined
-require("dotenv").config();
+const express = require('express');
+const sequelize = require('./config/db');
+const cors = require('cors');
+require('dotenv').config();
+
+const authRoutes = require('./routes/auth');
+const hostRoutes = require('./routes/host');
+const programRoutes = require('./routes/program');
+const applicationRoutes = require('./routes/application');
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
-// routes
-app.use("/api/host", hostAuth);
+app.use('/api/auth', authRoutes);
+app.use('/api/hosts', hostRoutes);
+app.use('/api/programs', programRoutes);
+app.use('/api/applications', applicationRoutes);
 
-// sync database
-sequelize.sync({force:true}).then(() => {
-  console.log("Database synced");
-});
+sequelize.sync({alter:true}).then(() => console.log('DB synced'));
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`)
-);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
