@@ -121,7 +121,7 @@ const CulturalExperiencesPage = () => {
                             Browse curated homestays and unique experiential programs hosted by locals.
                         </p>
                       
-                        <PrimaryBtn text=" Browse Cultural Stays &rarr;" src="/experiences/browse"/>
+                        <PrimaryBtn text=" Browse Cultural Stays &rarr;" action="/experiences/browse"/>
                     </div>
                 </section>
                 
