@@ -163,7 +163,7 @@ const HomeContent: React.FC = () => {
         </h2>
 <p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
        
-<PrimaryBtn text="Sign Up Free" action="register"  />
+<PrimaryBtn text="Sign Up Free" action="volunteer/register"  />
 
       </section>
 

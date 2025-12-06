@@ -1,9 +1,7 @@
 const CompassIcon = () => (
   <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9.5a2.5 2.5 0 000-5v-1.5"></path></svg>
 );
-const TargetIcon = () => (
-  <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9h-3M12 9v3m0 3v3m0-3h3m-3 0h-3"></path></svg>
-);
+
 
 const problemPoints = [
   "Travelers looking for meaningful experiences",
@@ -23,11 +21,9 @@ const teamMembers = [
 const AboutUsPage = () => {
   return (
 
-
     <div className="pt-20 pb-16 bg-white min-h-screen font-inter">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-20">
 
-        {/* 1. HERO & WHO WE ARE */}
         <section className="text-center py-16 bg-indigo-50 rounded-3xl shadow-2xl shadow-indigo-100">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
             Redefining Travel in India
@@ -38,11 +34,9 @@ const AboutUsPage = () => {
           </p>
         </section>
 
-        {/* 2. VISION & MISSION */}
         <section className="grid md:grid-cols-2 gap-10 lg:gap-16">
 
-          {/* Vision Card */}
-          <div className="bg-white p-8 sm:p-10 rounded-2xl border-t-4 border-indigo-600 shadow-lg hover:shadow-xl transition duration-300">
+          <div className="bg-white p-8 sm:p-10 rounded-2xl border-t-1 border-indigo-600 shadow-lg hover:shadow-xl transition duration-300">
             <div className="flex items-center space-x-4 mb-4">
               <CompassIcon />
               <h2 className="text-3xl font-bold text-gray-800">Our Vision</h2>
@@ -52,14 +46,13 @@ const AboutUsPage = () => {
             </p>
           </div>
 
-          {/* Mission Card */}
-          <div className="bg-white p-8 sm:p-10 rounded-2xl border-t-4 border-emerald-600 shadow-lg hover:shadow-xl transition duration-300">
+          <div className="bg-white p-8 sm:p-10 rounded-2xl border-t-1 border-emerald-600 shadow-lg hover:shadow-xl transition duration-300">
             <div className="flex items-center space-x-4 mb-4">
-              <TargetIcon />
+              <CompassIcon />
+
               <h2 className="text-3xl font-bold text-gray-800">Our Mission</h2>
             </div>
             <ul className="space-y-3 text-gray-600 text-lg list-none pl-0">
-              {/* Mission list (using checkmark for premium feel) */}
               {["Supporting local communities", "Helping NGOs & social projects", "Promoting skill exchange", "Building a nationwide youth travel movement"].map((item, index) => (
                 <li key={index} className="flex items-start">
                   <span className="text-emerald-500 mr-2 text-xl font-bold align-top">&bull;</span>
@@ -70,7 +63,6 @@ const AboutUsPage = () => {
           </div>
         </section>
 
-        {/* 3. OUR STORY & PROBLEM SOLVED */}
         <section>
           <div className="text-center mb-12">
             <p className="text-indigo-600 font-semibold uppercase tracking-wider">Our Foundation</p>
@@ -93,7 +85,6 @@ const AboutUsPage = () => {
           </div>
         </section>
 
-        {/* 4. OUR TEAM */}
         <section>
           <div className="text-center mb-12">
            <h2 className="text-4xl font-extrabold text-gray-900 mt-2">Meet Our Core Team</h2>

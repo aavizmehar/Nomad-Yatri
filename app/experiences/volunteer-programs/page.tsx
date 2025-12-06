@@ -1,12 +1,8 @@
 "use client";
 
+import PrimaryBtn from "@/app/components/PrimaryBtn";
 import React, { useState } from "react";
 
-// --- SELF-CONTAINED SVG ICONS & UTILITIES ---
-
-// FIX: All icons now explicitly accept { className = "" } and apply it to the SVG.
-
-// Icon for Category: Education
 const BookIcon = ({ className = "" }) => (
     <svg className={`w-6 h-6 mr-2 ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
 );
@@ -41,9 +37,7 @@ const StarIcon = ({ className = "w-4 h-4" }) => (
 
 type IconComponent = React.FC<{ className?: string }>;
 
-// Map categories to icons
 const categoryMap: Record<string, IconComponent> = {
-    // FIX: Using the direct component references now that they accept className
     "Education Support": BookIcon,
     "Women Empowerment": WomanIcon,
     "Environment & Climate": LeafIcon,
@@ -54,7 +48,6 @@ const categoryMap: Record<string, IconComponent> = {
 };
 
 
-// Placeholder Data for Program Cards
 const programs = [
     { id: 1, title: "Rural Education Initiative", location: "Himachal Pradesh", duration: "4 Weeks", rating: 4.8, category: "Education Support" },
     { id: 2, title: "Coastal Cleanup & Awareness", location: "Goa", duration: "10 Days", rating: 4.5, category: "Environment & Climate" },
@@ -83,21 +76,16 @@ const categories = Object.keys(categoryMap);
 const ProgramCard = ({ program }:programProps) => {
     return (
         <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 transform hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            {/* Cover Image Placeholder */}
             <div className="h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-semibold">
                 [Program Image Placeholder]
             </div>
 
             <div className="p-5">
-                {/* Category Tag */}
-                <p className="text-xs font-semibold text-indigo-600 uppercase mb-2">{program.category}</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{program.category}</p>
 
-                {/* Title */}
-                <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                <h3 className=" text-[#396a6b]  mb-3 line-clamp-2">
                     {program.title}
                 </h3>
-
-                {/* Metadata */}
                 <div className="space-y-1 text-sm text-gray-600 mb-4">
                     <div className="flex items-center gap-2">
                         <LocationIcon className="w-4 h-4 text-gray-400" />
@@ -113,13 +101,9 @@ const ProgramCard = ({ program }:programProps) => {
                     </div>
                 </div>
 
-                {/* Apply Button */}
-                <a
-                    href={`/apply/${program.id}`}
-                    className="w-full block text-center px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition"
-                >
-                    Apply Now
-                </a>
+              
+                <PrimaryBtn text="Apply Now" action="/apply/${program.id}"  />
+                
             </div>
         </div>
     );
@@ -128,7 +112,6 @@ const ProgramCard = ({ program }:programProps) => {
 const VolunteerProgramsPage = () => {
     const [activeCategory, setActiveCategory] = useState('All');
 
-    // Filter logic (simple)
     const filteredPrograms = activeCategory === 'All'
         ? programs
         : programs.filter(p => p.category === activeCategory);
@@ -137,7 +120,6 @@ const VolunteerProgramsPage = () => {
         <div className="pt-20 pb-16 bg-gray-50 min-h-screen font-inter">
             <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-16">
 
-                {/* 1. HERO SECTION & HEADLINE */}
                 <section className="text-center py-16 bg-white rounded-3xl shadow-2xl shadow-gray-100 border-b-4 border-indigo-600">
                     <p className="text-indigo-600 font-bold uppercase tracking-widest mb-3">PURPOSE TRAVEL</p>
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
@@ -148,14 +130,11 @@ const VolunteerProgramsPage = () => {
                     </p>
                 </section>
 
-                {/* 2. CATEGORY FILTER & SEARCH BAR */}
                 <section>
                     <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Find Your Project</h2>
 
-                    {/* Filter Tabs/Buttons */}
                     <div className="flex flex-wrap justify-center gap-3 mb-8">
                         {['All', ...categories].map(category => {
-                            // Retrieve the Icon component (which is now correctly typed)
                             const Icon = categoryMap[category] || null;
                             const isActive = category === activeCategory;
                             return (
@@ -176,7 +155,6 @@ const VolunteerProgramsPage = () => {
                     </div>
                 </section>
 
-                {/* 3. PROGRAM CARDS GRID */}
                 <section>
                     <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
                         Showing {filteredPrograms.length} Programs in {activeCategory}
