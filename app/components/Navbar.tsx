@@ -43,36 +43,36 @@ const Navbar: React.FC = () => {
         </Link>
 
         <div className="hidden md:flex items-center space-x-6 text-[#1a2627] font-bold">
-          <Link href="/" className="hover:text-blue-600 transition-colors duration-200">Home</Link>
+          <Link href="/" className="hover:text-[#d49159] transition-colors duration-300">Home</Link>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors duration-200">
+            <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
               Experiences <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
             </button>
             <div className="absolute top-full left-0 mt-2 w-60 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li><Link href="/experiences/volunteer-programs" className="hover:text-blue-600">Volunteer Programs</Link></li>
-                <li><Link href="/experiences/work-exchange" className="hover:text-blue-600">Work Exchange</Link></li>
-                <li><Link href="/experiences/digital-nomad-stays" className="hover:text-blue-600">Digital Nomad Stays</Link></li>
-                <li><Link href="/experiences/cultural-experiences" className="hover:text-blue-600">Cultural Experiences</Link></li>
+                <li><Link href="/experiences/volunteer-programs" className="hover:text-[#d49159]">Volunteer Programs</Link></li>
+                <li><Link href="/experiences/work-exchange" className="hover:text-[#d49159]">Work Exchange</Link></li>
+                <li><Link href="/experiences/digital-nomad-stays" className="hover:text-[#d49159]">Digital Nomad Stays</Link></li>
+                <li><Link href="/experiences/cultural-experiences" className="hover:text-[#d49159]">Cultural Experiences</Link></li>
               </ul>
             </div>
           </div>
 
           <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-blue-600 transition-colors duration-200">
+            <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
               Community <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
             </button>
             <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-blue-600">About Us</Link></li>
-                <li><Link href="/blog" className="hover:text-blue-600">Blog</Link></li>
-                <li><Link href="/contact" className="hover:text-blue-600">Contact</Link></li>
+                <li><Link href="/about" className="hover:text-[#d49159]">About Us</Link></li>
+                <li><Link href="/blog" className="hover:text-[#d49159]">Blog</Link></li>
+                <li><Link href="/contact" className="hover:text-[#d49159]">Contact</Link></li>
               </ul>
             </div>
           </div>
 
-          <Link href="/pricing" className="hover:text-blue-600 transition-colors duration-200">Pricing</Link>
+          <Link href="/pricing" className="hover:text-[#d49159] transition-colors duration-200">Pricing</Link>
 
           {/* Auth Buttons */}
           <div className="relative inline-block">

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-
+import AuthLayout from "@/app/components/AuthLayout";
 export default function HostRegister() {
   const [form, setForm] = useState({
     name: "",
@@ -16,12 +16,11 @@ export default function HostRegister() {
 
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-neutral-100">
-      <div className="w-full max-w-xl bg-white shadow-lg rounded-xl p-8">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          Register as a Host (Free)
-        </h2>
+    <AuthLayout 
+    title="Register as Host" 
+    subtitle="Register and start hosting">
 
+      <h2 className="text-2xl font-semibold text-center mb-6">Host Register</h2>
         <form className="space-y-4">
           {[
             { label: "Name", name: "name" },
@@ -54,7 +53,6 @@ export default function HostRegister() {
             Register as Host (Free)
           </button>
         </form>
-      </div>
-    </section>
+    </AuthLayout>
   );
 }
