@@ -1,6 +1,10 @@
 "use client";
-
-export default function AuthLayout({ title, subtitle, children }) {
+interface AutLayoutProps{
+  title: string;
+  subtitle?:string;
+  children: React.ReactNode;
+}
+export default function AuthLayout({ title, subtitle, children }:AutLayoutProps) {
   return (
     <section className=" pt-18 min-h-screen flex bg-neutral-100">
 
