@@ -59,10 +59,10 @@ const HomeContent: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-10">
             {[
-              { title: "Volunteer Programs", link: "/volunteer-programs" },
-              { title: "Work Exchange Stays", link: "/work-exchange" },
-              { title: "Digital Nomad Stays", link: "/digital-nomad-stays" },
-              { title: "Rural Homestays", link: "/rural-homestays" },
+              { title: "Volunteer Programs", link: "/experiences/volunteer-programs" },
+              { title: "Work Exchange Stays", link: "/experiences/work-exchange" },
+              { title: "Digital Nomad Stays", link: "/experiences/digital-nomad-stays" },
+              { title: "Rural Homestays", link: "/experiences/rural-homestays" },
               { title: "Eco Projects", link: "/eco-projects" },
               { title: "Weekend Trips", link: "/weekend-trips" },
             ].map((exp, idx) => (
