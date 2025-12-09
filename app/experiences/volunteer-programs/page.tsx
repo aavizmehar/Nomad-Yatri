@@ -134,7 +134,7 @@ const VolunteerProgramsPage = () => {
                                         }`}
                                 >
                                     {Icon && (
-                                        <Icon className={`w-4 h-4${active ? "text-white" : "text-gray-700"}`} />
+                                        <Icon className={`w-4 h-4 ${active ? "text-white" : "text-gray-700"}`} />
                                     )}
                                     {category}
                                 </button>
