@@ -6,8 +6,8 @@ const Program = sequelize.define('Program', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Hosts",
-      key: "id"
+      model: "hosts",
+      key: "hostId"
     }
   },
   title: DataTypes.STRING,
@@ -16,7 +16,7 @@ const Program = sequelize.define('Program', {
   location: DataTypes.STRING,
   volunteersCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   impactHours: { type: DataTypes.INTEGER, defaultValue: 0 }
-});
+},{tableName: 'programs', timestamps: true});
 
 
 module.exports = Program;

@@ -1,7 +1,15 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const Host = sequelize.define("Host", {
-  id: {
+  userId: {
+       type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "users",
+      key: "id"
+    }
+  }, 
+  hostId: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
@@ -10,49 +18,34 @@ const Host = sequelize.define("Host", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  PropertyName: {
+  propertyName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Location: {
+  location: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  AccomodationType: {
+  accomodationType: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Meals: {
+  meals: {
     type: DataTypes.STRING,
   },
-  WorkRequired: {
+  workRequired: {
     type: DataTypes.STRING,
   },
-  Capacity: {
+  capacity: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  Contact: {
+  contact: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
   },
-  email: {
-    type: DataTypes.STRING,
-    required: true,
-    unique: true,
-    allowNull: false,
-    validate: {
-      isEmail: true,
-    },
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    required: true,
-
-  }
-},{timestamps:true}
+}, {  tableName: 'hosts',  timestamps: true }
 );
 
 module.exports = Host;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authmiddleware');
-const { User } = require('../models/User.js');
+const { User } = require('../models/User.model.js');
 const { Host } = require('../models/host.model.js');
 const { Program } = require('../models/Program.model.js');
 

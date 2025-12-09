@@ -9,7 +9,16 @@ exports.registerHost = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-
+exports.getAllHosts = async (req, res) => {
+  try {
+    const hosts = await Host.findAll();
+    res.json({ message: 'success',
+      count:  hosts.length,
+    hosts });
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.approveHost = async (req, res) => {
   const { hostId } = req.params;
   try {
