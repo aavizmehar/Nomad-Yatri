@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-
 const Host = sequelize.define("Host", {
   id: {
     type: DataTypes.INTEGER,
@@ -40,6 +39,7 @@ const Host = sequelize.define("Host", {
   },
   email: {
     type: DataTypes.STRING,
+    required: true,
     unique: true,
     allowNull: false,
     validate: {
@@ -49,7 +49,10 @@ const Host = sequelize.define("Host", {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+    required: true,
+
   }
-});
+},{timestamps:true}
+);
 
 module.exports = Host;

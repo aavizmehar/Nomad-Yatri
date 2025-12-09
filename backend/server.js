@@ -5,6 +5,7 @@ const cors = require('cors');
 const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
+require('./models/association.model')
 const authRoutes = require('./routes/auth');
 const hostRoutes = require('./routes/host');
 const programRoutes = require('./routes/program');

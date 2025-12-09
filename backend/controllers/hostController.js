@@ -1,4 +1,4 @@
-const Host = require('../models/Host');
+const Host = require('../models/host.model');
 
 exports.registerHost = async (req, res) => {
   const { userId, organization } = req.body;

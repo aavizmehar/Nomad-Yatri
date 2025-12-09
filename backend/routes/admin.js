@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authmiddleware');
 const { User } = require('../models/User.js');
-const { Host } = require('../models/host.js');
-const { Program } = require('../models/Program.js');
+const { Host } = require('../models/host.model.js');
+const { Program } = require('../models/Program.model.js');
 
 // All routes protected for admin
 router.use(auth(['admin']));

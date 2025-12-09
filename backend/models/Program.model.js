@@ -1,9 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const Host = require('./Host');
 
 const Program = sequelize.define('Program', {
-  hostId: { type: DataTypes.INTEGER, allowNull: false },
+  hostId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Hosts",
+      key: "id"
+    }
+  },
   title: DataTypes.STRING,
   description: DataTypes.TEXT,
   category: DataTypes.STRING,
@@ -12,6 +18,5 @@ const Program = sequelize.define('Program', {
   impactHours: { type: DataTypes.INTEGER, defaultValue: 0 }
 });
 
-Program.belongsTo(Host, { foreignKey: 'hostId' });
 
 module.exports = Program;
