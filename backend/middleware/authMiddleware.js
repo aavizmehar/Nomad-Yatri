@@ -1,6 +1,8 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const asyncHandler = require("../utils/asyncHandler")
 
+const verifyJWT = asyncHandler(async(req,res,next)=>{
+  req.cookies?.accessToken || 
+})
 const auth = (roles = []) => {
   return (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
