@@ -8,7 +8,11 @@ const User = sequelize.define('User', {
     primaryKey: true,
   },
 
-  email: { type: DataTypes.STRING, unique: true, allowNull: false },
+  email: { type: DataTypes.STRING, unique: true, allowNull: false,
+      set(value) {
+    this.setDataValue('email', value.toLowerCase()); // convert to lowercase before saving
+  }
+   },
   password: { type: DataTypes.STRING, allowNull: false },
   role: { type: DataTypes.ENUM('volunteer', 'host', 'admin'), defaultValue: 'volunteer' },
 },{tableName: 'users',timestamps: true });
