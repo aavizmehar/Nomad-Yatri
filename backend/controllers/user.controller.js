@@ -17,7 +17,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
     throw new ApiError(500, "Something wrong in generatng tokens")
   }
 }
-register = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   try {
     const { email, password, role } = req.body;
     if (!email || !password || !role) {
@@ -52,10 +52,10 @@ register = asyncHandler(async (req, res) => {
 }
 )
 
-login = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   // take data find user pass word check access and refresh token send cookie
   const { email, password } = req.body;
-  if (!email || password) {
+  if (!(email || password)) {
     throw new ApiError(400, "username or password not found")
   }
   const user = await User.findOne({ where: { email: email.toLowerCase() } });
@@ -93,9 +93,24 @@ login = asyncHandler(async (req, res) => {
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const user = await User.findByPk(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  await user.update({ refreshToken: null });
 
+  const options = {
+    httpOnly: true,
+    secure: true,
+  }
+  return res.status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logged out successfully"))
 })
 module.exports = {
-  register,
-  login,
+  registerUser,
+  loginUser,
+  logoutUser
 };

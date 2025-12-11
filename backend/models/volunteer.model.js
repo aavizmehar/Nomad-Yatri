@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 const Volunteer = sequelize.define('Volunteer', {
-    userId: {
+    volunteerId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -16,7 +16,7 @@ const Volunteer = sequelize.define('Volunteer', {
     skills: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
     interests: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
     languages: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
-     photo: DataTypes.STRING,
+    photo: DataTypes.STRING,
 },{tableName: 'volunteers',timestamps: true });
 
 module.exports = Volunteer;
