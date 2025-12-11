@@ -8,8 +8,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-
-
 const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null
@@ -20,23 +18,11 @@ const uploadOnCloudinary = async (localFilePath) => {
         // file successfully uploaded
         console.log("file is uploaded on cloudinary",
             response.url);
-            return response;
-    } catch (error) { 
+        return response;
+    } catch (error) {
         fs.unlinkSync(localFilePath)
         // remove temp local file
         return null;
     }
 }
-
-
-cloudinary.uploader
-    .upload(
-        'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-        public_id: 'shoes',
-    }
-    )
-    .catch((error) => {
-        console.log(error);
-    });
-
-console.log(uploadResult);
+module.exports= uploadOnCloudinary

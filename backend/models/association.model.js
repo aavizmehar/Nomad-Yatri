@@ -3,11 +3,9 @@ const User =require("./User.model");
 const Volunteer = require("./volunteer.model")
 const  Host = require("./host.model");
 
-Program.belongsTo(Host, { foreignKey: 'hostId' });
+Program.belongsTo(Host, { foreignKey: "hostId", onDelete: "CASCADE" });
 Host.hasMany(Program, { foreignKey: "hostId" });
 
-Volunteer.belongsTo(User,{foreignKey:"userId"});
-User.hasMany(Volunteer,{foreignKey:"userId"});
-
-Host.belongsTo(User,{foreignKey:"userId"});
-User.hasMany(Host,{foreignKey:"userId"});
+// In associations file
+Host.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE", onUpdate: "CASCADE" });
+User.hasOne(Host, { foreignKey: "userId" }); // one-to-one, not hasMany

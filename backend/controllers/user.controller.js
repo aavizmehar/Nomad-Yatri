@@ -23,7 +23,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!email || !password || !role) {
       return new ApiError(400, "All fields are required");
     }
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({where:{ email} })
     if (existingUser) {
       throw new ApiError(409, "User Already Exists")
     }
@@ -39,7 +39,11 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(500, "something wrong in registering user");
     }
     return res.status(201).json(
-      new ApiResponse(200, createdUser,
+      new ApiResponse(200,
+        {
+          user: createdUser,
+          redirectTo: `/${createdUser.role}/dashboard`
+        },
         "user registered successfully"
       )
     );
@@ -68,10 +72,10 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "invalid password Entered")
   }
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id)
-  const loggedInUser = User.findOne(user.Id, {
-    attributes: { exclude: ['password', 'refreshToken'] }
-  }
-  )
+const loggedInUser = await User.findByPk(user.id, {
+  attributes: { exclude: ['password', 'refreshToken'] }
+});
+
   const options = {
     httpOnly: true,
     secure: true
