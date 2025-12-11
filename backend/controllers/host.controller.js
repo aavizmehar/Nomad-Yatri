@@ -5,9 +5,8 @@ const ApiResponse = require('../utils/ApiResponse')
 const asyncHandler = require("../utils/asyncHandler")
 const uploadOnCloudinary = require("../utils/cloudinary")
 
-exports.addHostData = asyncHandler(
-  async (req, res) => {
-    const userId = req.user.id;
+exports.addHostData = asyncHandler( async (req, res) => {
+   try{ const userId = req.user.id;
     if (req.user.role !== "host") {
       throw new ApiError(403, "Only hosts can add property information");
     }
@@ -51,7 +50,9 @@ exports.addHostData = asyncHandler(
         },
         "user registered successfully"
       )
-    );
+    );}
+    catch(err){console.error(err);
+    res.status(500).json({ error: err.message });}
   }
 )
 
