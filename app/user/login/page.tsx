@@ -1,54 +1,105 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams  } from 'next/navigation';
-import Link from 'next/link';
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+
 const UserLogin = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('volunteer');
 
-  const HandleLogin = async () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("volunteer");
+
+  useEffect(() => {
+    const roleFromQuery = searchParams.get("role");
+    if (roleFromQuery) {
+      setRole(roleFromQuery);
+    }
+  }, [searchParams]);
+
+ const [error, setError] = useState("");
+const HandleLogin = async () => {
+  try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, role }),
     });
-    
-      const roleFromQuery = searchParams.get("role");
-      if (roleFromQuery) {
-        setRole(roleFromQuery); // override if redirected from register
-      }
-  
-    const data = await res.json();
+
+   const data = await res.json();
     if (res.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
-      alert('Login successful');
-      router.push('/host/dashboard');
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('role', data.data.role);
+      // router.push(data.role === "host" ? "/host/dashboard" : "/volunteer/home");
+      router.push("welcome");
     } else {
-      alert(data.error || 'Login failed');
+      setError(data.message || data.error || "Login failed");
     }
-  };
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl mb-4">User Login</h1>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="border p-2 mb-2" />
-     {!searchParams.get("role") &&(
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="volunteer">Volunteer</option>
-          <option value="host">Host</option>
-        </select>
+
+
+ return (
+  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">User Login</h1>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 mb-1">Email</label>
+        <input
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+        />
+      </div>
+
+      {!searchParams.get("role") && (
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-1">Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+          >
+            <option value="volunteer">Volunteer</option>
+            <option value="host">Host</option>
+          </select>
+        </div>
       )}
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} className="border p-2 mb-2" />
-      <button onClick={HandleLogin} className="bg-green-500 text-white p-2">Login</button>
 
-      <p>dont have and account? <Link href="/user/register" >sign up here</Link></p>
+      <div className="mb-6">
+        <label className="block text-gray-700 mb-1">Password</label>
+        <input
+          placeholder="Enter your password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+        />
+      </div>
+
+      <button
+        onClick={HandleLogin}
+        className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+      >
+        Login
+      </button>
+
+      <p className="text-gray-600 text-center mt-4">
+        Don’t have an account?{" "}
+        <Link href="/user/register" className="text-green-500 hover:underline font-medium">
+          Sign up here
+        </Link>
+      </p>
     </div>
-  );
+  </div>
+);
 
-}
+};
 
-export default UserLogin
+export default UserLogin;
