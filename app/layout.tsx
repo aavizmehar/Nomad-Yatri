@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${PoppinFont.variable} antialiased`}
+        className={`${montserrat.variable} ${PoppinFont.variable} antialiased mt-20`}
       >
         <Navbar/>
         {children}

@@ -12,7 +12,7 @@ const connectDb = async () => {
       .then(() => console.log('Database connected'))
       .catch(err => console.error('DB connection error:', err));
 
-    await sequelize.sync({force:true})
+    await sequelize.sync()
       .then(() => console.log('DB synced with all models'))
       .catch(err => console.error('DB sync error:', err));
 

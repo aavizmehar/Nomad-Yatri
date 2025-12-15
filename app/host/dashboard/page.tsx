@@ -27,14 +27,20 @@ export default function HostDashboard() {
   const [volunteersCount, setVolunteersCount] = useState(0);
   const [impactHours, setImpactHours] = useState(0);
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  // Get token and role from localStorage
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  const role =
+    typeof window !== 'undefined' ? localStorage.getItem('role') : null;
 
+  // Redirect if not logged in or not a host
   useEffect(() => {
-    if (!token) {
-      router.push('/login');
+    if (!token || role !== 'host') {
+      router.replace('/user/login');
     }
-  }, [token, router]);
+  }, [token, role, router]);
 
+  // Fetch programs for "Manage Listings" tab
   useEffect(() => {
     if (!token || activeTab !== 'Manage Listings') return;
 
@@ -42,6 +48,7 @@ export default function HostDashboard() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/programs`, {
           headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
         });
         const data = await res.json();
         setPrograms(data);
@@ -52,6 +59,7 @@ export default function HostDashboard() {
     fetchPrograms();
   }, [token, activeTab]);
 
+  // Create new program
   const handleCreateProgram = async () => {
     if (!title || !description) {
       alert('Title and Description are required');
@@ -65,8 +73,8 @@ export default function HostDashboard() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({
-          hostId: 1, // replace with dynamic hostId if available
           title,
           description,
           category,
@@ -100,8 +108,10 @@ export default function HostDashboard() {
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/login');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+    router.push('/user/login');
   };
 
   // Sidebar menu
@@ -213,7 +223,9 @@ export default function HostDashboard() {
                     <h3 className="font-semibold text-lg">{p.title}</h3>
                     <p className="text-gray-700">{p.description}</p>
                     <p className="text-sm text-gray-500">
-                      Category: {p.category || 'N/A'} | Location: {p.location || 'N/A'} | Volunteers Needed: {p.volunteersCount} | Impact Hours: {p.impactHours}
+                      Category: {p.category || 'N/A'} | Location:{' '}
+                      {p.location || 'N/A'} | Volunteers Needed: {p.volunteersCount}{' '}
+                      | Impact Hours: {p.impactHours}
                     </p>
                   </div>
                 ))}

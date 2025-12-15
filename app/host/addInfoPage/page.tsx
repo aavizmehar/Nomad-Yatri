@@ -48,59 +48,63 @@ export default function HostAddInfoPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    setGlobalError("");
-    setSuccess("");
+const handleSubmit = async () => {
+  setGlobalError("");
+  setSuccess("");
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setGlobalError("Session expired. Please login again.");
-      return;
-    }
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    setGlobalError("Session expired. Please login again.");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) =>
-        formData.append(key, value)
-      );
-      images.forEach((img) => formData.append("propertyImages", img));
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
+    images.forEach((img) => formData.append("propertyImages", img));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addHostData`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || data.error || "Submission failed");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addHostData`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+        credentials: "include",
       }
+    );
 
-      setSuccess("🎉 Host information added successfully!");
-      setTimeout(() => router.push("/host/dashboard"), 1500);
-    } catch (err) {
-      setGlobalError(err.message);
-    } finally {
-      setLoading(false);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || data.error || "Submission failed");
     }
-  };
+
+    setSuccess("🎉 Host information added successfully!");
+    setTimeout(() => router.push("/host/dashboard"), 1500);
+  } catch (err) {
+    setGlobalError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          Host & Property Details
+          Host Details
         </h1>
         <p className="text-center text-gray-500 mb-6">
-          Tell volunteers about your place 🌿
+          Tell volunteers about you 🌿
         </p>
 
         {/* Global Error */}
