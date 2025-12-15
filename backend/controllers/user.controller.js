@@ -64,7 +64,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
     const user = await User.findOne({ where: { email: email.toLowerCase() } });
     if (!user) {
-      throw new ApiError(404, "User does not Exists")
+      throw new ApiError(404, "User does not Exists. Please Sign up first.")
     }
     const isPasswordValid = await user.isPasswordCorrect(password)
     if (!isPasswordValid) {
