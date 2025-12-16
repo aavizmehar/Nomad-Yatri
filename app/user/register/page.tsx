@@ -105,9 +105,17 @@ const UsersPage = () => {
                 type="email"
                 name="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  // Strip invisible characters in real-time
+                  const cleaned = e.target.value.replace(/[^\x20-\x7E]/g, '');
+                  setEmail(cleaned);
+                  setError("");
+                }}
                 onBlur={(e) => setEmail(e.target.value.trim())}
                 className="w-full border p-3 rounded-lg focus:outline-none"
                 style={{ borderColor: "#396a6b" }}
