@@ -59,10 +59,10 @@ const HomeContent: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-10">
             {[
-              { title: "Volunteer Programs", link: "/volunteer-programs" },
-              { title: "Work Exchange Stays", link: "/work-exchange" },
-              { title: "Digital Nomad Stays", link: "/digital-nomad-stays" },
-              { title: "Rural Homestays", link: "/rural-homestays" },
+              { title: "Volunteer Programs", link: "/experiences/volunteer-programs" },
+              { title: "Work Exchange Stays", link: "/experiences/work-exchange" },
+              { title: "Digital Nomad Stays", link: "/experiences/digital-nomad-stays" },
+              { title: "Rural Homestays", link: "/experiences/rural-homestays" },
               { title: "Eco Projects", link: "/eco-projects" },
               { title: "Weekend Trips", link: "/weekend-trips" },
             ].map((exp, idx) => (
@@ -83,7 +83,6 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS ================= */}
       <section className="py-16 container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center">How It Works</h2>
 
@@ -97,7 +96,6 @@ const HomeContent: React.FC = () => {
             </p>
           </div>
 
-          {/* Step 2 */}
           <div className="text-center p-6 bg-gray-50 rounded-xl shadow">
             <h3 className="text-xl font-semibold">2. Apply & Get Approved</h3>
             <p className="mt-3 text-gray-600">
@@ -105,7 +103,6 @@ const HomeContent: React.FC = () => {
             </p>
           </div>
 
-          {/* Step 3 */}
           <div className="text-center p-6 bg-gray-50 rounded-xl shadow">
             <h3 className="text-xl font-semibold">3. Travel & Make an Impact</h3>
             <p className="mt-3 text-gray-600">
@@ -116,7 +113,6 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= IMPACT STATISTICS ================= */}
       <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold">Our Impact</h2>
@@ -139,7 +135,6 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= TESTIMONIALS ================= */}
       <section className="py-16 container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center">Testimonials</h2>
 
@@ -156,7 +151,6 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= FINAL CTA ================= */}
       <section className="p-10 bg-gray-900 text-white text-center">
         <h2 className="text-3xl font-bold py-7 px-10">
           Join India’s Fastest Growing Travel Community

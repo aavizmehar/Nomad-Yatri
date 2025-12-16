@@ -1,0 +1,176 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+const UsersPage = () => {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("volunteer");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleRegister = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Registration failed");
+      }
+
+      router.push(`/user/login?role=${role}`);
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 mt-20">
+      
+      {/* LEFT – INFO SECTION */}
+      <div
+        className="hidden lg:flex flex-col justify-center px-16 text-white"
+        style={{ backgroundColor: "#1a2627" }}
+      >
+        <h1 className="text-5xl font-bold mb-6 leading-tight">
+          Join Our Community 🌍
+        </h1>
+
+        <p className="text-lg mb-8 text-gray-300">
+          Create an account to start volunteering or hosting meaningful
+          experiences around the world.
+        </p>
+
+        <div className="space-y-4 text-gray-200">
+          <p>✔ Trusted & secure platform</p>
+          <p>✔ Host or Volunteer easily</p>
+          <p>✔ Build real connections</p>
+        </div>
+
+    
+      </div>
+
+      {/* RIGHT – REGISTER FORM */}
+      <div className="flex items-center justify-center bg-gray-50 px-4">
+        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-xl">
+          <h2
+            className="text-3xl font-bold text-center mb-6"
+            style={{ color: "#314e4d" }}
+          >
+            Create Account
+          </h2>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-4 rounded-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 text-sm">
+              {error}
+            </div>
+          )}
+
+          {/* Email */}
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
+              className="w-full border p-3 rounded-lg focus:outline-none"
+              style={{ borderColor: "#396a6b" }}
+            />
+          </div>
+
+          {/* Role */}
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Role</label>
+            <select
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value);
+                setError("");
+              }}
+              className="w-full border p-3 rounded-lg focus:outline-none"
+              style={{ borderColor: "#396a6b" }}
+            >
+              <option value="volunteer">Volunteer</option>
+              <option value="host">Host</option>
+            </select>
+          </div>
+
+          {/* Password */}
+          <div className="mb-6">
+            <label className="block mb-1 text-gray-700">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
+                className="w-full border p-3 pr-12 rounded-lg focus:outline-none"
+                style={{ borderColor: "#396a6b" }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
+                style={{ color: "#6f3925" }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          {/* Register Button */}
+          <button
+            onClick={handleRegister}
+            disabled={loading}
+            className="w-full py-3 rounded-lg font-semibold text-white transition"
+            style={{
+              backgroundColor: loading ? "#9ca3af" : "#396a6b",
+            }}
+          >
+            {loading ? "Creating account..." : "Register"}
+          </button>
+
+          <p className="text-center text-gray-600 mt-4">
+            Already have an account?{" "}
+            <Link
+              href="/user/login"
+              className="font-medium"
+              style={{ color: "#cd7643" }}
+            >
+              Log in here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UsersPage;
