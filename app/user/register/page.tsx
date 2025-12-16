@@ -75,7 +75,7 @@ const UsersPage = () => {
       </div>
 
       {/* RIGHT – REGISTER FORM */}
-      <div className="flex items-center justify-center bg-gray-50 px-4">
+      <div className="flex bg-amber-800 items-center justify-center px-4">
         <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-xl">
           <h2
             className="text-3xl font-bold text-center mb-6"
