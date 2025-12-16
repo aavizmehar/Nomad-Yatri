@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import AuthButton from "./AuthButton";
 import PrimaryBtn from "./PrimaryBtn";
 const HomeContent: React.FC = () => {
   return (

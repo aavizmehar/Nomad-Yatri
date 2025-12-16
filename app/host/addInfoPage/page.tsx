@@ -3,10 +3,25 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Define the shape of your form state
+interface FormState {
+  name: string;
+  propertyName: string;
+  location: string;
+  acomodationType: string;
+  meals: string;
+  workRequired: string;
+  capacity: string;
+  contact: string;
+}
+
+// Partial type for errors (optional keys)
+type FormErrors = Partial<Record<keyof FormState | "images", string>>;
+
 export default function HostAddInfoPage() {
   const router = useRouter();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     name: "",
     propertyName: "",
     location: "",
@@ -17,25 +32,29 @@ export default function HostAddInfoPage() {
     contact: "",
   });
 
-  const [images, setImages] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [images, setImages] = useState<File[]>([]);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [globalError, setGlobalError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
     setGlobalError("");
   };
 
-  const handleImageChange = (e) => {
-    setImages([...e.target.files]);
+  // Handle file input
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setImages(Array.from(e.target.files));
     setErrors({ ...errors, images: "" });
   };
 
+  // Validate form
   const validate = () => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
 
     if (!form.name) newErrors.name = "Host name is required";
     if (!form.propertyName) newErrors.propertyName = "Property name is required";
@@ -48,64 +67,56 @@ export default function HostAddInfoPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async () => {
-  setGlobalError("");
-  setSuccess("");
+  // Submit form
+  const handleSubmit = async () => {
+    setGlobalError("");
+    setSuccess("");
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  const token = localStorage.getItem("accessToken");
-  if (!token) {
-    setGlobalError("Session expired. Please login again.");
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) =>
-      formData.append(key, value)
-    );
-    images.forEach((img) => formData.append("propertyImages", img));
-
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addHostData`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-        credentials: "include",
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || data.error || "Submission failed");
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setGlobalError("Session expired. Please login again.");
+      return;
     }
 
-    setSuccess("🎉 Host information added successfully!");
-    setTimeout(() => router.push("/host/dashboard"), 1500);
-  } catch (err) {
-    setGlobalError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
 
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) => formData.append(key, value));
+      images.forEach((img) => formData.append("propertyImages", img));
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addHostData`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Submission failed");
+      }
+
+      setSuccess("🎉 Host information added successfully!");
+      setTimeout(() => router.push("/host/dashboard"), 1500);
+    } catch (err: any) {
+      setGlobalError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          Host Details
-        </h1>
-        <p className="text-center text-gray-500 mb-6">
-          Tell volunteers about you 🌿
-        </p>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">Host Details</h1>
+        <p className="text-center text-gray-500 mb-6">Tell volunteers about you 🌿</p>
 
         {/* Global Error */}
         {globalError && (
@@ -134,28 +145,16 @@ const handleSubmit = async () => {
 
         {/* Images */}
         <div className="mt-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Property Images
-          </label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            className="block w-full text-sm"
-          />
-          {errors.images && (
-            <p className="text-sm text-red-600 mt-1">{errors.images}</p>
-          )}
+          <label className="block text-sm font-medium text-gray-700 mb-1">Property Images</label>
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} className="block w-full text-sm" />
+          {errors.images && <p className="text-sm text-red-600 mt-1">{errors.images}</p>}
         </div>
 
         <button
           onClick={handleSubmit}
           disabled={loading}
           className={`mt-8 w-full rounded-xl py-3 font-semibold transition
-            ${loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700 text-white"}
+            ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}
           `}
         >
           {loading ? "Submitting..." : "Submit Host Info"}
@@ -166,22 +165,27 @@ const handleSubmit = async () => {
 }
 
 /* Reusable Input */
-function Input({ label, name, type = "text", value, onChange, error }) {
+interface InputProps {
+  label: string;
+  name: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+}
+
+function Input({ label, name, type = "text", value, onChange, error }: InputProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <input
         name={name}
         type={type}
         value={value}
         onChange={onChange}
-        className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
-          ${error
-            ? "border-red-400 focus:ring-red-400"
-            : "border-gray-300 focus:ring-green-500"}
-        `}
+        className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 ${
+          error ? "border-red-400 focus:ring-red-400" : "border-gray-300 focus:ring-green-500"
+        }`}
         placeholder={label}
       />
       {error && <p className="text-sm text-red-600 mt-1">{error}</p>}

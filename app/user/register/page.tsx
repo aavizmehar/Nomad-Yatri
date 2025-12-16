@@ -36,8 +36,16 @@ const UsersPage = () => {
       }
 
       router.push(`/user/login?role=${role}`);
-    } catch (err) {
-      setError(err.message || "Something went wrong");
+    }
+    catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
+
+
+
     } finally {
       setLoading(false);
     }
@@ -45,7 +53,7 @@ const UsersPage = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 mt-20">
-      
+
       {/* LEFT – INFO SECTION */}
       <div
         className="hidden lg:flex flex-col justify-center px-16 text-white"
@@ -66,7 +74,7 @@ const UsersPage = () => {
           <p>✔ Build real connections</p>
         </div>
 
-    
+
       </div>
 
       {/* RIGHT – REGISTER FORM */}
