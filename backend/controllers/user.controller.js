@@ -19,13 +19,20 @@ const generateAccessAndRefreshTokens = async (userId) => {
 }
 const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    let { email, password, role } = req.body;
+
+    email = email?.trim().toLowerCase();
+
     if (!email || !password || !role) {
       throw new ApiError(400, "All fields are required");
     }
-    const existingUser = await User.findOne({ where: { email } })
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new ApiError(400, "Invalid email address");
+    }
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      throw new ApiError(409, "User Already Exists")
+      throw new ApiError(409, "User Already Exists");
     }
     const user = await User.create({
       email,
@@ -34,12 +41,14 @@ const registerUser = asyncHandler(async (req, res) => {
     });
     const createdUser = await User.findByPk(user.id, {
       attributes: { exclude: ['password', 'refreshToken'] }
-    })
+    });
+
     if (!createdUser) {
       throw new ApiError(500, "something wrong in registering user");
     }
     return res.status(201).json(
-      new ApiResponse(200,
+      new ApiResponse(
+        200,
         {
           user: createdUser,
           redirectTo: `/${createdUser.role}/dashboard`
@@ -47,14 +56,14 @@ const registerUser = asyncHandler(async (req, res) => {
         "user registered successfully"
       )
     );
-
   } catch (err) {
     console.error(err);
-
-    res.status(500).json({ error: err.message });
+    res.status(err.statusCode || 500).json({
+      error: err.message || "Internal Server Error"
+    });
   }
-}
-)
+});
+
 
 const loginUser = asyncHandler(async (req, res) => {
   try {
