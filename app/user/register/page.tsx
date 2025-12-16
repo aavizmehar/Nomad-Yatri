@@ -98,7 +98,7 @@ const UsersPage = () => {
               handleRegister();
             }}
           >
-               {/* Email */}
+             {/* Email */}
             <div className="mb-4">
               <label className="block mb-1 text-gray-700">Email</label>
               <input
