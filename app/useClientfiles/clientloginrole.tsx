@@ -42,7 +42,7 @@ const UserLoginClient = () => {
       localStorage.setItem("refreshToken", data.data.refreshToken);
       localStorage.setItem("role", data.data.user.role);
 
-      router.push("/host/addInfoPage");
+      router.push(`/${data.data.user.role}/addInfoPage`);
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
       else setError("An unexpected error occurred");
