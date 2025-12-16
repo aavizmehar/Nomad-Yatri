@@ -98,22 +98,21 @@ const UsersPage = () => {
               handleRegister();
             }}
           >
-            {/* Email */}
+               {/* Email */}
             <div className="mb-4">
               <label className="block mb-1 text-gray-700">Email</label>
               <input
-                type="text"
-                inputMode="email"
+                type="email"
+                name="email"
+                autoComplete="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value.trim());
-                  setError("");
-                }}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={(e) => setEmail(e.target.value.trim())}
+                className="w-full border p-3 rounded-lg focus:outline-none"
+                style={{ borderColor: "#396a6b" }}
               />
-
             </div>
-
             {/* Role */}
             <div className="mb-4">
               <label className="block mb-1 text-gray-700">Role</label>
