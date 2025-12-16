@@ -10,72 +10,145 @@ const Navbar: React.FC = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [expOpen, setExpOpen] = useState(false);
   const [commOpen, setCommOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false); // Mobile auth dropdown
 
-  // Handler to close mobile menu
   const handleMobileLinkClick = () => {
     setIsMobileOpen(false);
     setExpOpen(false);
     setCommOpen(false);
-  };
-  // 
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
+    setIsAuthOpen(false);
   };
 
-  const handleLinkClick = () => {
-    setIsOpen(false); // Close menu after link click
-  };
-  // New: Profile Icon (Replacement for Host/Volunteer Buttons)
+  const [isOpen, setIsOpen] = useState(false); // Desktop profile dropdown
+
+  const handleToggle = () => setIsOpen(!isOpen);
+  const handleLinkClick = () => setIsOpen(false);
+
   const UserProfileIcon = () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+      ></path>
+    </svg>
   );
-  // 
+
   return (
     <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
-      <div className="container mx-auto flex items-center justify-between px-5 ">
-        <Link href="/" className="flex items-center" onClick={handleMobileLinkClick}>
-          <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatra Logo" />
-          <span className=" font-[1000] text-3xl text-[#cd7643] tracking-wide"><i>Nomad <span className="text-[#396a6b]">Yatra</span></i></span>
+      <div className="container mx-auto flex items-center justify-between px-5">
+        <Link
+          href="/"
+          className="flex items-center"
+          onClick={handleMobileLinkClick}
+        >
+          <Image
+            src="/nomadlogo.svg"
+            height={80}
+            width={80}
+            alt="Nomad Yatra Logo"
+          />
+          <span className="font-[1000] text-3xl text-[#cd7643] tracking-wide">
+            <i>
+              Nomad <span className="text-[#396a6b]">Yatra</span>
+            </i>
+          </span>
         </Link>
 
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6 text-[#1a2627] font-bold">
-          <Link href="/" className="hover:text-[#d49159] transition-colors duration-300">Home</Link>
+          <Link
+            href="/"
+            className="hover:text-[#d49159] transition-colors duration-300"
+          >
+            Home
+          </Link>
 
+          {/* Experiences Dropdown */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
               Experiences <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
             </button>
             <div className="absolute top-full left-0 mt-2 w-60 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li><Link href="/experiences/volunteer-programs" className="hover:text-[#d49159]">Volunteer Programs</Link></li>
-                <li><Link href="/experiences/work-exchange" className="hover:text-[#d49159]">Work Exchange</Link></li>
-                <li><Link href="/experiences/digital-nomad-stays" className="hover:text-[#d49159]">Digital Nomad Stays</Link></li>
-                <li><Link href="/experiences/cultural-experiences" className="hover:text-[#d49159]">Cultural Experiences</Link></li>
+                <li>
+                  <Link
+                    href="/experiences/volunteer-programs"
+                    className="hover:text-[#d49159]"
+                  >
+                    Volunteer Programs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/experiences/work-exchange"
+                    className="hover:text-[#d49159]"
+                  >
+                    Work Exchange
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/experiences/digital-nomad-stays"
+                    className="hover:text-[#d49159]"
+                  >
+                    Digital Nomad Stays
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/experiences/cultural-experiences"
+                    className="hover:text-[#d49159]"
+                  >
+                    Cultural Experiences
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
 
+          {/* Community Dropdown */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
               Community <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
             </button>
             <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
               <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-[#d49159]">About Us</Link></li>
-                <li><Link href="/blog" className="hover:text-[#d49159]">Blog</Link></li>
-                <li><Link href="/contact" className="hover:text-[#d49159]">Contact</Link></li>
+                <li>
+                  <Link href="/about" className="hover:text-[#d49159]">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-[#d49159]">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-[#d49159]">
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
 
-          <Link href="/pricing" className="hover:text-[#d49159] transition-colors duration-200">Pricing</Link>
+          <Link
+            href="/pricing"
+            className="hover:text-[#d49159] transition-colors duration-200"
+          >
+            Pricing
+          </Link>
 
-          {/* Auth Buttons */}
+          {/* Desktop Auth Dropdown */}
           <div className="relative inline-block">
-            {/* Profile Icon Button - Primary Trigger */}
             <button
               onClick={handleToggle}
               className="p-3 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition duration-150 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -83,27 +156,27 @@ const Navbar: React.FC = () => {
               aria-haspopup="true"
             >
               <UserProfileIcon />
-              <IoIosArrowDown className={`ml-1 transform ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+              <IoIosArrowDown
+                className={`ml-1 transform ${isOpen ? "rotate-180" : "rotate-0"}`}
+              />
             </button>
 
-            {/* Dropdown Menu Content */}
             {isOpen && (
-              <div onClick={handleLinkClick}
-                className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 
-                                transition duration-300 transform origin-top-right animate-fade-in"
+              <div
+                onClick={handleLinkClick}
+                className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 transition duration-300 transform origin-top-right animate-fade-in"
               >
-              <ul>
-                 <li className="rounded-lg overflow-hidden">
-                    <Link href = "../user/login">User Login</Link>
+                <ul>
+                  <li className="rounded-lg overflow-hidden">
+                    <Link href="/user/login">User Login</Link>
                   </li>
                   <li className="rounded-lg overflow-hidden">
-                    <Link href = "../user/register">Register new User</Link>
+                    <Link href="/user/register">Register new User</Link>
                   </li>
                 </ul>
               </div>
             )}
 
-            {/* Optional: Click outside listener (using simple window click for context) */}
             {isOpen && (
               <div
                 className="fixed inset-0 z-40"
@@ -111,9 +184,7 @@ const Navbar: React.FC = () => {
                 aria-label="Close menu"
               ></div>
             )}
-
           </div>
-          {/*  */}
         </div>
 
         {/* Mobile Menu Button */}
@@ -127,9 +198,14 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileOpen && (
-        <div className="md:hidden h-[100vh] bg-white/95 backdrop-blur-md shadow-lg px-6 py-4 space-y-3 transition-all duration-300">
-
-          <Link href="/" className="block py-2 font-medium" onClick={handleMobileLinkClick}>Home</Link>
+        <div className="md:hidden h-[100vh] bg-white/95 backdrop-blur-md shadow-lg px-6 py-4 space-y-3 transition-all duration-300 overflow-y-auto">
+          <Link
+            href="/"
+            className="block py-2 font-medium"
+            onClick={handleMobileLinkClick}
+          >
+            Home
+          </Link>
 
           {/* Experiences Dropdown */}
           <div>
@@ -137,18 +213,36 @@ const Navbar: React.FC = () => {
               onClick={() => setExpOpen(!expOpen)}
               className="flex justify-between w-full py-2 font-medium"
             >
-              Experiences <IoIosArrowDown className={`transition-transform duration-200 ${expOpen ? 'rotate-180' : ''}`} />
+              Experiences{" "}
+              <IoIosArrowDown
+                className={`transition-transform duration-200 ${
+                  expOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
             {expOpen && (
               <ul className="pl-4 space-y-2 text-sm">
                 {[
-                  { href: "/experiences/volunteer-programs", label: "Volunteer Programs" },
+                  {
+                    href: "/experiences/volunteer-programs",
+                    label: "Volunteer Programs",
+                  },
                   { href: "/experiences/work-exchange", label: "Work Exchange" },
-                  { href: "/experiences/digital-nomad-stays", label: "Digital Nomad Stays" },
-                  { href: "/experiences/cultural-experiences", label: "Cultural Experiences" },
+                  {
+                    href: "/experiences/digital-nomad-stays",
+                    label: "Digital Nomad Stays",
+                  },
+                  {
+                    href: "/experiences/cultural-experiences",
+                    label: "Cultural Experiences",
+                  },
                 ].map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href} onClick={handleMobileLinkClick}>
+                    <Link
+                      href={item.href}
+                      onClick={handleMobileLinkClick}
+                      className="block"
+                    >
                       {item.label}
                     </Link>
                   </li>
@@ -163,7 +257,12 @@ const Navbar: React.FC = () => {
               onClick={() => setCommOpen(!commOpen)}
               className="flex justify-between w-full py-2 font-medium"
             >
-              Community <IoIosArrowDown className={`transition-transform duration-200 ${commOpen ? 'rotate-180' : ''}`} />
+              Community{" "}
+              <IoIosArrowDown
+                className={`transition-transform duration-200 ${
+                  commOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
             {commOpen && (
               <ul className="pl-4 space-y-2 text-sm">
@@ -173,7 +272,11 @@ const Navbar: React.FC = () => {
                   { href: "/contact", label: "Contact" },
                 ].map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href} onClick={handleMobileLinkClick}>
+                    <Link
+                      href={item.href}
+                      onClick={handleMobileLinkClick}
+                      className="block"
+                    >
                       {item.label}
                     </Link>
                   </li>
@@ -182,10 +285,31 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          <Link href="/pricing" className="block py-2 font-medium" onClick={handleMobileLinkClick}>Pricing</Link>
+          <Link
+            href="/pricing"
+            className="block py-2 font-medium"
+            onClick={handleMobileLinkClick}
+          >
+            Pricing
+          </Link>
 
-          {/* Auth Buttons */}
-          <div className="flex flex-col gap-3 mt-2" onClick={handleMobileLinkClick}>
+          {/* Mobile Auth Links */}
+          <div className="border-t border-gray-200 pt-3 flex flex-col space-y-2">
+            <Link
+              href="/user/login"
+              onClick={handleMobileLinkClick}
+              className="py-2 px-3"
+            >
+  
+              User Login
+            </Link>
+            <Link
+              href="/user/register"
+              onClick={handleMobileLinkClick}
+              className="py-2 px-3"
+            >
+              Register
+            </Link>
           </div>
         </div>
       )}
