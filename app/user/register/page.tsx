@@ -102,16 +102,16 @@ const UsersPage = () => {
             <div className="mb-4">
               <label className="block mb-1 text-gray-700">Email</label>
               <input
-                type="email"
+                type="text"
+                inputMode="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value.trim()); 
+                  setEmail(e.target.value.trim());
                   setError("");
                 }}
-                className="w-full border p-3 rounded-lg focus:outline-none"
-                style={{ borderColor: "#396a6b" }}
               />
+
             </div>
 
             {/* Role */}
