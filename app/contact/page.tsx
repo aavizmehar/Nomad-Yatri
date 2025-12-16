@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import PrimaryBtn from '../components/PrimaryBtn';
 
 // --- SELF-CONTAINED SVG ICONS ---
 
@@ -22,17 +23,17 @@ const ContactPage = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-};
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Form Submitted:', formData);
-    // In a real app, send data to the API here
-    alert("Thank you! Your message has been sent.");
-    setFormData({ name: '', email: '', message: '' });
-};
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log('Form Submitted:', formData);
+        // In a real app, send data to the API here
+        alert("Thank you! Your message has been sent.");
+        setFormData({ name: '', email: '', message: '' });
+    };
 
 
     return (
@@ -41,7 +42,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
                 {/* 1. HERO SECTION & CONTACT INFO */}
                 <section className="grid lg:grid-cols-3 gap-10 py-12">
-                    
+
                     {/* Left Column: Title & Overview */}
                     <div className="lg:col-span-1">
                         <p className="text-indigo-600 font-bold uppercase tracking-widest mb-2">Get In Touch</p>
@@ -55,13 +56,13 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
                     {/* Right Columns: Contact Details & Support */}
                     <div className="lg:col-span-2 grid sm:grid-cols-2 gap-8">
-                        
+
                         {/* Support Details */}
                         <div className="p-6 bg-white rounded-xl shadow-lg border-t-4 border-indigo-400">
                             <MailIcon className="text-indigo-600 mb-3" />
                             <h3 className="text-xl font-bold text-gray-900 mb-2">General Support</h3>
                             <p className="text-lg font-semibold text-gray-800">support@nomadyatri.com</p>
-                            
+
                             <div className="flex items-center gap-2 mt-4 text-gray-600">
                                 <ClockIcon />
                                 <span className="font-medium">Support Timings: Monday - Friday, 9:00 AM - 6:00 PM IST</span>
@@ -79,13 +80,13 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                         </div>
                     </div>
                 </section>
-                
+
                 {/* 2. CONTACT FORM */}
                 <section className="max-w-4xl mx-auto p-8 md:p-12 bg-white rounded-3xl shadow-2xl border border-gray-100">
                     <h2 className="text-3xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
-                    
+
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        
+
                         {/* Name Field */}
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Name</label>
@@ -131,15 +132,8 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                             ></textarea>
                         </div>
 
-                        {/* Submit Button */}
-                        <div>
-                            <button
-                                type="submit"
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150"
-                            >
-                                Send Message
-                            </button>
-                        </div>
+                        <PrimaryBtn text="Send Message" action="" />
+
                     </form>
                 </section>
 

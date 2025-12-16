@@ -1,5 +1,6 @@
 "use client";
 
+import PrimaryBtn from '@/app/components/PrimaryBtn';
 import React from 'react';
 
 // --- SELF-CONTAINED SVG ICONS ---
@@ -119,12 +120,8 @@ const CulturalExperiencesPage = () => {
                         <p className="text-indigo-200 mt-3 mb-6 text-lg">
                             Browse curated homestays and unique experiential programs hosted by locals.
                         </p>
-                        <a 
-                            href="/experiences/browse" 
-                            className="inline-block px-8 py-3 bg-emerald-400 text-gray-900 font-bold rounded-lg shadow-lg hover:bg-emerald-300 transition duration-150 transform hover:scale-105"
-                        >
-                            Browse Cultural Stays &rarr;
-                        </a>
+                      
+                        <PrimaryBtn text=" Browse Cultural Stays &rarr;" action="/experiences/browse"/>
                     </div>
                 </section>
                 
