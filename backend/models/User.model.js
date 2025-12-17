@@ -47,7 +47,7 @@ User.prototype.generateAccessToken = function () {
   )
 }
 User.prototype.generateRefreshToken = function () {
-    return jwt.sign({
+  return jwt.sign({
     id: this.id
   },
 
@@ -56,5 +56,5 @@ User.prototype.generateRefreshToken = function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRY
     }
   )
- }
+}
 module.exports = User;

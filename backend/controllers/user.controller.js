@@ -162,9 +162,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, error?.message || "invalid refresh token")
   }
 })
+
+const changeCurrentPassword=asyncHandler(async(req,res)=>{
+  const {oldPassword, newPassword}= req.body;
+  const user = User.findByPk(req.user?.id);
+
+  if(!isPasswordCorrect(oldPassword)){
+    throw new ApiError(400,"invalid password")
+  }
+  user.password = newPassword
+  await user.save({validateBeforeSave:false})
+  return res.status(200)
+  .json(new ApiResponse(200,{},"Password changed successfully"))
+
+})
+const getCurrentUser = asyncHandler(async(req,res)=>{
+  return req.status(200)
+  .json(200,req.user,"current user fetched successfully")
+})
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
-  refreshAccessToken
+  refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser
 };
