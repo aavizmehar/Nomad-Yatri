@@ -9,7 +9,8 @@ const {
   getSubcategories,      // NEW
   editProgram,           // NEW
   deleteProgram,         // NEW
-  updateApplicationStatus // NEW
+  updateApplicationStatus, // NEW
+  getMyHostProfile
 } = require('../controllers/host.controller');
 
 const verifyJWT = require('../middleware/auth.middleware');
@@ -78,5 +79,8 @@ router.route("/updateApplicationStatus/:applicationId").patch(
   verifyJWT,
   updateApplicationStatus
 );
-
+router.route("/getMyHostProfile").get(
+  verifyJWT,
+  getMyHostProfile
+)
 module.exports = router;

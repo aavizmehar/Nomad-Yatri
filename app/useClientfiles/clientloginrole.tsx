@@ -24,25 +24,33 @@ const UserLoginClient = () => {
   const HandleLogin = async () => {
     setError("");
     setLoading(true);
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || data.error || "Login failed");
+        throw new Error(data.error || data.message || "Login failed");
       }
 
-      localStorage.setItem("accessToken", data.data.accessToken);
-      localStorage.setItem("refreshToken", data.data.refreshToken);
-      localStorage.setItem("role", data.data.user.role);
+      const { user, accessToken, refreshToken } = data.data;
 
-      router.push(`/${data.data.user.role}/addInfoPage`);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("role", user.role);
+
+      const redirectTo = data.data.redirectTo;
+      router.push(redirectTo);
+
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
       else setError("An unexpected error occurred");
@@ -50,6 +58,7 @@ const UserLoginClient = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">

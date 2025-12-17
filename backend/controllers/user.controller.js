@@ -1,4 +1,6 @@
-const User = require('../models/User.model');
+const User = require('../models/User.model')
+const Host = require('../models/host.model')
+const Volunteer = require('../models/Volunteer.model')
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
 const asyncHandler = require("../utils/asyncHandler")
@@ -68,21 +70,45 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!(email || password)) {
-      throw new ApiError(400, "username or password not found")
+    if (!(email && password)) {
+      throw new ApiError(400, "Email and password are required");
     }
-    const user = await User.findOne({ where: { email: email.toLowerCase() } });
-    if (!user) {
-      throw new ApiError(404, "User does not Exists. Please Sign up first.")
-    }
-    const isPasswordValid = await user.isPasswordCorrect(password)
-    if (!isPasswordValid) {
-      throw new ApiError(401, "invalid password Entered")
-    }
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id)
-    const loggedInUser = await User.findByPk(user.id, {
-      attributes: { exclude: ['password', 'refreshToken'] }
+    const user = await User.findOne({
+      where: { email: email.toLowerCase() }
     });
+
+    if (!user) {
+      throw new ApiError(404, "User does not exist. Please sign up first.");
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    if (!isPasswordValid) {
+      throw new ApiError(401, "Invalid password entered");
+    }
+
+    const { accessToken, refreshToken } =
+      await generateAccessAndRefreshTokens(user.id);
+
+    const loggedInUser = await User.findByPk(user.id, {
+      attributes: { exclude: ["password", "refreshToken"] }
+    });
+
+    let hasCompletedProfile = false;
+    let redirectTo = "";
+
+    if (user.role === "host") {
+      const host = await Host.findOne({ where: { userId: user.id } });
+      hasCompletedProfile = !!host;
+      redirectTo = host ? "/host/dashboard" : "/host/addInfoPage";
+    }
+
+    if (user.role === "volunteer") {
+      const volunteer = await Volunteer.findOne({ where: { userId: user.id } });
+      hasCompletedProfile = !!volunteer;
+      redirectTo = volunteer
+        ? "/volunteer/dashboard"
+        : "/volunteer/addInfoPage";
+    }
 
     const options = {
       httpOnly: true,
@@ -96,14 +122,23 @@ const loginUser = asyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           {
-            user: loggedInUser, accessToken,
-            refreshToken
+            user: {
+              ...loggedInUser.toJSON(),
+              hasCompletedProfile
+            },
+            accessToken,
+            refreshToken,
+            redirectTo
           },
-          "User logged in successfully")
-      )
+          "User logged in successfully"
+        )
+      );
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: err.message });
+    res
+      .status(err.statusCode || 500)
+      .json({ error: err.message || "Internal Server Error" });
   }
 })
 

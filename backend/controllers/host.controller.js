@@ -410,7 +410,14 @@ exports.updateApplicationStatus = asyncHandler(async (req, res) => {
     new ApiResponse(200, { application }, "Application status updated successfully")
   );
 });
+exports.getMyHostProfile = asyncHandler(async (req, res) => {
+    const host = await Host.findOne({ where: { userId: req.user.id } });
+    if (!host) throw new ApiError(404, "Host not found");
 
+    return res.status(200).json(
+        new ApiResponse(200, host, "Host profile fetched")
+    );
+});
 module.exports = {
   addHostData: exports.addHostData,
   editProfile: exports.editProfile,
@@ -420,5 +427,6 @@ module.exports = {
   editProgram: exports.editProgram,
   deleteProgram: exports.deleteProgram,
   seeApplications: exports.seeApplications,
-  updateApplicationStatus: exports.updateApplicationStatus
+  updateApplicationStatus: exports.updateApplicationStatus,
+  getMyHostProfile: exports.getMyHostProfile
 };

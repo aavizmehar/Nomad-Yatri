@@ -1,115 +1,98 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { IoIosArrowDown } from "react-icons/io";
 import { HiMenu, HiX } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const Navbar: React.FC = () => {
+  const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [expOpen, setExpOpen] = useState(false);
   const [commOpen, setCommOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false); // Mobile auth dropdown
+  const [isOpen, setIsOpen] = useState(false); // Desktop profile dropdown
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const role = localStorage.getItem("role");
+    if (token) {
+      setIsLoggedIn(true);
+      setUserRole(role);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log("Logged out from server successfully");
+      }
+    } catch (error) {
+      console.error("Server logout error:", error);
+    } finally {
+      localStorage.clear();
+      setIsLoggedIn(false);
+      setUserRole(null);
+      setIsOpen(false);
+      setIsMobileOpen(false);
+
+      router.push("/user/login");
+      router.refresh();
+    }
+  };
 
   const handleMobileLinkClick = () => {
     setIsMobileOpen(false);
     setExpOpen(false);
     setCommOpen(false);
-    setIsAuthOpen(false);
   };
 
-  const [isOpen, setIsOpen] = useState(false); // Desktop profile dropdown
-
-  const handleToggle = () => setIsOpen(!isOpen);
-  const handleLinkClick = () => setIsOpen(false);
-
   const UserProfileIcon = () => (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-      ></path>
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     </svg>
   );
 
   return (
     <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
-      <div className="container mx-auto flex items-center justify-between px-5">
-        <Link
-          href="/"
-          className="flex items-center"
-          onClick={handleMobileLinkClick}
-        >
-          <Image
-            src="/nomadlogo.svg"
-            height={80}
-            width={80}
-            alt="Nomad Yatra Logo"
-          />
-          <span className="font-[1000] text-3xl text-[#cd7643] tracking-wide">
-            <i>
-              Nomad <span className="text-[#396a6b]">Yatra</span>
-            </i>
+      <div className="container mx-auto flex items-center justify-between px-5 py-2">
+        {/* Logo */}
+        <Link href="/" className="flex items-center" onClick={handleMobileLinkClick}>
+          <Image src="/nomadlogo.svg" height={60} width={60} alt="Nomad Yatra Logo" />
+          <span className="font-extrabold text-2xl text-[#cd7643] tracking-wide ml-2">
+            Nomad <span className="text-[#396a6b]">Yatra</span>
           </span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-6 text-[#1a2627] font-bold">
-          <Link
-            href="/"
-            className="hover:text-[#d49159] transition-colors duration-300"
-          >
-            Home
-          </Link>
+        <div className="hidden md:flex items-center space-x-8 text-[#1a2627] font-bold">
+          <Link href="/" className="hover:text-[#d49159] transition-colors">Home</Link>
 
           {/* Experiences Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
-              Experiences <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
+            <button className="flex items-center gap-1 hover:text-[#d49159]">
+              Experiences <IoIosArrowDown className="group-hover:rotate-180 transition-transform" />
             </button>
-            <div className="absolute top-full left-0 mt-2 w-60 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li>
-                  <Link
-                    href="/experiences/volunteer-programs"
-                    className="hover:text-[#d49159]"
-                  >
-                    Volunteer Programs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/experiences/work-exchange"
-                    className="hover:text-[#d49159]"
-                  >
-                    Work Exchange
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/experiences/digital-nomad-stays"
-                    className="hover:text-[#d49159]"
-                  >
-                    Digital Nomad Stays
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/experiences/cultural-experiences"
-                    className="hover:text-[#d49159]"
-                  >
-                    Cultural Experiences
-                  </Link>
-                </li>
+            <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all border border-gray-100">
+              <ul className="py-2 text-sm font-semibold">
+                <li><Link href="/experiences/volunteer-programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Volunteer Programs</Link></li>
+                <li><Link href="/experiences/work-exchange" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Work Exchange</Link></li>
+                <li><Link href="/experiences/digital-nomad-stays" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Digital Nomad Stays</Link></li>
+                <li><Link href="/experiences/cultural-experiences" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Cultural Experiences</Link></li>
               </ul>
             </div>
           </div>
@@ -147,169 +130,81 @@ const Navbar: React.FC = () => {
             Pricing
           </Link>
 
-          {/* Desktop Auth Dropdown */}
-          <div className="relative inline-block">
+          {/* Auth Button/Dropdown */}
+          <div className="relative">
             <button
-              onClick={handleToggle}
-              className="p-3 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition duration-150 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              aria-expanded={isOpen}
-              aria-haspopup="true"
+              onClick={() => setIsOpen(!isOpen)}
+              className={`p-2 rounded-full shadow-md transition-all flex items-center justify-center ${
+                isLoggedIn ? "bg-[#396a6b] text-white" : "bg-indigo-600 text-white hover:bg-indigo-700"
+              }`}
             >
               <UserProfileIcon />
-              <IoIosArrowDown
-                className={`ml-1 transform ${isOpen ? "rotate-180" : "rotate-0"}`}
-              />
+              <IoIosArrowDown className={`ml-1 transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </button>
 
             {isOpen && (
-              <div
-                onClick={handleLinkClick}
-                className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 transition duration-300 transform origin-top-right animate-fade-in"
-              >
-                <ul>
-                  <li className="rounded-lg overflow-hidden">
-                    <Link href="/user/login">User Login</Link>
-                  </li>
-                  <li className="rounded-lg overflow-hidden">
-                    <Link href="/user/register">Register new User</Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-
-            {isOpen && (
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsOpen(false)}
-                aria-label="Close menu"
-              ></div>
+              <>
+                <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)}></div>
+                <div className="absolute right-0 mt-3 w-52 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 overflow-hidden">
+                  <ul className="text-sm font-semibold">
+                    {isLoggedIn ? (
+                      <>
+                        <li className="px-4 py-2 text-[10px] text-gray-400 uppercase tracking-widest border-b mb-1">Account</li>
+                        <li><Link href={userRole === "host" ? "/host/dashboard" : "/user/profile"} onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">Dashboard</Link></li>
+                        <li><button onClick={handleLogout} className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">Logout</button></li>
+                      </>
+                    ) : (
+                      <>
+                        <li><Link href="/user/login" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">User Login</Link></li>
+                        <li><Link href="/user/register" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">Register</Link></li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </>
             )}
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-3xl text-gray-700"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-        >
+        {/* Mobile Hamburger */}
+        <button className="md:hidden text-3xl text-gray-700" onClick={() => setIsMobileOpen(!isMobileOpen)}>
           {isMobileOpen ? <HiX /> : <HiMenu />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMobileOpen && (
-        <div className="md:hidden h-[100vh] bg-white/95 backdrop-blur-md shadow-lg px-6 py-4 space-y-3 transition-all duration-300 overflow-y-auto">
-          <Link
-            href="/"
-            className="block py-2 font-medium"
-            onClick={handleMobileLinkClick}
-          >
-            Home
-          </Link>
-
-          {/* Experiences Dropdown */}
-          <div>
-            <button
-              onClick={() => setExpOpen(!expOpen)}
-              className="flex justify-between w-full py-2 font-medium"
-            >
-              Experiences{" "}
-              <IoIosArrowDown
-                className={`transition-transform duration-200 ${
-                  expOpen ? "rotate-180" : ""
-                }`}
-              />
+        <div className="md:hidden fixed inset-0 top-[70px] bg-white z-40 px-6 py-6 flex flex-col space-y-4 animate-in slide-in-from-right">
+          <Link href="/" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Home</Link>
+          
+          <div className="space-y-2">
+            <button onClick={() => setExpOpen(!expOpen)} className="flex justify-between w-full text-lg font-bold">
+              Experiences <IoIosArrowDown className={expOpen ? "rotate-180" : ""} />
             </button>
             {expOpen && (
-              <ul className="pl-4 space-y-2 text-sm">
-                {[
-                  {
-                    href: "/experiences/volunteer-programs",
-                    label: "Volunteer Programs",
-                  },
-                  { href: "/experiences/work-exchange", label: "Work Exchange" },
-                  {
-                    href: "/experiences/digital-nomad-stays",
-                    label: "Digital Nomad Stays",
-                  },
-                  {
-                    href: "/experiences/cultural-experiences",
-                    label: "Cultural Experiences",
-                  },
-                ].map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={handleMobileLinkClick}
-                      className="block"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <div className="pl-4 flex flex-col space-y-2 text-gray-600 font-semibold">
+                <Link href="/experiences/volunteer-programs" onClick={handleMobileLinkClick}>Volunteer Programs</Link>
+                <Link href="/experiences/work-exchange" onClick={handleMobileLinkClick}>Work Exchange</Link>
+                <Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link>
+                <Link href="/experiences/cultural-experiences" onClick={handleMobileLinkClick}>Cultural Experiences</Link>
+              </div>
             )}
           </div>
 
-          {/* Community Dropdown */}
-          <div>
-            <button
-              onClick={() => setCommOpen(!commOpen)}
-              className="flex justify-between w-full py-2 font-medium"
-            >
-              Community{" "}
-              <IoIosArrowDown
-                className={`transition-transform duration-200 ${
-                  commOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            {commOpen && (
-              <ul className="pl-4 space-y-2 text-sm">
-                {[
-                  { href: "/about", label: "About Us" },
-                  { href: "/blog", label: "Blog" },
-                  { href: "/contact", label: "Contact" },
-                ].map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={handleMobileLinkClick}
-                      className="block"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          <Link href="/pricing" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Pricing</Link>
+
+          <div className="pt-4 space-y-4">
+            {isLoggedIn ? (
+              <>
+                <Link href={userRole === "host" ? "/host/dashboard" : "/user/profile"} onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-[#396a6b] text-white rounded-xl font-bold">My Dashboard</Link>
+                <button onClick={handleLogout} className="w-full py-3 text-center border-2 border-red-500 text-red-500 rounded-xl font-bold">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link href="/user/login" onClick={handleMobileLinkClick} className="block w-full py-3 text-center border-2 border-indigo-600 text-indigo-600 rounded-xl font-bold">Login</Link>
+                <Link href="/user/register" onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-indigo-600 text-white rounded-xl font-bold">Join Now</Link>
+              </>
             )}
-          </div>
-
-          <Link
-            href="/pricing"
-            className="block py-2 font-medium"
-            onClick={handleMobileLinkClick}
-          >
-            Pricing
-          </Link>
-
-          {/* Mobile Auth Links */}
-          <div className="border-t border-gray-200 pt-3 flex flex-col space-y-2">
-            <Link
-              href="/user/login"
-              onClick={handleMobileLinkClick}
-              className="py-2 px-3"
-            >
-  
-              User Login
-            </Link>
-            <Link
-              href="/user/register"
-              onClick={handleMobileLinkClick}
-              className="py-2 px-3"
-            >
-              Register
-            </Link>
           </div>
         </div>
       )}

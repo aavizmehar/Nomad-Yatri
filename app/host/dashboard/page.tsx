@@ -27,7 +27,6 @@ interface Application {
 export default function HostDashboard() {
   const router = useRouter();
 
-  // 1. Consolidated Form State
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -42,7 +41,6 @@ export default function HostDashboard() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
 
-  // Helpers for Category Logic
   const selectedCategory = formData.category;
   const availableSubCategories = CATEGORY_SUBCATEGORIES[selectedCategory] || [];
   const hasSubCategories = availableSubCategories.length > 0;
@@ -50,17 +48,54 @@ export default function HostDashboard() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const role = typeof window !== 'undefined' ? localStorage.getItem('role') : null;
 
-  // Input Handler
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+const [hostName, setHostName] = useState<string>('Host');
+const fetchHostProfile = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/getMyHostProfile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const result = await res.json();
+      if (res.ok && result.data) {
+        setHostName(result.data.name); // Setting the host's name
+      }
+    } catch (err) {
+      console.error("Failed to fetch host name", err);
+    }
   };
 
   useEffect(() => {
     if (!token || role !== 'host') {
       router.replace('/user/login');
+    } else {
+      fetchHostProfile(); // Fetch name only if authenticated
     }
-  }, [token, role, router]);
+  }, [token, role]);
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Pass current token for verifyJWT
+        },
+      });
+
+      if (response.ok) {
+        console.log("Logged out from server successfully");
+      }
+    } catch (error) {
+      console.error("Server logout error:", error);
+    } finally {
+      localStorage.clear();
+      
+      router.push('/user/login');
+      router.refresh(); // Force refresh to update Navbar/Auth state
+    }
+  };
 
   const fetchPrograms = async () => {
     try {
@@ -88,9 +123,6 @@ export default function HostDashboard() {
   }, [activeTab]);
 
   const handleCreateProgram = async () => {
-    // If you are NOT uploading images here, use JSON. 
-    // If you ARE uploading images, use FormData. 
-    // Matching your current backend:
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addNewProgram`, {
         method: 'POST',
@@ -105,7 +137,6 @@ export default function HostDashboard() {
       if (res.ok) {
         setPrograms(prev => [data.data.program, ...prev]);
         setActiveTab('Manage Listings');
-        // Reset Form
         setFormData({ title: '', description: '', category: '', subCategory: '', location: '', duration: '', maxVolunteers: 0 });
       } else {
         alert(data.message);
@@ -134,11 +165,6 @@ export default function HostDashboard() {
     if (res.ok) fetchApplications();
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    router.push('/user/login');
-  };
-
   const menuItems = [
     { name: 'Post New Opportunity', icon: <FaPlus /> },
     { name: 'Manage Listings', icon: <FaClipboardList /> },
@@ -149,22 +175,26 @@ export default function HostDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 text-black">
-      <aside className="w-64 bg-white border-r p-6 shadow-sm">
-        <h2 className="text-2xl font-bold text-indigo-700 mb-6 text-center">Host Panel</h2>
-        <ul className="flex-1">
+      <aside className="w-64 bg-white border-r p-6 shadow-sm flex flex-col">
+     <p className="text-gray-500 text-xs uppercase tracking-widest font-semibold">Welcome Back,</p>
+          <h2 className="text-xl font-extrabold text-indigo-700 truncate px-2">{hostName}</h2>    <ul className="flex-1">
           {menuItems.map(item => (
             <li
               key={item.name}
               onClick={() => setActiveTab(item.name)}
-              className={`flex items-center gap-2 p-3 mb-2 cursor-pointer rounded-lg font-medium transition ${activeTab === item.name ? 'bg-indigo-600 text-white' : 'hover:bg-indigo-50 text-gray-600'
-                }`}
+              className={`flex items-center gap-2 p-3 mb-2 cursor-pointer rounded-lg font-medium transition ${
+                activeTab === item.name ? 'bg-indigo-600 text-white shadow-md' : 'hover:bg-indigo-50 text-gray-600'
+              }`}
             >
               {item.icon}
               {item.name}
             </li>
           ))}
         </ul>
-        <button onClick={handleLogout} className="mt-6 w-full bg-red-500 text-white py-2 rounded-lg font-bold hover:bg-red-600 transition">
+        <button 
+          onClick={handleLogout} 
+          className="mt-6 w-full bg-red-500 text-white py-2 rounded-lg font-bold hover:bg-red-600 transition shadow-sm active:scale-95"
+        >
           Logout
         </button>
       </aside>
