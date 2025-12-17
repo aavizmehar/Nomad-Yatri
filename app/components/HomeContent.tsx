@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import PrimaryBtn from "./PrimaryBtn";
+import FeaturedExperiences from "./featuredExperiences";
 const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
@@ -22,11 +23,9 @@ const HomeContent: React.FC = () => {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-           
-<PrimaryBtn text="Start Exploring" action="experiences/volunteer-programs"  />
-<PrimaryBtn text="Register as Host" action="host/register" className="bg-green-600 hover:bg-green-500"  />
 
-
+            <PrimaryBtn text="Start Exploring" action="experiences/volunteer-programs" />
+            <PrimaryBtn text="Register as Host" action="host/register" className="bg-green-600 hover:bg-green-500" />
           </div>
         </div>
       </section>
@@ -52,35 +51,7 @@ const HomeContent: React.FC = () => {
         </div>
         <h3 className="mt-20 text-center"><i> "Travel cheap. Travel deep. Travel with purpose."</i></h3>
       </section>
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center">Featured Experiences</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-10">
-            {[
-              { title: "Volunteer Programs", link: "/experiences/volunteer-programs" },
-              { title: "Work Exchange Stays", link: "/experiences/work-exchange" },
-              { title: "Digital Nomad Stays", link: "/experiences/digital-nomad-stays" },
-              { title: "Rural Homestays", link: "/experiences/rural-homestays" },
-              { title: "Eco Projects", link: "/eco-projects" },
-              { title: "Weekend Trips", link: "/weekend-trips" },
-            ].map((exp, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow hover:shadow-lg transition p-5">
-                <div className="h-40 bg-gray-300 rounded-lg mb-4" /> {/* placeholder image */}
-
-                <h3 className="text-xl font-semibold">{exp.title}</h3>
-                <p className="text-gray-600 mt-2">Explore meaningful stays and experiences.</p>
-
-                <Link href={exp.link}
-                  className="inline-block mt-4 text-blue-600 font-semibold hover:underline"
-                >
-                  Explore →
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturedExperiences/>
 
       <section className="py-16 container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center">How It Works</h2>
@@ -154,9 +125,9 @@ const HomeContent: React.FC = () => {
         <h2 className="text-3xl font-bold py-7 px-10">
           Join India’s Fastest Growing Travel Community
         </h2>
-<p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
-       
-<PrimaryBtn text="Sign Up Free" action="volunteer/register"  />
+        <p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
+
+        <PrimaryBtn text="Sign Up Free" action="volunteer/register" />
 
       </section>
 

@@ -48,8 +48,12 @@ export default function VolunteerProgramsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16">
+      <div
+        className="absolute inset-0 bg-cover bg-center blur-xs"
+        style={{ backgroundImage: "url('/featuredImgs/volunteerprograms.png')" }}
+      ></div>
+
+      <div className="relative z-10 text-white py-16 text-center">
         <div className="container mx-auto px-4">
           <h1 className="text-5xl font-bold mb-4">Volunteer Programs</h1>
           <p className="text-xl mb-2">
