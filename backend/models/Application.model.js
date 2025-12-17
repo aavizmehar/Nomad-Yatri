@@ -4,7 +4,10 @@ const User = require('./User.model');
 const Program = require('./Program.model');
 
 const Application = sequelize.define('Application', {
-  userId: { type: DataTypes.INTEGER, allowNull: false },
+  applicant
+  
+  
+  : { type: DataTypes.INTEGER, allowNull: false },
   programId: { type: DataTypes.INTEGER, allowNull: false },
   status: { type: DataTypes.ENUM('pending','approved','rejected'), defaultValue: 'pending' }
 });
