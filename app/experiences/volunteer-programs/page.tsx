@@ -5,9 +5,10 @@ import ProgramCard from '@/components/ProgramCard';
 import ProgramFilters from '@/components/ProgramFilters';
 import Pagination from '@/components/Pagination';
 import { PROGRAM_CATEGORIES, VOLUNTEER_SUBCATEGORIES } from '@/constants/programCategories';
+import { Program } from '@/types/program';
 
 export default function VolunteerProgramsPage() {
-  const [programs, setPrograms] = useState([]);
+  const [programs, setPrograms] = useState<Program[]>([])
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     subCategory: '',
@@ -40,7 +41,7 @@ export default function VolunteerProgramsPage() {
     setLoading(false);
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number): void => {
     setFilters({ ...filters, page: newPage });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

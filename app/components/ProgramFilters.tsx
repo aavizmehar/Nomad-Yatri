@@ -1,12 +1,20 @@
 'use client';
+interface ProgramFiltersProps {
+  subcategories?: string[];
+  selectedSubCategory: string;
+  onSubCategoryChange: (value: string) => void;
+  location: string;
+  onLocationChange: (value: string) => void;
+}
 
-export default function ProgramFilters({ 
-  subcategories, 
-  selectedSubCategory, 
+export default function ProgramFilters({
+  subcategories,
+  selectedSubCategory,
   onSubCategoryChange,
   location,
-  onLocationChange 
-}) {
+  onLocationChange,
+}: ProgramFiltersProps) {
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <h2 className="text-xl font-bold mb-4">Filters</h2>

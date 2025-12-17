@@ -11,7 +11,7 @@ const HomeContent: React.FC = () => {
       >
         <div className="absolute inset-0 bg-black opacity-30" />
 
-        <div className="p-20 mt-45 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
+        <div className="p-20 mt-25 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
           <h1 className="font-bold leading-tight">
             Travel with Purpose. Live with Impact.
           </h1>

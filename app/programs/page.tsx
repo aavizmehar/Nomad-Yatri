@@ -5,15 +5,20 @@ import ProgramCard from '@/components/ProgramCard';
 import ProgramFilters from '@/components/ProgramFilters';
 import Pagination from '@/components/Pagination';
 import { PROGRAM_CATEGORIES } from '@/constants/programCategories';
+import { Program } from '@/types/program';
 
 export default function AllProgramsPage() {
-  const [programs, setPrograms] = useState([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // 1. ADD subCategory to your state
   const [filters, setFilters] = useState({
     category: '',
+    subCategory: '', // Added this
     location: '',
     page: 1
   });
+
   const [pagination, setPagination] = useState({
     total: 0,
     page: 1,
@@ -29,22 +34,24 @@ export default function AllProgramsPage() {
     setLoading(true);
     try {
       const response = await api.getPrograms(filters);
-      setPrograms(response.data.programs);
-      setPagination(response.data.pagination);
+      if (response.success) {
+        setPrograms(response.data.programs);
+        setPagination(response.data.pagination);
+      }
     } catch (error) {
       console.error('Error fetching programs:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setFilters({ ...filters, page: newPage });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50 text-black">
       <div className="bg-blue-600 text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold mb-4">Explore All Programs</h1>
@@ -56,11 +63,9 @@ export default function AllProgramsPage() {
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
           <button
-            onClick={() => setFilters({ ...filters, category: '', page: 1 })}
+            onClick={() => setFilters({ ...filters, category: '', subCategory: '', page: 1 })}
             className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              filters.category === ''
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+              filters.category === '' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border'
             }`}
           >
             All Programs
@@ -68,11 +73,9 @@ export default function AllProgramsPage() {
           {Object.values(PROGRAM_CATEGORIES).map((category) => (
             <button
               key={category}
-              onClick={() => setFilters({ ...filters, category, page: 1 })}
+              onClick={() => setFilters({ ...filters, category, subCategory: '', page: 1 })}
               className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-                filters.category === category
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                filters.category === category ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border'
               }`}
             >
               {category}
@@ -80,39 +83,30 @@ export default function AllProgramsPage() {
           ))}
         </div>
 
-        {/* Filters */}
+        {/* 2. FIXED: Pass the missing properties here */}
         <ProgramFilters
           location={filters.location}
           onLocationChange={(location) => setFilters({ ...filters, location, page: 1 })}
+          selectedSubCategory={filters.subCategory}
+          onSubCategoryChange={(subCategory) => setFilters({ ...filters, subCategory, page: 1 })}
         />
 
-        {/* Results Count */}
-        <div className="mb-4">
-          <p className="text-gray-600">
-            Showing {programs.length} of {pagination.total} programs
-          </p>
+        <div className="mb-4 mt-4 text-gray-600">
+          Showing {programs.length} of {pagination.total} programs
         </div>
 
-        {/* Loading State */}
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading programs...</p>
-          </div>
-        ) : programs.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No programs found</p>
           </div>
         ) : (
           <>
-            {/* Programs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {programs.map((program) => (
                 <ProgramCard key={program.programId} program={program} />
               ))}
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={pagination.page}
               totalPages={pagination.totalPages}

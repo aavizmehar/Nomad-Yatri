@@ -1,8 +1,10 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Program } from '@/types/program';
 
-export default function ProgramCard({ program }) {
+export default function ProgramCard({ program }: { program: Program }) {
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Program Image */}

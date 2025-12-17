@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react'; // Added React types
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import {
@@ -19,13 +19,16 @@ export default function CreateProgramPage() {
     duration: '',
     maxVolunteers: ''
   });
-  const [images, setImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [images, setImages] = useState<File[]>([]); // Type added for File array
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Type added for strings
 
-  const availableSubcategories = CATEGORY_SUBCATEGORIES[formData.category] || [];
+  // Type safe lookup for categories
+  const categoryKey = formData.category as keyof typeof CATEGORY_SUBCATEGORIES;
+  const availableSubcategories = CATEGORY_SUBCATEGORIES[categoryKey] || [];
   const hasSubcategories = availableSubcategories.length > 0;
 
-  const handleChange = (e) => {
+  // FIXED: Added types for HTMLInputElement, HTMLTextAreaElement, and HTMLSelectElement
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -33,7 +36,8 @@ export default function CreateProgramPage() {
     }));
   };
 
-  const handleCategoryChange = (e) => {
+  // FIXED: Added type for Category Select
+  const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setFormData({
       ...formData,
       category: e.target.value,
@@ -41,30 +45,29 @@ export default function CreateProgramPage() {
     });
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files);
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setImages(files);
 
-    // Create previews
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews(previews);
+      const previews = files.map((file) => URL.createObjectURL(file));
+      setImagePreviews(previews);
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const formDataToSend = new FormData();
       
-      // Append text fields
-      Object.keys(formData).forEach((key) => {
-        if (formData[key]) {
-          formDataToSend.append(key, formData[key]);
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) {
+          formDataToSend.append(key, value);
         }
       });
 
-      // Append images
       images.forEach((image) => {
         formDataToSend.append('programImages', image);
       });
@@ -78,12 +81,13 @@ export default function CreateProgramPage() {
     } catch (error) {
       console.error('Error creating program:', error);
       alert('Failed to create program. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 text-black">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-6">Create New Program</h1>
@@ -91,9 +95,7 @@ export default function CreateProgramPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Program Title *
-              </label>
+              <label className="block text-sm font-semibold mb-2">Program Title *</label>
               <input
                 type="text"
                 name="title"
@@ -107,9 +109,7 @@ export default function CreateProgramPage() {
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Program Category *
-              </label>
+              <label className="block text-sm font-semibold mb-2">Program Category *</label>
               <select
                 name="category"
                 value={formData.category}
@@ -119,9 +119,7 @@ export default function CreateProgramPage() {
               >
                 <option value="">Select a category</option>
                 {Object.values(PROGRAM_CATEGORIES).map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
+                  <option key={category} value={category}>{category}</option>
                 ))}
               </select>
             </div>
@@ -129,9 +127,7 @@ export default function CreateProgramPage() {
             {/* SubCategory (conditional) */}
             {hasSubcategories && (
               <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Sub-Category (Optional)
-                </label>
+                <label className="block text-sm font-semibold mb-2">Sub-Category (Optional)</label>
                 <select
                   name="subCategory"
                   value={formData.subCategory}
@@ -140,9 +136,7 @@ export default function CreateProgramPage() {
                 >
                   <option value="">Select a sub-category</option>
                   {availableSubcategories.map((sub) => (
-                    <option key={sub} value={sub}>
-                      {sub}
-                    </option>
+                    <option key={sub} value={sub}>{sub}</option>
                   ))}
                 </select>
               </div>
@@ -150,9 +144,7 @@ export default function CreateProgramPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Description *
-              </label>
+              <label className="block text-sm font-semibold mb-2">Description *</label>
               <textarea
                 name="description"
                 value={formData.description}
@@ -165,9 +157,7 @@ export default function CreateProgramPage() {
 
             {/* Location */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Location
-              </label>
+              <label className="block text-sm font-semibold mb-2">Location</label>
               <input
                 type="text"
                 name="location"
@@ -180,9 +170,7 @@ export default function CreateProgramPage() {
 
             {/* Duration */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Duration
-              </label>
+              <label className="block text-sm font-semibold mb-2">Duration</label>
               <input
                 type="text"
                 name="duration"
@@ -195,9 +183,7 @@ export default function CreateProgramPage() {
 
             {/* Max Volunteers */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Maximum Volunteers
-              </label>
+              <label className="block text-sm font-semibold mb-2">Maximum Volunteers</label>
               <input
                 type="number"
                 name="maxVolunteers"
@@ -211,9 +197,7 @@ export default function CreateProgramPage() {
 
             {/* Images */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Program Images
-              </label>
+              <label className="block text-sm font-semibold mb-2">Program Images</label>
               <input
                 type="file"
                 accept="image/*"
@@ -221,27 +205,19 @@ export default function CreateProgramPage() {
                 onChange={handleImageChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <p className="text-sm text-gray-500 mt-1">
-                You can upload up to 5 images
-              </p>
+              <p className="text-sm text-gray-500 mt-1">You can upload multiple images</p>
 
-              {/* Image Previews */}
               {imagePreviews.length > 0 && (
                 <div className="grid grid-cols-3 gap-4 mt-4">
                   {imagePreviews.map((preview, index) => (
-                    <div key={index} className="relative h-32 rounded-lg overflow-hidden">
-                      <img
-                        src={preview}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                    <div key={index} className="relative h-32 rounded-lg overflow-hidden border">
+                      <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
