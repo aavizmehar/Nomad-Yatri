@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useState, ChangeEvent, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaPlus, FaClipboardList, FaUsers, FaStar, FaDollarSign, FaCog, FaTrash } from 'react-icons/fa';
 import { Program } from '@/types/program';
-import {
-  PROGRAM_CATEGORIES,
-  CATEGORY_SUBCATEGORIES
-} from '@/constants/programCategories';
+import { PROGRAM_CATEGORIES, CATEGORY_SUBCATEGORIES } from '@/constants/programCategories';
+import { AuthContext } from '@/context/AuthContext';
 
 interface Application {
   applicationId: number;
@@ -26,16 +24,19 @@ interface Application {
 
 export default function HostDashboard() {
   const router = useRouter();
+  const { logout } = useContext(AuthContext); // ✅ Use AuthContext
 
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    subCategory: '',
-    location: '',
-    duration: '',
-    maxVolunteers: 0
-  });
+ const [formData, setFormData] = useState({
+  title: '',
+  description: '',
+  category: '',
+  subCategory: '',
+  location: '',
+  duration: '',
+  maxVolunteers: 0
+});
+const [programImages, setProgramImages] = useState<File[]>([]);
+
 
   const [activeTab, setActiveTab] = useState('Manage Listings');
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -48,19 +49,17 @@ export default function HostDashboard() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const role = typeof window !== 'undefined' ? localStorage.getItem('role') : null;
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-const [hostName, setHostName] = useState<string>('Host');
-const fetchHostProfile = async () => {
+  const [hostName, setHostName] = useState<string>('Host');
+
+  // Fetch host profile
+  const fetchHostProfile = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/getMyHostProfile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const result = await res.json();
       if (res.ok && result.data) {
-        setHostName(result.data.name); // Setting the host's name
+        setHostName(result.data.name);
       }
     } catch (err) {
       console.error("Failed to fetch host name", err);
@@ -71,30 +70,19 @@ const fetchHostProfile = async () => {
     if (!token || role !== 'host') {
       router.replace('/user/login');
     } else {
-      fetchHostProfile(); // Fetch name only if authenticated
+      fetchHostProfile();
     }
   }, [token, role]);
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Pass current token for verifyJWT
-        },
-      });
 
-      if (response.ok) {
-        console.log("Logged out from server successfully");
-      }
-    } catch (error) {
-      console.error("Server logout error:", error);
-    } finally {
-      localStorage.clear();
-      
-      router.push('/user/login');
-      router.refresh(); // Force refresh to update Navbar/Auth state
-    }
+  const handleLogout = () => {
+    logout(); // ✅ use AuthContext logout
+    router.push('/user/login');
+    router.refresh();
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const fetchPrograms = async () => {
@@ -122,27 +110,64 @@ const fetchHostProfile = async () => {
     if (activeTab === 'Applications') fetchApplications();
   }, [activeTab]);
 
-  const handleCreateProgram = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addNewProgram`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
-        },
-        body: JSON.stringify(formData),
-      });
+const handleCreateProgram = async () => {
+  try {
+    if (programImages.length === 0) {
+      alert("Please upload at least one program image");
+      return;
+    }
 
-      const data = await res.json();
-      if (res.ok) {
-        setPrograms(prev => [data.data.program, ...prev]);
-        setActiveTab('Manage Listings');
-        setFormData({ title: '', description: '', category: '', subCategory: '', location: '', duration: '', maxVolunteers: 0 });
-      } else {
-        alert(data.message);
+    const fd = new FormData();
+
+    fd.append("title", formData.title);
+    fd.append("description", formData.description);
+    fd.append("category", formData.category);
+    fd.append("subCategory", formData.subCategory);
+    fd.append("location", formData.location);
+    fd.append("duration", formData.duration);
+    fd.append("maxVolunteers", String(formData.maxVolunteers));
+
+    // 🔥 FIELD NAME MUST MATCH multer
+    programImages.forEach(img => {
+      fd.append("programImages", img);
+    });
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addNewProgram`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // ❗ NO Content-Type
+        },
+        body: fd,
       }
-    } catch (err) { alert("Failed to create program"); }
-  };
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to create program");
+    }
+
+    setPrograms(prev => [data.data.program, ...prev]);
+    setActiveTab("Manage Listings");
+
+    setFormData({
+      title: '',
+      description: '',
+      category: '',
+      subCategory: '',
+      location: '',
+      duration: '',
+      maxVolunteers: 0,
+    });
+    setProgramImages([]);
+
+  } catch (err: any) {
+    alert(err.message);
+  }
+};
+
 
   const handleDeleteProgram = async (programId: number) => {
     if (!confirm('Delete this program?')) return;
@@ -175,36 +200,37 @@ const fetchHostProfile = async () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50 text-black">
+      {/* Sidebar */}
       <aside className="w-64 bg-white border-r p-6 shadow-sm flex flex-col">
-     <p className="text-gray-500 text-xs uppercase tracking-widest font-semibold">Welcome Back,</p>
-          <h2 className="text-xl font-extrabold text-indigo-700 truncate px-2">{hostName}</h2>    <ul className="flex-1">
+        <p className="text-gray-500 text-xs uppercase tracking-widest font-semibold">Welcome Back,</p>
+        <h2 className="text-xl font-extrabold text-indigo-700 truncate px-2">{hostName}</h2>
+        <ul className="flex-1">
           {menuItems.map(item => (
             <li
               key={item.name}
               onClick={() => setActiveTab(item.name)}
-              className={`flex items-center gap-2 p-3 mb-2 cursor-pointer rounded-lg font-medium transition ${
-                activeTab === item.name ? 'bg-indigo-600 text-white shadow-md' : 'hover:bg-indigo-50 text-gray-600'
-              }`}
+              className={`flex items-center gap-2 p-3 mb-2 cursor-pointer rounded-lg font-medium transition ${activeTab === item.name ? 'bg-indigo-600 text-white shadow-md' : 'hover:bg-indigo-50 text-gray-600'
+                }`}
             >
               {item.icon}
               {item.name}
             </li>
           ))}
         </ul>
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="mt-6 w-full bg-red-500 text-white py-2 rounded-lg font-bold hover:bg-red-600 transition shadow-sm active:scale-95"
         >
           Logout
         </button>
       </aside>
 
+      {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         {activeTab === 'Post New Opportunity' && (
           <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-md border border-gray-100">
             <h2 className="text-xl font-bold mb-6">Opportunity Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Program Title</label>
                 <input
@@ -294,6 +320,22 @@ const fetchHostProfile = async () => {
                   placeholder="Describe tasks and benefits..."
                 />
               </div>
+<div className="md:col-span-2">
+  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+    Program Images
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={(e) => {
+      if (!e.target.files) return;
+      setProgramImages(Array.from(e.target.files));
+    }}
+    className="w-full p-3 bg-gray-50 border rounded-xl outline-none"
+  />
+</div>
 
               <div className="md:col-span-2">
                 <button
@@ -341,6 +383,15 @@ const fetchHostProfile = async () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'Settings' && (
+          <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+            <h2 className="text-xl font-bold mb-6">Settings</h2>
+            <p className="text-gray-500 mb-4">Here you can update your account settings, change password, and manage preferences.</p>
+            {/* Add your settings form here */}
+            <button onClick={handleLogout} className="bg-red-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-red-600 transition">Logout</button>
           </div>
         )}
       </main>

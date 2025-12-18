@@ -173,7 +173,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const decodedToken = jwt.verify(incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     )
-    const user = User.findByPk(decodedToken?.id)
+    const user = await User.findByPk(decodedToken?.id)
     if (!user) {
       throw new ApiError(401, "invalid refresh token")
     }
@@ -184,36 +184,41 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true
     }
-    const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user.id)
-    return res.status(200).cookie("accessToken", accessToken, options).cookie("refresh", refreshToken, options)
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id)
+    return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options)
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { accessToken, refreshToken},
           "Access token refreshed successfully."
         )
       )
   } catch (err) {
-    throw new ApiError(401, error?.message || "invalid refresh token")
+    throw new ApiError(401, err?.message || "invalid refresh token")
   }
 })
 
-const changeCurrentPassword=asyncHandler(async(req,res)=>{
-  const {oldPassword, newPassword}= req.body;
-  const user = User.findByPk(req.user?.id);
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findByPk(req.user?.id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
-  if(!isPasswordCorrect(oldPassword)){
-    throw new ApiError(400,"invalid password")
+  const isPasswordValid = await user.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(400, "invalid password")
   }
   user.password = newPassword
-  await user.save({validateBeforeSave:false})
+  await user.save({ validateBeforeSave: false })
   return res.status(200)
-  .json(new ApiResponse(200,{},"Password changed successfully"))
+    .json(new ApiResponse(200, {}, "Password changed successfully"))
 
 })
-const getCurrentUser = asyncHandler(async(req,res)=>{
-  return req.status(200)
-  .json(200,req.user,"current user fetched successfully")
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res.status(200)
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"))
 })
 module.exports = {
   registerUser,

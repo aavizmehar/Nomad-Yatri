@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { AuthContext } from "../context/AuthContext";
 
 const UserLoginClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login } = useContext(AuthContext); // ✅ use AuthContext
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,11 +44,10 @@ const UserLoginClient = () => {
         throw new Error(data.error || data.message || "Login failed");
       }
 
-      const { user, accessToken, refreshToken } = data.data;
+      const { user, accessToken } = data.data;
 
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("role", user.role);
+      // ✅ Use AuthContext login method
+      login(accessToken, user.role);
 
       const redirectTo = data.data.redirectTo;
       router.push(redirectTo);
@@ -58,7 +59,6 @@ const UserLoginClient = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
