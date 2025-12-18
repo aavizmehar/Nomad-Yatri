@@ -10,6 +10,15 @@ body {
   /* Brand Primary Colors */
   --color-primary: #D49159;
   --color-primary-dark: #CD7643;
+--color-orange-dark: #ca3b0c
+/*         COLORS     --wds-color-orange-darker: #431404;
+    --wds;
+    --wds-color-orange: #f25621;
+    --wds-color-orange-light: #ff7d52;
+    --wds-color-orange-lighter: #fbcfc0;
+    --wds-color-orange-lightest: #fef0ec; */
+
+
 
   /* Secondary / Support Colors */
   --color-secondary-1: #6F3925;
@@ -50,9 +59,9 @@ body {
   /* Desktop width */
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2.5rem;
+  padding-left: 4.5rem;
   /* 16px */
-  padding-right: 2.5rem;
+  padding-right: 4.5rem;
   /* 16px */
 }
 

@@ -7,18 +7,19 @@ import FeaturedExperiences from "./featuredExperiences";
 const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
-      <section className=" relative w-full min-h-[80vh] bg-cover bg-center bg-no-repeat flex items-center"
+      <section className=" relative m-3 min-h-[80vh] bg-cover bg-center bg-no-repeat rounded-lg flex items-center"
         style={{ backgroundImage: "url('./heroimg.jpg')" }}
       >
-        <div className="absolute inset-0 bg-black opacity-30" />
-
-        <div className="p-20 mt-25 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
-          <h1 className="font-bold leading-tight">
+        <div className="absolute inset-0 bg-black opacity-30 rounded-lg" />
+         <div className="p-20 mt-15 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
+      
+<p className="heroline "> India’s largest travel & volunteering community </p>
+           <h1 className="font-bold leading-tight">
             Travel with Purpose. Live with Impact.
           </h1>
 
           <p className="mt-6 text-lg md:text-xl">
-            India’s largest travel, volunteering & work-exchange community — explore meaningful
+           Explore meaningful
             stays, support local communities, and learn new skills while traveling.
           </p>
 
@@ -30,80 +31,169 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="mt-20 p-20 container mx-auto">
-        <h2 className="text-3xl font-bold text-center">Why Choose Nomad Yatri</h2>
-        <p className="text-center text-gray-600 mt-4 max-w-2xl mx-auto">
-          We are India’s first platform that blends:
-        </p>
+      <section className="mt-28 py-24 bg-[#fff8f4]">
+  <div className="container mx-auto px-6 max-w-6xl">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 text-gray-700">
-          {[
-            "Verified NGOs",
-            "Authentic hostels & homestays",
-            "Work-exchange & skill-based stays",
-            "Digital nomad communities",
-            "Affordable travel opportunities"
-          ].map((item, index) => (
-            <div key={index} className="p-3 bg-[#D49159] text-white rounded-xl shadow hover:shadow-lg transition">
-              <p className="text-lg text-center">{item}</p>
-            </div>
-          ))}
+    <h2 className="text-3xl md:text-4xl font-semibold text-center text-[#431404]">
+      Why Choose Nomad Yatri
+    </h2>
+
+    <p className="text-center text-gray-600 mt-5 max-w-2xl mx-auto text-lg">
+      India’s first platform built for meaningful travel — where trust,
+      transparency, and real-world impact come first.
+    </p>
+
+    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      {[
+        "Verified NGOs and community partners",
+        "Authentic hostels and homestays",
+        "Skill-based and work-exchange opportunities",
+        "Growing digital nomad communities",
+        "Affordable, purpose-driven travel",
+      ].map((item, index) => (
+        <div
+          key={index}
+          className="group p-8 rounded-2xl border border-[#ff7d52]/30 
+                     bg-white hover:border-[#f25621]
+                     transition-all duration-300"
+        >
+          <span className="block text-sm font-medium tracking-wider text-[#ca3b0c]">
+            0{index + 1}
+          </span>
+
+          <p className="mt-4 text-gray-700 text-lg leading-relaxed">
+            {item}
+          </p>
+
+          <div className="mt-6 h-[2px] w-12 bg-[#CD7643] group-hover:w-20 transition-all duration-300" />
         </div>
-        <h3 className="mt-20 text-center"><i> "Travel cheap. Travel deep. Travel with purpose."</i></h3>
-      </section>
+      ))}
+
+    </div>
+
+    <div className="mt-24 text-center">
+      <blockquote className="inline-block max-w-3xl mx-auto px-10 py-6 border-l-4 
+                             border-[#ca3b0c] bg-white text-[#431404] italic text-lg shadow-sm">
+        “Travel cheap. Travel deep. Travel with purpose.”
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+
       <FeaturedExperiences/>
 
-      <section className="py-16 container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center">How It Works</h2>
+    <section className="py-24 bg-white">
+  <div className="container mx-auto px-6 max-w-6xl">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-12">
+    <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-900">
+      How Nomad Yatri Works
+    </h2>
 
-          {/* Step 1 */}
-          <div className="text-center p-6 bg-gray-50 rounded-xl shadow">
-            <h3 className="text-xl font-semibold">1. Find an Experience</h3>
-            <p className="mt-3 text-gray-600">
-              Search by location, type, skills & duration.
-            </p>
-          </div>
+    <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+      A simple, transparent process designed to protect both travelers and hosts.
+    </p>
 
-          <div className="text-center p-6 bg-gray-50 rounded-xl shadow">
-            <h3 className="text-xl font-semibold">2. Apply & Get Approved</h3>
-            <p className="mt-3 text-gray-600">
-              Create profile → Host reviews → Approval → Chat opens.
-            </p>
-          </div>
+    <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-16">
 
-          <div className="text-center p-6 bg-gray-50 rounded-xl shadow">
-            <h3 className="text-xl font-semibold">3. Travel & Make an Impact</h3>
-            <p className="mt-3 text-gray-600">
-              Complete experience → Earn certificate → Join community.
-            </p>
-          </div>
+      {/* Step 1 */}
+      <div className="relative">
+        <span className="block text-sm uppercase tracking-widest text-gray-400">
+          Step 01
+        </span>
 
+        <h3 className="mt-3 text-xl font-medium text-gray-900">
+          Discover meaningful experiences
+        </h3>
+
+        <p className="mt-4 text-gray-600 leading-relaxed">
+          Browse verified volunteering, work-exchange, and community stays.
+          Filter by location, skills required, duration, and host expectations.
+        </p>
+      </div>
+
+      {/* Step 2 */}
+      <div className="relative">
+        <span className="block text-sm uppercase tracking-widest text-gray-400">
+          Step 02
+        </span>
+
+        <h3 className="mt-3 text-xl font-medium text-gray-900">
+          Apply with clarity
+        </h3>
+
+        <p className="mt-4 text-gray-600 leading-relaxed">
+          Create your profile and apply directly to hosts.
+          Hosts review applications personally before approving.
+          Once approved, direct chat is enabled.
+        </p>
+      </div>
+
+      {/* Step 3 */}
+      <div className="relative">
+        <span className="block text-sm uppercase tracking-widest text-gray-400">
+          Step 03
+        </span>
+
+        <h3 className="mt-3 text-xl font-medium text-gray-900">
+          Travel, contribute, belong
+        </h3>
+
+        <p className="mt-4 text-gray-600 leading-relaxed">
+          Complete your experience, contribute meaningfully,
+          and become part of a growing community of conscious travelers.
+          Earn recognition for your impact.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+      <section className="py-24 bg-[#431404] text-white">
+  <div className="container mx-auto px-6 max-w-6xl text-center">
+
+    <h2 className="text-3xl md:text-4xl font-semibold">
+      Our Impact
+    </h2>
+
+    <p className="mt-4 text-white/80 max-w-2xl mx-auto">
+      Measurable outcomes from real people, real communities,
+      and real experiences across India.
+    </p>
+
+    <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-y-14 gap-x-8">
+
+      {[
+        { title: "Volunteers connected", number: "12,000+" },
+        { title: "Communities supported", number: "350+" },
+        { title: "Verified hosts", number: "800+" },
+        { title: "Impact hours completed", number: "100,000+" },
+      ].map((stat, i) => (
+        <div
+          key={i}
+          className="flex flex-col items-center"
+        >
+          <span className="text-4xl md:text-5xl font-medium text-[#ff7d52]">
+            {stat.number}
+          </span>
+
+          <span className="mt-4 text-sm uppercase tracking-widest text-white/70 text-center">
+            {stat.title}
+          </span>
+
+          <div className="mt-6 h-[1px] w-12 bg-white/30" />
         </div>
-      </section>
+      ))}
 
-      <section className="py-16 bg-primary text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold">Our Impact</h2>
+    </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-10">
+  </div>
+</section>
 
-            {[
-              { title: "Volunteers Connected", number: "12,000+" },
-              { title: "Communities Supported", number: "350+" },
-              { title: "Verified Hosts", number: "800+" },
-              { title: "Total Impact Hours", number: "100,000+" },
-            ].map((stat, i) => (
-              <div key={i}>
-                <h3 className="text-3xl font-bold">{stat.number}</h3>
-                <p className="mt-2">{stat.title}</p>
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </section>
 
       <section className="py-16 container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center">Testimonials</h2>
@@ -121,15 +211,33 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="p-10 bg-gray-900 text-white text-center">
-        <h2 className="text-3xl font-bold py-7 px-10">
-          Join India’s Fastest Growing Travel Community
-        </h2>
-        <p className="px-6 text-center">India’s largest travel, volunteering & work-exchange community — explore meaningful stays, support local communities, and learn new skills while traveling.</p>
+  <section className="mt-24 bg-[#1a2627]">
+  <div className="container mx-auto px-6 py-20 max-w-5xl text-center">
 
-        <PrimaryBtn text="Sign Up Free" action="volunteer/register" />
+    <h2 className="text-3xl md:text-4xl font-semibold text-white">
+      Join India’s growing community of conscious travelers
+    </h2>
 
-      </section>
+    <p className="mt-6 text-white/80 max-w-3xl mx-auto text-lg leading-relaxed">
+      Nomad Yatri connects travelers, hosts, and communities through
+      meaningful experiences — from volunteering to skill-based stays.
+      Travel with intention, not impulse.
+    </p>
+
+    <div className="mt-12 flex justify-center">
+      <PrimaryBtn
+        text="Create your free account"
+        action="user/register"
+        className="bg-[#f25621] hover:bg-[#ca3b0c] text-white px-8 py-4 text-lg rounded-xl transition"
+      />
+    </div>
+
+    <p className="mt-6 text-sm text-white/60">
+      Free to join • No hidden fees • Verified hosts
+    </p>
+
+  </div>
+</section>
 
     </div>
   );
