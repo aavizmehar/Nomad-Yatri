@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import ProgramCard from '@/components/ProgramCard';
 import ProgramFilters from '@/components/ProgramFilters';
 import Pagination from '@/components/Pagination';
@@ -29,7 +29,7 @@ export default function VolunteerProgramsPage() {
   const fetchPrograms = async () => {
     setLoading(true);
     try {
-      const response = await api.getProgramsByCategory(
+      const response = await dashboardApi.getProgramsByCategory(
         PROGRAM_CATEGORIES.VOLUNTEER,
         filters
       );

@@ -6,7 +6,7 @@ import { FaPlus, FaClipboardList, FaUsers, FaStar, FaCog, FaTrash } from 'react-
 import { Program } from '@/types/program';
 import { PROGRAM_CATEGORIES, CATEGORY_SUBCATEGORIES } from '@/constants/programCategories';
 import { AuthContext } from '@/context/AuthContext';
-import { dashboardApi } from '@/lib/dashboardApi';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 
 interface Application {
   applicationId: number;

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import ProgramCard from '@/components/ProgramCard';
 import ProgramFilters from '@/components/ProgramFilters';
 import Pagination from '@/components/Pagination';
@@ -31,7 +31,7 @@ export default function WorkExchangePage() {
     setLoading(true);
     try {
       // Pass the specific category constant and the filter object
-      const response = await api.getProgramsByCategory(
+      const response = await dashboardApi.getProgramsByCategory(
         PROGRAM_CATEGORIES.WORK_EXCHANGE,
         filters
       );
