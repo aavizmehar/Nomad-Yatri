@@ -25,49 +25,86 @@ exports.addHostData = asyncHandler(async (req, res) => {
     if (existingHost) {
       throw new ApiError(400, "Host profile already exists");
     }
-    const { name, propertyName, location,
-      acomodationType, meals, workRequired, capacity, contact
+    const { 
+      name, 
+      propertyName, 
+      location,
+      acomodationType, 
+      meals, 
+      workRequired, 
+      capacity, 
+      contact 
     } = req.body;
 
-    const propertyImagesPath = req.files || [];
-    const propertyImagesLocalPaths = propertyImagesPath.map(file => file.path);
-    if (propertyImagesLocalPaths.length == 0) {
-      throw new ApiError(400, "property images needed")
+    if (!name || !propertyName || !location || !acomodationType || !capacity || !contact) {
+      throw new ApiError(400, "Missing required fields");
     }
+
+    const propertyImagesPath = req.files || [];
+    
+    if (propertyImagesPath.length === 0) {
+      throw new ApiError(400, "Property images are required");
+    }
+
     const propertyImages = [];
 
-    for (const path of propertyImagesLocalPaths) {
-      const uploaded = await uploadOnCloudinary(path);
-      propertyImages.push(uploaded.url);   // or uploaded.secure_url
+    for (const file of propertyImagesPath) {
+      try {
+        const uploaded = await uploadOnCloudinary(file.path);
+        if (uploaded && uploaded.url) {
+          propertyImages.push(uploaded.url);
+        }
+      } catch (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw new ApiError(500, "Failed to upload images");
+      }
     }
 
     const host = await Host.create({
       userId: req.user.id,
-      name, propertyName, location,
-      acomodationType, meals, workRequired, capacity, contact,
+      name, 
+      propertyName, 
+      location,
+      acomodationType, 
+      meals, 
+      workRequired, 
+      capacity: parseInt(capacity), 
+      contact,
       propertyImages
     });
+
     const createdHost = await Host.findByPk(host.hostId, {
       attributes: { exclude: ['propertyImages'] }
-    })
+    });
+
     if (!createdHost) {
-      throw new ApiError(500, "something wrong in saving Host info");
+      throw new ApiError(500, "Failed to save host information");
     }
+
     return res.status(201).json(
-      new ApiResponse(200,
-        {
-          user: createdHost,
-        },
-        "user registered successfully"
-      )
+      new ApiResponse(201, { user: createdHost }, "Host registered successfully")
     );
+    
+  } catch (err) {
+    console.error("Error details:", err);
+    console.log('Body:', req.body);
+    console.log('Files:', req.files);
+    
+    // ✅ Better eror handling
+    if (err.name === 'SequelizeValidationError') {
+      const messages = err.errors.map(e => e.message).join(', ');
+      return res.status(400).json({ error: messages });
+    }
+    
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: "Contact number already exists" });
+    }
+    
+    res.status(err.statusCode || 500).json({ 
+      error: err.message || "Internal server error" 
+    });
   }
-  catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-}
-)
+});
 
 // 2️⃣ EDIT HOST PROFILE
 exports.editProfile = asyncHandler(async (req, res) => {

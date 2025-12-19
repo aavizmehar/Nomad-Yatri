@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Program } from '@/types/program';
@@ -16,7 +16,7 @@ export default function MyProgramsPage() {
 
   const fetchPrograms = async () => {
     try {
-      const response = await api.getHostPrograms();
+      const response = await dashboardApi.getHostPrograms();
       // Ensure we handle the nested structure of your ApiResponse
       if (response.success) {
         setPrograms(response.data.programs || []);
@@ -29,11 +29,11 @@ export default function MyProgramsPage() {
   };
 
   // 3. FIXED: Added type for programId parameter
-  const handleDelete = async (programId: number | string) => {
+  const handleDelete = async (programId: number) => {
     if (!confirm('Are you sure you want to delete this program?')) return;
 
     try {
-      const response = await api.deleteProgram(programId);
+      const response = await dashboardApi.deleteProgram(programId);
       if (response.success) {
         alert('Program deleted successfully');
         // Refresh the list locally instead of a full fetch to be faster

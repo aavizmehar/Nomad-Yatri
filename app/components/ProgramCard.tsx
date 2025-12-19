@@ -21,14 +21,14 @@ export default function ProgramCard({ program }: { program: Program }) {
       setLoading(false);
     }
   };
-  const imageSrc =
-    Array.isArray(program.programImages) && program.programImages.length > 0
-      ? program.programImages[0]
-      : typeof program.programImages === "string" && program.programImages.trim() !== ""
-        ? program.programImages
-        : "/featuredImgs/weekendtrips.png";
+const imageSrc =
+  Array.isArray(program.programImages) && program.programImages.length > 0
+    ? program.programImages[0]
+    : typeof program.programImages === "string" && (program.programImages as string).trim() !== ""
+    ? program.programImages
+    : "/featuredImgs/weekendtrips.png";
   return (
-    <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
+   <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
 
       {/* 🌄 Image */}
       <div className="relative h-48 w-full overflow-hidden">
@@ -42,7 +42,7 @@ export default function ProgramCard({ program }: { program: Program }) {
 
       {/* 📄 Content */}
       <div className="p-5 flex flex-col flex-1">
-
+        
         {/* Category / Location */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-600">
@@ -66,9 +66,10 @@ export default function ProgramCard({ program }: { program: Program }) {
           disabled={loading || applied}
           onClick={handleApply}
           className={`mt-auto py-2.5 rounded-xl font-semibold text-sm transition-all
-            ${applied
-              ? "bg-green-500 text-white cursor-default"
-              : loading
+            ${
+              applied
+                ? "bg-green-500 text-white cursor-default"
+                : loading
                 ? "bg-blue-400 text-white cursor-wait"
                 : "bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02]"
             }

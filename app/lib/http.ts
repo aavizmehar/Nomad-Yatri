@@ -1,23 +1,23 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+export const http = async (url: string, options: any = {}) => {
+  const { body, headers = {}, ...rest } = options;
 
-export async function http(
-  url: string,
-  options: RequestInit = {}
-) {
-  const res = await fetch(`${BASE_URL}${url}`, {
-    credentials: 'include', // IMPORTANT for cookies/JWT
+  const isFormData = body instanceof FormData;
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    ...rest,
+    body,
     headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+      ...headers,
     },
-    ...options,
+    credentials: 'include',
   });
 
-  const data = await res.json();
+  const contentType = res.headers.get('content-type');
 
-  if (!res.ok) {
-    throw new Error(data.message || 'Request failed');
+  if (contentType?.includes('application/json')) {
+    return res.json();
   }
 
-  return data;
-}
+  return res.text();
+};

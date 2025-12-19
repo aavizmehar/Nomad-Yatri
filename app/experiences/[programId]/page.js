@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import Image from 'next/image';
 import Link from 'next/link';
 export default function ProgramDetailPage() {
@@ -14,7 +14,7 @@ fetchProgram();
 }, [params.programId]);
 const fetchProgram = async () => {
 try {
-const response = await api.getProgram(params.programId);
+const response = await dashboardApi.getProgram(params.programId);
 setProgram(response.data.program);
 } catch (error) {
 console.error('Error fetching program:', error);

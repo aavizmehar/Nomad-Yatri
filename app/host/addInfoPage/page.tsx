@@ -88,7 +88,7 @@ export default function HostAddInfoPage() {
       images.forEach((img) => formData.append("propertyImages", img));
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addHostData`,
+        `${process.env.NEXT_PUBLIC_API_URL}/host/addHostData`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

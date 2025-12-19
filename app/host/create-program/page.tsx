@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, ChangeEvent, FormEvent } from 'react'; // Added React types
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import {
   PROGRAM_CATEGORIES,
   CATEGORY_SUBCATEGORIES
@@ -72,7 +72,7 @@ export default function CreateProgramPage() {
         formDataToSend.append('programImages', image);
       });
 
-      const response = await api.createProgram(formDataToSend);
+      const response = await dashboardApi.createProgram(formDataToSend);
       
       if (response.success) {
         alert('Program created successfully!');
