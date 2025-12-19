@@ -57,6 +57,8 @@ const Navbar: React.FC = () => {
                 <li><Link href="/experiences/work-exchange" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Work Exchange</Link></li>
                 <li><Link href="/experiences/digital-nomad-stays" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Digital Nomad Stays</Link></li>
                 <li><Link href="/experiences/cultural-experiences" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Cultural Experiences</Link></li>
+             <li>  <Link href="/programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">See All Programs</Link></li>
+         
               </ul>
             </div>
           </div>
@@ -129,7 +131,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileOpen && (
-        <div className="md:hidden fixed inset-0 top-[70px] bg-white z-40 px-6 py-6 flex flex-col space-y-4 animate-in slide-in-from-right">
+        <div className="h-[100vh] md:hidden fixed inset-0 top-[70px] bg-white z-40 px-6 py-6 flex flex-col space-y-4 animate-in slide-in-from-right">
           <Link href="/" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Home</Link>
 
           <div className="space-y-2">
@@ -142,6 +144,7 @@ const Navbar: React.FC = () => {
                 <Link href="/experiences/work-exchange" onClick={handleMobileLinkClick}>Work Exchange</Link>
                 <Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link>
                 <Link href="/experiences/cultural-experiences" onClick={handleMobileLinkClick}>Cultural Experiences</Link>
+                <Link href="/programs" onClick={handleMobileLinkClick}>See All Programs</Link>
               </div>
             )}
           </div>

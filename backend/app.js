@@ -20,11 +20,13 @@ app.use(cookieParser());
 // routes
 const userRouter = require('./routes/user.routes.js');
 const hostRouter = require('./routes/host.routes.js');
-const programRouter = require('./routes/program.routes.js');  // ✅ NEW
+const programPublicRouter = require('./routes/program.public.routes.js');  // ✅ NEW
+const programHostRouter = require('./routes/program.host.routes.js');  // ✅ NEW
 
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/users/hosts/dashboard', hostRouter);
-app.use('/api/v1/programs', programRouter);  // ✅ NEW - Public program routes
+app.use('/api/v1/host', hostRouter);
+app.use('/api/v1/programs', programPublicRouter);
+app.use('/api/v1/host/programs', programHostRouter);
 
 // Health check route (optional but recommended)
 app.get('/health', (req, res) => {

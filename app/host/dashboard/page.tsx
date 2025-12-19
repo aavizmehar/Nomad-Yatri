@@ -2,10 +2,11 @@
 
 import { useEffect, useState, ChangeEvent, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaPlus, FaClipboardList, FaUsers, FaStar, FaDollarSign, FaCog, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaClipboardList, FaUsers, FaStar, FaCog, FaTrash } from 'react-icons/fa';
 import { Program } from '@/types/program';
 import { PROGRAM_CATEGORIES, CATEGORY_SUBCATEGORIES } from '@/constants/programCategories';
 import { AuthContext } from '@/context/AuthContext';
+import { dashboardApi } from '@/lib/dashboardApi';
 
 interface Application {
   applicationId: number;
@@ -24,19 +25,18 @@ interface Application {
 
 export default function HostDashboard() {
   const router = useRouter();
-  const { logout } = useContext(AuthContext); // ✅ Use AuthContext
+  const { logout } = useContext(AuthContext);
 
- const [formData, setFormData] = useState({
-  title: '',
-  description: '',
-  category: '',
-  subCategory: '',
-  location: '',
-  duration: '',
-  maxVolunteers: 0
-});
-const [programImages, setProgramImages] = useState<File[]>([]);
-
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    subCategory: '',
+    location: '',
+    duration: '',
+    maxVolunteers: 0
+  });
+  const [programImages, setProgramImages] = useState<File[]>([]);
 
   const [activeTab, setActiveTab] = useState('Manage Listings');
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -54,15 +54,10 @@ const [programImages, setProgramImages] = useState<File[]>([]);
   // Fetch host profile
   const fetchHostProfile = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/getMyHostProfile`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const result = await res.json();
-      if (res.ok && result.data) {
-        setHostName(result.data.name);
-      }
+      const res = await dashboardApi.getMyHostProfile();
+      setHostName(res.data.name);
     } catch (err) {
-      console.error("Failed to fetch host name", err);
+      console.error("Failed to fetch host profile", err);
     }
   };
 
@@ -75,7 +70,7 @@ const [programImages, setProgramImages] = useState<File[]>([]);
   }, [token, role]);
 
   const handleLogout = () => {
-    logout(); // ✅ use AuthContext logout
+    logout();
     router.push('/user/login');
     router.refresh();
   };
@@ -85,24 +80,24 @@ const [programImages, setProgramImages] = useState<File[]>([]);
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Fetch host programs
   const fetchPrograms = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/seeAllPrograms`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok) setPrograms(data.data?.programs || []);
-    } catch (err) { console.error(err); }
+      const res = await dashboardApi.getHostPrograms();
+      setPrograms(res.data.programs || []);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  // Fetch applications
   const fetchApplications = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/seeApplications`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok) setApplications(data.data?.applications || []);
-    } catch (err) { console.error(err); }
+      const res = await dashboardApi.getHostApplications();
+      setApplications(res.data.applications || []);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -110,84 +105,60 @@ const [programImages, setProgramImages] = useState<File[]>([]);
     if (activeTab === 'Applications') fetchApplications();
   }, [activeTab]);
 
-const handleCreateProgram = async () => {
-  try {
-    if (programImages.length === 0) {
-      alert("Please upload at least one program image");
-      return;
-    }
-
-    const fd = new FormData();
-
-    fd.append("title", formData.title);
-    fd.append("description", formData.description);
-    fd.append("category", formData.category);
-    fd.append("subCategory", formData.subCategory);
-    fd.append("location", formData.location);
-    fd.append("duration", formData.duration);
-    fd.append("maxVolunteers", String(formData.maxVolunteers));
-
-    // 🔥 FIELD NAME MUST MATCH multer
-    programImages.forEach(img => {
-      fd.append("programImages", img);
-    });
-
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/addNewProgram`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // ❗ NO Content-Type
-        },
-        body: fd,
+  // Create new program
+  const handleCreateProgram = async () => {
+    try {
+      if (programImages.length === 0) {
+        alert("Please upload at least one image");
+        return;
       }
-    );
 
-    const data = await res.json();
+      const fd = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        fd.append(key, String(value));
+      });
+      programImages.forEach(img => fd.append("programImages", img));
 
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to create program");
+      const res = await dashboardApi.createProgram(fd);
+
+      setPrograms(prev => [res.data.program, ...prev]);
+      setActiveTab("Manage Listings");
+
+      setFormData({
+        title: '',
+        description: '',
+        category: '',
+        subCategory: '',
+        location: '',
+        duration: '',
+        maxVolunteers: 0,
+      });
+      setProgramImages([]);
+
+    } catch (err: any) {
+      alert(err.message);
     }
-
-    setPrograms(prev => [data.data.program, ...prev]);
-    setActiveTab("Manage Listings");
-
-    setFormData({
-      title: '',
-      description: '',
-      category: '',
-      subCategory: '',
-      location: '',
-      duration: '',
-      maxVolunteers: 0,
-    });
-    setProgramImages([]);
-
-  } catch (err: any) {
-    alert(err.message);
-  }
-};
-
-
-  const handleDeleteProgram = async (programId: number) => {
-    if (!confirm('Delete this program?')) return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/deleteProgram/${programId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) setPrograms(prev => prev.filter(p => p.programId !== programId));
   };
 
-  const updateApplicationStatus = async (applicationId: number, status: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/hosts/dashboard/updateApplicationStatus/${applicationId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status }),
-    });
-    if (res.ok) fetchApplications();
+  // Delete program
+  const handleDeleteProgram = async (programId: number) => {
+    if (!confirm('Delete this program?')) return;
+    try {
+      await dashboardApi.deleteProgram(programId);
+      setPrograms(prev => prev.filter(p => p.programId !== programId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Update application status
+  const updateApplicationStatus = async (applicationId: number, status: "accepted" | "rejected") => {
+    try {
+      await dashboardApi.updateApplicationStatus(applicationId, status);
+      fetchApplications();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const menuItems = [
@@ -320,22 +291,22 @@ const handleCreateProgram = async () => {
                   placeholder="Describe tasks and benefits..."
                 />
               </div>
-<div className="md:col-span-2">
-  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
-    Program Images
-  </label>
 
-  <input
-    type="file"
-    multiple
-    accept="image/*"
-    onChange={(e) => {
-      if (!e.target.files) return;
-      setProgramImages(Array.from(e.target.files));
-    }}
-    className="w-full p-3 bg-gray-50 border rounded-xl outline-none"
-  />
-</div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+                  Program Images
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (!e.target.files) return;
+                    setProgramImages(Array.from(e.target.files));
+                  }}
+                  className="w-full p-3 bg-gray-50 border rounded-xl outline-none"
+                />
+              </div>
 
               <div className="md:col-span-2">
                 <button
@@ -390,7 +361,6 @@ const handleCreateProgram = async () => {
           <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md border border-gray-100">
             <h2 className="text-xl font-bold mb-6">Settings</h2>
             <p className="text-gray-500 mb-4">Here you can update your account settings, change password, and manage preferences.</p>
-            {/* Add your settings form here */}
             <button onClick={handleLogout} className="bg-red-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-red-600 transition">Logout</button>
           </div>
         )}

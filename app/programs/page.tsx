@@ -11,10 +11,9 @@ export default function AllProgramsPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // 1. ADD subCategory to your state
   const [filters, setFilters] = useState({
     category: '',
-    subCategory: '', // Added this
+    subCategory: '', 
     location: '',
     page: 1
   });
