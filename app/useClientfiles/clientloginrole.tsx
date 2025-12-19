@@ -23,7 +23,9 @@ const UserLoginClient = () => {
     if (roleFromQuery) setRole(roleFromQuery);
   }, [searchParams]);
 
-  const HandleLogin = async () => {
+  const HandleLogin = async (e) => {
+    e.preventDefault(); // ✅ Prevent default form submission
+
     setError("");
     setLoading(true);
 
@@ -86,70 +88,73 @@ const UserLoginClient = () => {
             </div>
           )}
 
-          {/* Email */}
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700">Email</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setError(""); }}
-              className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2"
-              style={{ borderColor: "#396a6b" }}
-            />
-          </div>
-
-          {/* Role */}
-          {!searchParams.get("role") && (
+          <form onSubmit={HandleLogin}>
             <div className="mb-4">
-              <label className="block mb-1 text-gray-700">Role</label>
-              <select
-                value={role}
-                onChange={(e) => { setRole(e.target.value); setError(""); }}
-                className="w-full border p-3 rounded-lg focus:outline-none"
-                style={{ borderColor: "#396a6b" }}
-              >
-                <option value="volunteer">Volunteer</option>
-                <option value="host">Host</option>
-              </select>
-            </div>
-          )}
-
-          {/* Password */}
-          <div className="mb-6">
-            <label className="block mb-1 text-gray-700">Password</label>
-            <div className="relative">
+              <label className="block mb-1 text-gray-700">Email</label>
               <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                className="w-full border p-3 pr-12 rounded-lg focus:outline-none"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2"
                 style={{ borderColor: "#396a6b" }}
+                required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
-                style={{ color: "#6f3925" }}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
             </div>
-          </div>
 
-          {/* Button */}
-          <button
-            onClick={HandleLogin}
-            disabled={loading}
-            className="w-full py-3 rounded-lg font-semibold text-white transition"
-            style={{ backgroundColor: loading ? "#9ca3af" : "#396a6b" }}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            {/* Role */}
+            {!searchParams.get("role") && (
+              <div className="mb-4">
+                <label className="block mb-1 text-gray-700">Role</label>
+                <select
+                  value={role}
+                  onChange={(e) => { setRole(e.target.value); setError(""); }}
+                  className="w-full border p-3 rounded-lg focus:outline-none"
+                  style={{ borderColor: "#396a6b" }}
+                >
+                  <option value="volunteer">Volunteer</option>
+                  <option value="host">Host</option>
+                </select>
+              </div>
+            )}
+
+            {/* Password */}
+            <div className="mb-6">
+              <label className="block mb-1 text-gray-700">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                  className="w-full border p-3 pr-12 rounded-lg focus:outline-none"
+                  style={{ borderColor: "#396a6b" }}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
+                  style={{ color: "#6f3925" }}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            {/* Button */}
+            <button
+              type="submit" 
+              disabled={loading}
+              className="w-full py-3 rounded-lg font-semibold text-white transition"
+              style={{ backgroundColor: loading ? "#9ca3af" : "#396a6b" }}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
 
           <p className="text-center text-gray-600 mt-4">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link href="/user/register" className="font-medium" style={{ color: "#cd7643" }}>
               Sign up here
             </Link>

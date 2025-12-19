@@ -2,36 +2,74 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { volunteerApi } from '@/lib/api/volunteer.api';
 
-export default function VolunteerRegister() {
+export default function VolunteerAddInfoPage() {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role: 'volunteer' }),
-    });
+  const [form, setForm] = useState({
+    name: '',
+    age: '',
+    country: '',
+    skills: '',
+    interests: '',
+    languages: '',
+    photo: '',
+  });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert('Registered successfully!');
-      router.push('/volunteer/login');
-    } else {
-      alert(data.error || 'Error registering');
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const payload = {
+        ...form,
+        age: Number(form.age),
+        skills: form.skills.split(',').map(s => s.trim()),
+        interests: form.interests.split(',').map(i => i.trim()),
+        languages: form.languages.split(',').map(l => l.trim()),
+      };
+
+      const res = await volunteerApi.saveProfile(payload);
+
+      if (res.success) {
+        router.push('/volunteer/dashboard');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl mb-4">Add your Volunteer Information</h1>
-      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} className="border p-2 mb-2" />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="border p-2 mb-2" />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} className="border p-2 mb-2" />
-      <button onClick={handleRegister} className="bg-blue-500 text-white p-2">Register</button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
+      >
+        <h1 className="text-2xl font-bold text-center">Complete Your Profile</h1>
+
+        <input name="name" placeholder="Full Name" required onChange={handleChange} className="input" />
+        <input name="age" type="number" placeholder="Age" onChange={handleChange} className="input" />
+        <input name="country" placeholder="Country" onChange={handleChange} className="input" />
+        <input name="skills" placeholder="Skills (comma separated)" onChange={handleChange} className="input" />
+        <input name="interests" placeholder="Interests (comma separated)" onChange={handleChange} className="input" />
+        <input name="languages" placeholder="Languages (comma separated)" onChange={handleChange} className="input" />
+        <input name="photo" placeholder="Profile Photo URL" onChange={handleChange} className="input" />
+
+        <button
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded-md"
+        >
+          {loading ? 'Saving...' : 'Save & Continue'}
+        </button>
+      </form>
     </div>
   );
 }

@@ -20,11 +20,14 @@ app.use(cookieParser());
 // routes
 const userRouter = require('./routes/user.routes.js');
 const hostRouter = require('./routes/host.routes.js');
+const volunteerRouter = require('./routes/volunteer.routes.js');
 const programPublicRouter = require('./routes/program.public.routes.js');  // ✅ NEW
 const programHostRouter = require('./routes/program.host.routes.js');  // ✅ NEW
 
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/host', hostRouter);
+app.use('/api/v1/volunteer', volunteerRouter);
 app.use('/api/v1/programs', programPublicRouter);
 app.use('/api/v1/host/programs', programHostRouter);
 

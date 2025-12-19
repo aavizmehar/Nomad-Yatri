@@ -1,6 +1,7 @@
-const Host = require('../models/host.model')
+const Host = require('../models/Host.model')
 const User = require('../models/User.model')
 const Program = require('../models/Program.model') // Add this import
+const Volunteer = require('../models/Volunteer.model')
 const Application = require('../models/Application.model') // Add this import
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
@@ -119,28 +120,74 @@ exports.editProfile = asyncHandler(async (req, res) => {
 });
 
 exports.seeApplications = asyncHandler(async (req, res) => {
-  if (req.user.role !== "host")
-    throw new Error("Only hosts can see applications");
+  if (req.user.role !== "host") {
+    throw new ApiError(403, "Only hosts can see applications");
+  }
 
-  const host = await Host.findOne({ where: { userId: req.user.id } });
-  if (!host) throw new Error("Host profile not found");
+  // 1️⃣ Find host profile
+  const host = await Host.findOne({
+    where: { userId: req.user.id },
+  });
 
-  const programs = await Program.findAll({ where: { hostId: host.hostId } });
+  if (!host) {
+    throw new ApiError(404, "Host profile not found");
+  }
+
+  // 2️⃣ Get programs created by this host
+  const programs = await Program.findAll({
+    where: { hostId: host.hostId },
+    attributes: ["programId"],
+  });
+
   const programIds = programs.map(p => p.programId);
 
-  if (!programIds.length)
-    return res.json(new ApiResponse(200, { applications: [] }, "No applications"));
+  if (programIds.length === 0) {
+    return res.status(200).json(
+      new ApiResponse(200, { applications: [] }, "No programs found")
+    );
+  }
 
+  // 3️⃣ Get applications + volunteer details
   const applications = await Application.findAll({
     where: { programId: programIds },
     include: [
-      { model: User, attributes: ["id", "name", "email"] },
-      { model: Program, attributes: ["programId", "title", "category"] }
+      {
+        model: User,
+        attributes: ["id", "email"],
+        include: [
+          {
+            model: Volunteer,
+            attributes: [
+              "id",
+              "name",
+              "age",
+              "country",
+              "skills",
+              "interests",
+              "languages",
+              "photo"
+            ],
+          },
+        ],
+      },
+      {
+        model: Program,
+        attributes: ["programId", "title", "category", "location"],
+      },
     ],
-    order: [["createdAt", "DESC"]]
+    order: [["createdAt", "DESC"]],
   });
 
-  res.json(new ApiResponse(200, { applications }, "Applications fetched successfully"));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        count: applications.length,
+        applications,
+      },
+      "Applications fetched successfully"
+    )
+  );
 });
 // 5.5️⃣ UPDATE APPLICATION STATUS
 exports.updateApplicationStatus = asyncHandler(async (req, res) => {

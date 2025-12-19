@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { dashboardApi } from '@/lib/api/dashboard.api';
 import ProgramCard from '@/components/ProgramCard';
 import ProgramFilters from '@/components/ProgramFilters';
 import Pagination from '@/components/Pagination';
@@ -32,7 +32,7 @@ export default function AllProgramsPage() {
   const fetchPrograms = async () => {
     setLoading(true);
     try {
-      const response = await api.getPrograms(filters);
+      const response = await dashboardApi.getPrograms(filters);
       if (response.success) {
         setPrograms(response.data.programs);
         setPagination(response.data.pagination);

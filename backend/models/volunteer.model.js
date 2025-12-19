@@ -2,14 +2,15 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 const Volunteer = sequelize.define('Volunteer', {
-    volunteerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: "users",
-            key: "id",
-        }
-    },
+   userId: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  unique: true,
+  references: {
+    model: "users",
+    key: "id",
+  }
+},
     name: { type: DataTypes.STRING, allowNull: false },
     age: DataTypes.INTEGER,
     country: DataTypes.STRING,
