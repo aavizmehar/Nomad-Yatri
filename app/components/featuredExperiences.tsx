@@ -5,37 +5,37 @@ const experiences = [
   { 
     title: "Volunteer Programs", 
     link: "/experiences/volunteer-programs",
-    image: "/featuredImgs/volunteerprograms.png",
+    image: "/featuredImgs/volunteerprograms.webp",
     desc: "Make an impact through education, animal care, or community support."
   },
   { 
     title: "Work Exchange Stays", 
     link: "/experiences/work-exchange",
-    image: "/featuredImgs/workexchange.png",
+    image: "/featuredImgs/workexchange.webp",
     desc: "Collaborate with hosts on farms or boutique stays in exchange for lodging."
   },
   { 
     title: "Digital Nomad Stays", 
     link: "/experiences/digital-nomad-stays",
-    image: "/featuredImgs/diginomad.png ",
+    image: "/featuredImgs/diginomad.webp ",
     desc: "Co-living spaces with high-speed internet in beautiful remote locations."
   },
   { 
     title: "Rural Homestays", 
     link: "/experiences/rural-homestays",
-    image: "/featuredImgs/ruralhomestay.png",
+    image: "/featuredImgs/ruralhomestay.webp",
     desc: "Immerse yourself in local culture with authentic village stays."
   },
   { 
     title: "Eco Projects", 
     link: "/eco-projects",
-    image: "/featuredImgs/ecoprojects.png",
+    image: "/featuredImgs/ecoprojects.webp",
     desc: "Contribute to reforestation, permaculture, and green building."
   },
   { 
     title: "Weekend Trips", 
     link: "/weekend-trips",
-    image: "/featuredImgs/weekendtrips.png",
+    image: "/featuredImgs/weekendtrips.webp",
     desc: "Quick getaways for nature lovers and adventure seekers."
   },
 ];

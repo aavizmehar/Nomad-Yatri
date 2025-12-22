@@ -8,7 +8,7 @@ const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
       <section className=" relative m-3 min-h-[80vh] bg-cover bg-center bg-no-repeat rounded-lg flex items-center"
-        style={{ backgroundImage: "url('./heroimg.jpg')" }}
+        style={{ backgroundImage: "url('./heroimg.webp')" }}
       >
         <div className="absolute inset-0 bg-black opacity-30 rounded-lg" />
          <div className="p-20 mt-15 p-3 relative z-10 text-center text-white px-6 max-w-3xl mx-auto">
