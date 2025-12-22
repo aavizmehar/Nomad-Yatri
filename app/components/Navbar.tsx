@@ -31,13 +31,13 @@ const Navbar: React.FC = () => {
     <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
       <div className="container mx-auto flex items-center justify-between px-5 py-2">
         <div className="flex items-center relative">
-          <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatra Logo" />
+          <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatri Logo" />
           <div className="flex flex-col">
             <span className="text-3xl font-black text-[#f25621] tracking-widest uppercase leading-none" style={{ textShadow: "3px 3px 0px rgba(57,106,107,0.3)" }}>
               NOMAD
             </span>
             <span className="text-2xl font-semibold text-[#1F2A33] tracking-[0.5em] uppercase">
-              YATRA
+              YATRI
             </span>
           </div>
         </div>
