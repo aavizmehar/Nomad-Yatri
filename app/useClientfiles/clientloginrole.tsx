@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useContext, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import GoogleLoginButtons from "../components/GoogleLoginButtons"
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
 
@@ -129,7 +130,7 @@ const UserLoginClient = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                    placeholder="••••••••"
+                    placeholder="••••••"
                     required
                     className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
@@ -153,10 +154,7 @@ const UserLoginClient = () => {
               </button>
             </form>
 
-            {/* Google Login */}
-            <a href="http://localhost:5000/auth/google?role=volunteer">Login with Google</a><br></br>
-            <a href="http://localhost:5000/auth/google?role=host">Register as Host</a>
-            {/* Sign Up */}
+            <GoogleLoginButtons />
             <div className="text-center mt-6">
               <Link href="/user/register" className="text-orange-600 hover:text-orange-700">
                 Create an account →

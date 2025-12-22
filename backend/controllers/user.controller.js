@@ -226,5 +226,6 @@ module.exports = {
   logoutUser,
   refreshAccessToken,
   changeCurrentPassword,
-  getCurrentUser
+  getCurrentUser,
+  generateAccessAndRefreshTokens
 };

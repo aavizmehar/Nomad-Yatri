@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState, ChangeEvent, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -59,11 +58,11 @@ export default function HostDashboard() {
   };
 
   useEffect(() => {
-    // if (!token || role !== 'host') {
-    //   router.replace('/user/login');
-    // } else {
-    //   fetchHostProfile();
-    // }
+    if (!token || role !== 'host') {
+      router.replace('/user/login');
+    } else {
+      fetchHostProfile();
+    }
   }, [token, role]);
 
   const handleLogout = () => {
