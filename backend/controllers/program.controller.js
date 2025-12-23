@@ -1,5 +1,5 @@
 const Program = require('../models/Program.model');
-const Host = require('../models/host.model');
+const Host = require('../models/Host.model');
 const { Op } = require('sequelize');
 const ApiResponse = require('../utils/ApiResponse');
 const ApiError = require('../utils/ApiError');

@@ -5,7 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 // Import Configs & Routes
-require('./models/association.model');
+require('./models/Association.model');
 const authRouter = require('./routes/auth.routes');
 const userRouter = require('./routes/user.routes');
 const hostRouter = require('./routes/host.routes');

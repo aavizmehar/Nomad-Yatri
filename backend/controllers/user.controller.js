@@ -1,5 +1,5 @@
 const User = require('../models/User.model')
-const Host = require('../models/host.model')
+const Host = require('../models/Host.model')
 const Volunteer = require('../models/Volunteer.model')
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
