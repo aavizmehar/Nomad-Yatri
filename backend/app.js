@@ -21,22 +21,20 @@ app.use(cookieParser());
 const userRouter = require('./routes/user.routes.js');
 const hostRouter = require('./routes/host.routes.js');
 const volunteerRouter = require('./routes/volunteer.routes.js');
-const programPublicRouter = require('./routes/program.public.routes.js');  // ✅ NEW
-const programHostRouter = require('./routes/program.host.routes.js');  // ✅ NEW
-
+const programPublicRouter = require('./routes/program.public.routes.js');
+const programHostRouter = require('./routes/program.host.routes.js');
+const adminRouter = require('./routes/admin.routes.js');
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/host', hostRouter);
 app.use('/api/v1/volunteer', volunteerRouter);
 app.use('/api/v1/programs', programPublicRouter);
 app.use('/api/v1/host/programs', programHostRouter);
-
-// Health check route (optional but recommended)
+app.use('/api/v1/admin', adminRouter);
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// 404 handler
 app.use((req, res) => {
     res.status(404).json({
         success: false,
@@ -44,7 +42,6 @@ app.use((req, res) => {
     });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.statusCode || 500).json({

@@ -9,7 +9,7 @@ const {
   getMyHostProfile
 } = require('../controllers/host.controller');
 
-const verifyJWT = require('../middleware/auth.middleware');
+const { verifyJWT }= require('../middleware/auth.middleware');
 const upload = require("../middleware/multer.middleware");
 
 
