@@ -8,7 +8,7 @@ const {
   getMyApplications
 } = require("../controllers/volunteer.controller");
 
-const verifyJWT = require("../middleware/auth.middleware");
+const {verifyJWT} = require("../middleware/auth.middleware");
 
 // Volunteer profile
 router.post("/", verifyJWT, addOrUpdateProfile);
