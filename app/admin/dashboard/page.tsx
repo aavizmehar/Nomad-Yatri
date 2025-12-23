@@ -1,123 +1,269 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+
+// --- TYPES & INTERFACES ---
+interface User {
+  id: number;
+  email: string;
+  role: string;
+  Host?: { propertyName: string };
+  Volunteer?: { name: string };
+}
+
+interface Host {
+  hostId: number;
+  name: string;
+  propertyName: string;
+  verified: boolean;
+}
+
+interface Program {
+  id: number;
+  title: string;
+  category: string;
+  location: string;
+  isActive: boolean;
+}
+
+interface Stats {
+  totalUsers: number;
+  totalHosts: number;
+  totalPrograms: number;
+}
 
 export default function AdminDashboard() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [hosts, setHosts] = useState<any[]>([]);
-  const [programs, setPrograms] = useState<any[]>([]);
+  const router = useRouter();
+
+  const [mounted, setMounted] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+
+  const [data, setData] = useState<{ users: User[]; hosts: Host[]; programs: Program[] }>({
+    users: [],
+    hosts: [],
+    programs: [],
+  });
+
+  const [stats, setStats] = useState<Stats>({
+    totalUsers: 0,
+    totalHosts: 0,
+    totalPrograms: 0,
+  });
+
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const token =
-    typeof window !== 'undefined'
-      ? localStorage.getItem('accessToken')
-      : null;
-
+  // ✅ Read localStorage ONLY after mount
   useEffect(() => {
+    setMounted(true);
+    setToken(localStorage.getItem('accessToken'));
+    setRole(localStorage.getItem('role'));
+  }, []);
+
+  const fetchData = useCallback(async () => {
     if (!token) return;
 
-    const fetchData = async () => {
-      try {
-        const [resUsers, resHosts, resPrograms] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/hosts`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/programs`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+    setLoading(true);
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-        setUsers(await resUsers.json());
-        setHosts(await resHosts.json());
-        setPrograms(await resPrograms.json());
-      } catch (err) {
-        console.error('Admin fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const [resStats, resUsers, resPrograms] = await Promise.all([
+        fetch(`${baseUrl}/admin/dashboard-stats`, { headers }),
+        fetch(`${baseUrl}/admin/users`, { headers }),
+        fetch(`${baseUrl}/admin/programs`, { headers }),
+      ]);
 
-    fetchData();
+      const jsonStats = await resStats.json();
+      const jsonUsers = await resUsers.json();
+      const jsonPrograms = await resPrograms.json();
+
+      setStats({
+        totalUsers: jsonStats.data.totalUsers,
+        totalHosts: jsonStats.data.totalHosts,
+        totalPrograms: jsonStats.data.totalPrograms,
+      });
+
+      setData({
+        users: jsonUsers.data,
+        hosts: jsonUsers.data.filter((u: any) => u.role === 'host'),
+        programs: jsonPrograms.data,
+      });
+
+    } catch (err) {
+      setError('Connection failed. Please check backend.');
+    } finally {
+      setLoading(false);
+    }
   }, [token]);
 
-  const approveHost = async (id: number) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/hosts/${id}/approve`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+  useEffect(() => {
+    if (token && role === 'admin') {
+      fetchData();
+    }
+  }, [fetchData, token, role]);
 
-    if (res.ok) {
-      setHosts(hosts.map(h => (h.id === id ? { ...h, verified: true } : h)));
-      alert('Host approved!');
+  // ✅ HARD GUARDS (hydration-safe)
+  if (!mounted) return null;
+
+  if (!token || role !== 'admin') {
+    router.replace('/user/login');
+    return null;
+  }
+
+  if (loading) return <p className="p-10 text-center">Loading Admin Data...</p>;
+  if (error) return <p className="p-10 text-center text-red-500">{error}</p>;
+
+  // MATCHED WITH: router.route("/programs/:programId/toggle").patch(...)
+  const handleToggleProgram = async (programId: number) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/programs/${programId}/toggle`,
+        {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.ok) {
+        setData(prev => ({
+          ...prev,
+          programs: prev.programs.map(p =>
+            p.id === programId ? { ...p, isActive: !p.isActive } : p
+          ),
+        }));
+      }
+    } catch {
+      alert('Toggle failed');
     }
   };
 
-  if (!token) {
-    return <p className="p-4 text-red-500">Unauthorized</p>;
-  }
+  // MATCHED WITH: router.route("/users/:id").delete(...)
+  const handleDeleteUser = async (userId: number) => {
+    if (!confirm('Are you sure? This will delete all associated profiles.')) return;
 
-  if (loading) {
-    return <p className="p-4">Loading admin data...</p>;
-  }
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}`,
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.ok) {
+        setData(prev => ({
+          ...prev,
+          users: prev.users.filter(u => u.id !== userId),
+        }));
+      }
+    } catch {
+      alert('Delete failed');
+    }
+  };
 
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="w-64 bg-slate-900 text-white p-6">
+        <h2 className="text-2xl font-bold mb-8">Admin Hub</h2>
+        <nav className="space-y-4">
+          <p className="opacity-50 text-sm uppercase">Management</p>
+          <button className="block w-full text-left hover:text-blue-400">Users</button>
+          <button className="block w-full text-left hover:text-blue-400">Programs</button>
+        </nav>
+      </aside>
 
-      {/* USERS */}
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Users</h2>
-        {users.length === 0 && <p>No users found</p>}
-        {users.map((u) => (
-          <div key={u.id} className="border rounded p-3 mb-2">
-            <p><strong>Email:</strong> {u.email}</p>
-            <p><strong>Role:</strong> {u.role}</p>
-          </div>
-        ))}
-      </section>
+      <main className="flex-1 p-10">
+        <h1 className="text-3xl font-bold mb-8 text-gray-800">System Dashboard</h1>
 
-      {/* HOSTS */}
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Hosts</h2>
-        {hosts.length === 0 && <p>No hosts found</p>}
-        {hosts.map((h) => (
-          <div key={h.hostId} className="border rounded p-3 mb-2">
-            <p><strong>Name:</strong> {h.name}</p>
-            <p><strong>Property:</strong> {h.propertyName}</p>
-            <p><strong>Verified:</strong> {h.verified ? 'Yes' : 'No'}</p>
+        <div className="grid grid-cols-3 gap-6 mb-10">
+          <StatBox title="Total Users" count={stats.totalUsers} />
+          <StatBox title="Hosts" count={stats.totalHosts} />
+          <StatBox title="Live Programs" count={stats.totalPrograms} />
+        </div>
 
-            {!h.verified && (
-              <button
-                onClick={() => approveHost(h.hostId)}
-                className="mt-2 px-3 py-1 bg-green-600 text-white rounded"
-              >
-                Approve Host
-              </button>
-            )}
-          </div>
-        ))}
-      </section>
+        {/* USERS */}
+        <section className="bg-white rounded-xl shadow-sm overflow-hidden mb-10">
+          <div className="p-4 bg-gray-50 border-b font-bold">User Management</div>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="text-gray-400 text-sm border-b">
+                <th className="p-4">Email</th>
+                <th className="p-4">Role</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.users.map((u, index) => (
+                <tr key={u.id ?? `user-${index}`} className="border-b hover:bg-gray-50">
+                  <td className="p-4">{u.email}</td>
+                  <td className="p-4 uppercase text-xs font-bold">{u.role}</td>
+                  <td className="p-4 text-right">
+                    <button
+                      onClick={() => handleDeleteUser(u.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
-      {/* PROGRAMS */}
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Programs</h2>
-        {programs.length === 0 && <p>No programs found</p>}
-        {programs.map((p) => (
-          <div key={p.id} className="border rounded p-3 mb-2">
-            <p><strong>Title:</strong> {p.title}</p>
-            <p><strong>Category:</strong> {p.category}</p>
-            <p><strong>Location:</strong> {p.location}</p>
-            <p><strong>Host ID:</strong> {p.hostId}</p>
-            <p><strong>Volunteers:</strong> {p.volunteersCount}</p>
-          </div>
-        ))}
-      </section>
+        {/* PROGRAMS */}
+        <section className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="p-4 bg-gray-50 border-b font-bold">Program Control</div>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="text-gray-400 text-sm border-b">
+                <th className="p-4">Program</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.programs.map((p, index) => (
+                <tr key={p.id ?? `program-${index}`} className="border-b">
+
+                  <td className="p-4">{p.title}</td>
+                  <td className="p-4">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${p.isActive
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                        }`}
+                    >
+                      {p.isActive ? 'Active' : 'Disabled'}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button
+                      onClick={() => handleToggleProgram(p.id)}
+                      className="text-blue-600 font-medium hover:underline"
+                    >
+                      {p.isActive ? 'Disable' : 'Enable'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function StatBox({ title, count }: { title: string; count: number }) {
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <p className="text-gray-500 text-sm uppercase font-semibold">{title}</p>
+      <p className="text-3xl font-bold text-slate-800">{count}</p>
     </div>
   );
 }
