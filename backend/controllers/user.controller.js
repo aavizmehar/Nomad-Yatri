@@ -4,6 +4,8 @@ const Volunteer = require('../models/Volunteer.model')
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
 const asyncHandler = require("../utils/asyncHandler")
+const sendAdminEmail = require("../utils/mail.helper");
+
 const jwt = require("jsonwebtoken")
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -48,6 +50,10 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!createdUser) {
       throw new ApiError(500, "something wrong in registering user");
     }
+      await sendAdminEmail(
+    "New User Registered",
+    `A new user with email <b>${email}</b> has joined as a <b>${role}</b>.`
+);
     return res.status(201).json(
       new ApiResponse(
         200,
