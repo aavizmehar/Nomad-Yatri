@@ -1,145 +1,148 @@
 "use client";
 
 import React, { useState } from 'react';
-import PrimaryBtn from '../components/PrimaryBtn';
-
-// --- SELF-CONTAINED SVG ICONS ---
-
-const MailIcon = ({ className = "" }) => (
-    <svg className={`w-6 h-6 ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-);
-const PhoneIcon = ({ className = "" }) => (
-    <svg className={`w-6 h-6 ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.14a11.042 11.042 0 005.516 5.516l1.14-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-12a2 2 0 01-2-2V5z"></path></svg>
-);
-const ClockIcon = ({ className = "" }) => (
-    <svg className={`w-6 h-6 ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-);
-const AlertIcon = ({ className = "" }) => (
-    <svg className={`w-6 h-6 ${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-);
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Instagram, Twitter, Facebook, Loader2, CheckCircle2 } from 'lucide-react';
 
 const ContactPage = () => {
-    // State for form submission handling
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log('Form Submitted:', formData);
-        // In a real app, send data to the API here
-        alert("Thank you! Your message has been sent.");
+    try {
+      const response = await fetch('/api/v1/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus('success');
         setFormData({ name: '', email: '', message: '' });
-    };
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  };
 
+  return (
+    <div className="min-h-screen bg-[#F9F8F6] text-[#1a1a1a] selection:bg-yellow-100">
+      <div className="fixed top-20 -right-20 opacity-[0.03] pointer-events-none select-none">
+        <h1 className="text-[20vw] font-black leading-none">CONTACT</h1>
+      </div>
 
-    return (
-        <div className="pt-20 pb-16 bg-gray-50 min-h-screen font-inter">
-            <div className="container mx-auto px-4 md:px-8 max-w-7xl space-y-16">
+      <main className="container mx-auto px-6 pt-32 pb-20 relative z-10">
+        <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
+          
+          {/* --- LEFT SIDE: INFO --- */}
+          <div className="lg:col-span-5 flex flex-col justify-between py-2">
+            <div>
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-12">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-yellow-600 block mb-6">Available Worldwide</span>
+                <h1 className="text-6xl md:text-8xl font-light tracking-tighter leading-[0.9]">Let's <br /> <span className="italic font-serif">Connect.</span></h1>
+              </motion.div>
 
-                {/* 1. HERO SECTION & CONTACT INFO */}
-                <section className="grid lg:grid-cols-3 gap-10 py-12">
-
-                    {/* Left Column: Title & Overview */}
-                    <div className="lg:col-span-1">
-                        <p className="text-indigo-600 font-bold uppercase tracking-widest mb-2">Get In Touch</p>
-                        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-                            We're Here to Help
-                        </h1>
-                        <p className="text-gray-600 text-lg">
-                            Whether you have a question about a trip, need support with a booking, or want to discuss a partnership, reach out to our team.
-                        </p>
-                    </div>
-
-                    {/* Right Columns: Contact Details & Support */}
-                    <div className="lg:col-span-2 grid sm:grid-cols-2 gap-8">
-
-                        {/* Support Details */}
-                        <div className="p-6 bg-white rounded-xl shadow-lg border-t-4 border-indigo-400">
-                            <MailIcon className="text-indigo-600 mb-3" />
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">General Support</h3>
-                            <p className="text-lg font-semibold text-gray-800">support@nomadyatri.com</p>
-
-                            <div className="flex items-center gap-2 mt-4 text-gray-600">
-                                <ClockIcon />
-                                <span className="font-medium">Support Timings: Monday - Friday, 9:00 AM - 6:00 PM IST</span>
-                            </div>
-                        </div>
-
-                        {/* Emergency Support */}
-                        <div className="p-6 bg-white rounded-xl shadow-lg border-t-4 border-red-500">
-                            <AlertIcon className="text-red-500 mb-3" />
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Emergency Support</h3>
-                            <p className="text-lg font-semibold text-red-500">+91 8894108119</p>
-                            <p className="text-sm text-gray-600 mt-2">
-                                For urgent, on-trip issues only. Standard inquiries will be redirected to email.
-                            </p>
-                        </div>
-                    </div>
+              <div className="space-y-10">
+                <section>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Inquiries</p>
+                  <p className="text-xl font-light hover:text-yellow-600 transition-colors cursor-pointer">hello@nomadyatri.com</p>
                 </section>
-
-                {/* 2. CONTACT FORM */}
-                <section className="max-w-4xl mx-auto p-8 md:p-12 bg-white rounded-3xl shadow-2xl border border-gray-100">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-
-                        {/* Name Field */}
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                                placeholder="Your full name"
-                            />
-                        </div>
-
-                        {/* Email Field */}
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                                placeholder="name@example.com"
-                            />
-                        </div>
-
-                        {/* Message Field */}
-                        <div>
-                            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                required
-                                rows={5}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-none"
-                                placeholder="How can we help you?"
-                            ></textarea>
-                        </div>
-
-                        <PrimaryBtn text="Send Message" action="" />
-
-                    </form>
+                <section>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Office</p>
+                  <p className="text-xl font-light leading-relaxed">Manali, Himachal Pradesh <br /> India, 175131</p>
                 </section>
-
+              </div>
             </div>
+
+            <div className="mt-20 flex gap-8 items-center">
+              <Instagram size={20} className="hover:text-yellow-600 cursor-pointer transition-colors" />
+              <Twitter size={20} className="hover:text-yellow-600 cursor-pointer transition-colors" />
+              <Facebook size={20} className="hover:text-yellow-600 cursor-pointer transition-colors" />
+              <div className="h-[1px] w-20 bg-gray-200" />
+            </div>
+          </div>
+
+          {/* --- RIGHT SIDE: FORM --- */}
+          <div className="lg:col-span-7">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ delay: 0.2 }}
+              className="bg-white p-10 md:p-16 rounded-[2rem] shadow-[0_100px_80px_rgba(0,0,0,0.02)] relative overflow-hidden"
+            >
+              <AnimatePresence mode="wait">
+                {status === 'success' ? (
+                  <motion.div 
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex flex-col items-center justify-center py-20 text-center"
+                  >
+                    <CheckCircle2 size={60} className="text-yellow-400 mb-6" />
+                    <h2 className="text-3xl font-medium mb-2">Message Sent</h2>
+                    <p className="text-gray-400 font-light">The nomads have received your message. <br/> We'll be in touch soon.</p>
+                    <button onClick={() => setStatus('idle')} className="mt-8 text-[10px] font-black uppercase tracking-widest underline underline-offset-8">Send another</button>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-12">
+                    <div className="relative group">
+                      <input 
+                        type="text" name="name" required placeholder=" " value={formData.name} onChange={handleChange}
+                        className="peer w-full bg-transparent border-b border-gray-200 py-4 outline-none focus:border-yellow-400 transition-all text-xl font-light"
+                      />
+                      <label className="absolute left-0 top-4 text-xl font-light text-gray-400 pointer-events-none transition-all peer-focus:-top-6 peer-focus:text-[10px] peer-focus:uppercase peer-focus:tracking-widest peer-focus:font-black peer-focus:text-yellow-600 peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-[10px]">What's your name?</label>
+                    </div>
+
+                    <div className="relative group">
+                      <input 
+                        type="email" name="email" required placeholder=" " value={formData.email} onChange={handleChange}
+                        className="peer w-full bg-transparent border-b border-gray-200 py-4 outline-none focus:border-yellow-400 transition-all text-xl font-light"
+                      />
+                      <label className="absolute left-0 top-4 text-xl font-light text-gray-400 pointer-events-none transition-all peer-focus:-top-6 peer-focus:text-[10px] peer-focus:uppercase peer-focus:tracking-widest peer-focus:font-black peer-focus:text-yellow-600 peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-[10px]">Your email address</label>
+                    </div>
+
+                    <div className="relative group">
+                      <textarea 
+                        name="message" required placeholder=" " rows={4} value={formData.message} onChange={handleChange}
+                        className="peer w-full bg-transparent border-b border-gray-200 py-4 outline-none focus:border-yellow-400 transition-all text-xl font-light resize-none"
+                      />
+                      <label className="absolute left-0 top-4 text-xl font-light text-gray-400 pointer-events-none transition-all peer-focus:-top-6 peer-focus:text-[10px] peer-focus:uppercase peer-focus:tracking-widest peer-focus:font-black peer-focus:text-yellow-600 peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-[10px]">How can we help?</label>
+                    </div>
+
+                    <button 
+                      disabled={status === 'loading'}
+                      className="group relative flex items-center gap-6 pt-6 disabled:opacity-50"
+                    >
+                      <div className="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        {status === 'loading' ? <Loader2 className="animate-spin" /> : <ArrowRight className="group-hover:translate-x-1 transition-transform" />}
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-[0.3em]">
+                        {status === 'loading' ? 'Dispatching...' : 'Send the Message'}
+                      </span>
+                    </button>
+                    {status === 'error' && <p className="text-red-500 text-xs mt-4">Something went wrong. Please try again later.</p>}
+                  </form>
+                )}
+              </AnimatePresence>
+            </motion.div>
+            
+            <p className="mt-10 text-[10px] text-gray-400 uppercase tracking-widest text-center lg:text-left">
+              * We usually respond within 12 hours. Stay wild.
+            </p>
+          </div>
         </div>
-    );
+      </main>
+    </div>
+  );
 };
 
 export default ContactPage;
