@@ -1,27 +1,19 @@
 "use client";
 
-import { useState, useEffect, useContext, FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useContext, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
 
 const UserLoginClient = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("volunteer");
-
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const roleFromQuery = searchParams.get("role");
-    if (roleFromQuery) setRole(roleFromQuery);
-  }, [searchParams]);
 
   const HandleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -153,34 +145,6 @@ const UserLoginClient = () => {
                   </span>
                 </div>
               </div>
-
-              {/* Role Selector */}
-              {!searchParams.get("role") && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    I am a
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={role}
-                      onChange={(e) => {
-                        setRole(e.target.value);
-                        setError("");
-                      }}
-                      className="w-full border border-gray-300 p-3.5 pl-11 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all appearance-none bg-white cursor-pointer"
-                    >
-                      <option value="volunteer">Volunteer</option>
-                      <option value="host">Host</option>
-                    </select>
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                      👤
-                    </span>
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                      ▼
-                    </span>
-                  </div>
-                </div>
-              )}
 
               {/* Password Input */}
               <div>
