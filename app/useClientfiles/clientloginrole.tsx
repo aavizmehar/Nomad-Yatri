@@ -1,28 +1,19 @@
 "use client";
 
-import { useState, useEffect, useContext, FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import GoogleLoginButtons from "../components/GoogleLoginButtons"
+import { useState, useContext, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
 
 const UserLoginClient = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("volunteer");
-
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const roleFromQuery = searchParams.get("role");
-    if (roleFromQuery) setRole(roleFromQuery);
-  }, [searchParams]);
 
   const HandleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,109 +26,100 @@ const UserLoginClient = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, role }),
+          body: JSON.stringify({ email, password }),
           credentials: "include",
         }
       );
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || data.message || "Login failed");
-      }
+      if (!res.ok) throw new Error(data.error || data.message || "Login failed");
 
       const { user, accessToken } = data.data;
       login(accessToken, user.role);
 
-      const redirectTo = data.data.redirectTo || "/dashboard";
-      router.push(redirectTo);
-    } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("An unexpected error occurred");
+      router.push(data.data.redirectTo || "/dashboard");
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Google OAuth (kept from local, fixed for prod)
   const handleGoogleLogin = () => {
-    // Redirect directly to backend Google OAuth route
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* LEFT PANEL */}
-      <div className="hidden lg:flex flex-col justify-center px-16 py-12 text-white relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a2627 0%, #2d4a4b 100%)" }}>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white opacity-5 rounded-full -ml-40 -mb-40"></div>
-        <div className="relative z-10">
-          <h1 className="text-5xl font-bold mb-6 leading-tight">Welcome Back 👋</h1>
-          <p className="text-lg text-gray-300 leading-relaxed max-w-md">
-            Manage your volunteering journey or host experiences seamlessly. Secure, fast and built for meaningful connections.
+    <div className="min-h-screen bg-white text-[#314e4d]">
+      <main className="max-w-7xl mx-auto px-6 lg:px-16 py-12 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        {/* LEFT SECTION */}
+        <div className="space-y-6">
+          <h1 className="text-5xl lg:text-6xl font-bold leading-[1.1]">
+            Welcome to <br />
+            <span className="text-[#58a67d]">Nomad Yatri</span>
+          </h1>
+
+          <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
+            We envision a world where hearts unite and hands reach out to uplift
+            communities in need. Our vision is to create a global family of
+            compassionate individuals.
           </p>
+
+          <div className="relative inline-block mt-8">
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#ffcc00] rounded-full opacity-20 blur-3xl"></div>
+            <img
+              src="/featuredimgs/ecoprojects.webp"
+              alt="Volunteer Illustration"
+              className="relative z-10 w-full max-w-sm h-auto"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* RIGHT PANEL – LOGIN FORM */}
-      <div className="flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          <div className="bg-white/80 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-gray-200/50">
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-bold mb-2" style={{ color: "#314e4d" }}>Sign In</h2>
-              <p className="text-gray-500 text-sm">Enter your credentials to access your account</p>
-            </div>
+        {/* RIGHT SECTION */}
+        <div className="flex justify-center lg:justify-end">
+          <div className="w-full max-w-[440px] bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8 lg:p-12">
 
-            {/* Error */}
+            <h2 className="text-3xl font-bold text-center mb-10">Login</h2>
+
             {error && (
-              <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-4 animate-shake">
-                <p className="text-red-700 text-sm">{error}</p>
+              <div className="mb-6 p-4 text-sm text-red-700 bg-red-50 rounded-xl border border-red-100">
+                ⚠️ {error}
               </div>
             )}
 
-            {/* Email/Password Form */}
-            <form onSubmit={HandleLogin} className="space-y-5">
+            <form onSubmit={HandleLogin} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <label className="text-sm font-bold uppercase text-gray-700">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
-                  className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-3.5 rounded-lg border border-gray-200 focus:border-[#58a67d] focus:ring-4 focus:ring-[#58a67d]/10 outline-none"
                 />
               </div>
 
-              {!searchParams.get("role") && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">I am a</label>
-                  <select
-                    value={role}
-                    onChange={(e) => { setRole(e.target.value); setError(""); }}
-                    className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
-                  >
-                    <option value="volunteer">Volunteer</option>
-                    <option value="host">Host</option>
-                  </select>
-                </div>
-              )}
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <label className="text-sm font-bold uppercase text-gray-700">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                    placeholder="••••••"
+                    onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-4 py-3.5 rounded-lg border border-gray-200 focus:border-[#58a67d] focus:ring-4 focus:ring-[#58a67d]/10 outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-600 hover:text-teal-700"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
@@ -147,31 +129,50 @@ const UserLoginClient = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl font-semibold text-white transition-all"
-                style={{ background: loading ? "#9ca3af" : "linear-gradient(135deg, #396a6b 0%, #2d5455 100%)" }}
+                className="w-full bg-[#58a67d] hover:bg-[#498b68] text-white font-bold py-4 rounded-lg transition-all"
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? "Signing in..." : "Login →"}
               </button>
             </form>
 
-            <GoogleLoginButtons />
-            <div className="text-center mt-6">
-              <Link href="/user/register" className="text-orange-600 hover:text-orange-700">
-                Create an account →
-              </Link>
+            {/* Divider */}
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-100"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase text-gray-400">
+                <span className="bg-white px-4">OR</span>
+              </div>
             </div>
+
+            {/* ✅ Google Login */}
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full border-2 border-gray-100 py-3.5 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 font-medium text-gray-600"
+            >
+              <img
+                src="https://www.svgrepo.com/show/355037/google.svg"
+                className="w-5 h-5"
+                alt="Google"
+              />
+              Continue with Google
+            </button>
+
+            <div className="mt-10 text-center">
+              <p className="text-sm text-gray-500">
+                Don't have an account?{" "}
+                <Link
+                  href="/user/register"
+                  className="text-[#ffcc00] font-bold border-b-2 border-[#ffcc00]"
+                >
+                  Sign Up
+                </Link>
+              </p>
+            </div>
+
           </div>
         </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        .animate-shake { animation: shake 0.3s ease-in-out; }
-      `}</style>
+      </main>
     </div>
   );
 };
