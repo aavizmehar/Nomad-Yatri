@@ -69,7 +69,7 @@ const UserLoginClient = () => {
           <div className="relative inline-block mt-8">
             <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#ffcc00] rounded-full opacity-20 blur-3xl"></div>
             <img
-              src="/featuredimgs/ecoprojects.webp"
+              src="/featuredImgs/ecoprojects.webp"
               alt="Volunteer Illustration"
               className="relative z-10 w-full max-w-sm h-auto"
             />
