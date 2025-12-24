@@ -16,12 +16,10 @@ const FeaturedInSection = () => {
     <section className="py-16 bg-[#FCFCFC]">
       <div className="container mx-auto px-6 max-w-6xl">
         
-        {/* Title matches the video style: Centered, Bold, Dark Teal */}
         <h2 className="text-xl md:text-2xl font-bold text-[#314e4d] text-center mb-10">
           Featured In:
         </h2>
 
-        {/* DESKTOP: Static Grid with Bordered Cards */}
         <div className="hidden md:grid grid-cols-3 lg:grid-cols-5 gap-6">
           {PARTNERS.map((partner, i) => (
             <div 
@@ -40,8 +38,7 @@ const FeaturedInSection = () => {
           ))}
         </div>
 
-        {/* MOBILE: Sliding Bordered Cards */}
-        <div className="md:hidden relative">
+        <div className="md:hidden relative overflow-hidden">
           <motion.div 
             className="flex gap-4 items-center"
             animate={{ x: ["0%", "-50%"] }}
@@ -69,7 +66,6 @@ const FeaturedInSection = () => {
             ))}
           </motion.div>
           
-          {/* Edge Fades for the "Sliding" look */}
           <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#FCFCFC] to-transparent z-10" />
           <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#FCFCFC] to-transparent z-10" />
         </div>
