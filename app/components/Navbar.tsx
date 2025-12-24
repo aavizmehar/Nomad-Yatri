@@ -3,7 +3,7 @@
 import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { IoIosArrowDown } from "react-icons/io";
-import { HiMenu, HiX } from "react-icons/hi";
+import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { AuthContext } from "../context/AuthContext";
@@ -13,13 +13,16 @@ const Navbar: React.FC = () => {
   const { isLoggedIn, role, logout } = useContext(AuthContext);
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [expOpen, setExpOpen] = useState(false);
-  const [communityOpen, setCommunityOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // Desktop profile dropdown
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Mobile Accordion States
+  const [mobileExpOpen, setMobileExpOpen] = useState(false);
+  const [mobileComOpen, setMobileComOpen] = useState(false);
 
   const handleMobileLinkClick = () => {
     setIsMobileOpen(false);
-    setExpOpen(false);
+    setMobileExpOpen(false);
+    setMobileComOpen(false);
   };
 
   const UserProfileIcon = () => (
@@ -29,90 +32,89 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <nav className="w-full bg-white backdrop-blur-md shadow-md fixed top-0 left-0 z-50 transition-all duration-300">
-      <div className="container mx-auto flex items-center justify-between px-5 py-2">
-        <div className="flex items-center relative">
-          <Image src="/nomadlogo.svg" height={80} width={80} alt="Nomad Yatri Logo" />
-          <div className="flex flex-col">
-            <span className="text-3xl font-black text-[#f25621] tracking-widest uppercase leading-none" style={{ textShadow: "3px 3px 0px rgba(57,106,107,0.3)" }}>
-              NOMAD
-            </span>
-            <span className="text-2xl font-semibold text-[#1F2A33] tracking-[0.5em] uppercase">
-              YATRI
-            </span>
+    <nav className="w-full bg-white/90 backdrop-blur-2xl border-b border-gray-100 fixed top-0 left-0 z-[100] transition-all">
+      <div className="container mx-auto flex items-center justify-between px-6 py-5">
+        
+        {/* 1. Logo Section */}
+        <Link href="/" className="flex items-center gap-4 group">
+          <Image 
+            src="/nomadlogo.svg" 
+            height={55} 
+            width={55} 
+            alt="Nomad Yatri Logo" 
+            className="group-hover:rotate-[15deg] transition-transform duration-500" 
+          />
+          <div className="flex flex-col text-black">
+            <span className="text-2xl font-black tracking-widest uppercase leading-none">NOMAD</span>
+            <span className="text-[12px] font-bold text-gray-400 tracking-[0.5em] uppercase mt-1">YATRI</span>
           </div>
-        </div>
+        </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-8 text-[#1a2627] font-bold">
-          <Link href="/" className="hover:text-[#d49159] transition-colors">Home</Link>
+        {/* 2. Desktop Menu */}
+        <div className="hidden md:flex items-center space-x-12">
+          <ul className="flex items-center space-x-10 text-[15px] font-bold uppercase tracking-wider text-gray-600">
+            <li><Link href="/" className="hover:text-black transition-colors">Home</Link></li>
+            
+            {/* Experiences Dropdown */}
+            <li className="relative group">
+              <button className="flex items-center gap-2 hover:text-black transition-colors">
+                Experiences <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs" />
+              </button>
+              <div className="absolute top-full left-0 mt-4 w-72 bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
+                <ul className="text-sm font-bold tracking-wide">
+                  <li><Link href="/experiences/volunteer-programs" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Volunteer Programs</Link></li>
+                  <li><Link href="/experiences/work-exchange" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Work Exchange</Link></li>
+                  <li><Link href="/experiences/digital-nomad-stays" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Digital Nomad Stays</Link></li>
+                  <div className="h-px bg-gray-100 my-2 mx-4" />
+                  <li><Link href="/programs" className="block px-5 py-4 bg-yellow-400 text-black font-black text-center rounded-2xl">View All Programs</Link></li>
+                </ul>
+              </div>
+            </li>
 
-          {/* Experiences Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-[#d49159]">
-              Experiences <IoIosArrowDown className="group-hover:rotate-180 transition-transform" />
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all border border-gray-100">
-              <ul className="py-2 text-sm font-semibold">
-                <li><Link href="/experiences/volunteer-programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Volunteer Programs</Link></li>
-                <li><Link href="/experiences/work-exchange" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Work Exchange</Link></li>
-                <li><Link href="/experiences/digital-nomad-stays" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Digital Nomad Stays</Link></li>
-                <li><Link href="/experiences/cultural-experiences" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Cultural Experiences</Link></li>
-                <li>  <Link href="/programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">See All Programs</Link></li>
-              </ul>
-            </div>
-          </div>
+            {/* Community Dropdown */}
+            <li className="relative group">
+              <button className="flex items-center gap-2 hover:text-black transition-colors">
+                Community <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs" />
+              </button>
+              <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-2xl rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
+                <ul className="text-sm font-bold tracking-wide">
+                  <li><Link href="/about" className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">About Us</Link></li>
+                  <li><Link href="/blog" className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Journal</Link></li>
+                  <li><Link href="/contact" className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Contact</Link></li>
+                </ul>
+              </div>
+            </li>
 
-          {/* Community Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-[#d49159] transition-colors duration-200">
-              Community <IoIosArrowDown className="transition-transform duration-200 group-hover:rotate-180" />
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <ul className="flex flex-col py-3 px-4 space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-[#d49159]">About Us</Link></li>
-                <li><Link href="/blog" className="hover:text-[#d49159]">Blog</Link></li>
-                <li><Link href="/contact" className="hover:text-[#d49159]">Contact</Link></li>
-              </ul>
-            </div>
-          </div>
+            <li><Link href="/pricing" className="hover:text-black transition-colors">Pricing</Link></li>
+          </ul>
 
-          <Link href="/pricing" className="hover:text-[#d49159] transition-colors duration-200">Pricing</Link>
-
-          {/* Auth Button/Dropdown */}
-          <div className="relative">
+          {/* Large Auth Button */}
+          <div className="relative border-l border-gray-200 pl-10">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-full shadow-md transition-all flex items-center justify-center ${isLoggedIn ? "bg-[#396a6b] text-white" : "bg-indigo-600 text-white hover:bg-indigo-700"
-                }`}
+              className={`flex items-center gap-3 px-8 py-3.5 rounded-full transition-all duration-500 shadow-xl ${
+                isLoggedIn ? "bg-black text-white" : "bg-yellow-400 text-black hover:bg-black hover:text-white"
+              }`}
             >
               <UserProfileIcon />
-              <IoIosArrowDown className={`ml-1 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              <span className="text-sm font-black uppercase tracking-widest">{isLoggedIn ? "Account" : "Join Now"}</span>
             </button>
 
             {isOpen && (
               <>
-                <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)}></div>
-                <div className="absolute right-0 mt-3 w-52 bg-white border border-gray-100 shadow-2xl rounded-xl z-50 p-2 overflow-hidden">
-                  <ul className="text-sm font-semibold">
+                <div className="fixed inset-0" onClick={() => setIsOpen(false)}></div>
+                <div className="absolute right-0 mt-5 w-64 bg-white border border-gray-50 shadow-2xl rounded-[2rem] p-4 z-50">
+                  <ul className="text-sm font-bold tracking-wide">
                     {isLoggedIn ? (
                       <>
-                        <li className="px-4 py-2 text-[10px] text-gray-400 uppercase tracking-widest border-b mb-1">Account</li>
-                        <li>
-                          <Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">
-                            Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <button onClick={() => { logout(); setIsOpen(false); setIsMobileOpen(false); router.push("/user/login"); }} className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                            Logout
-                          </button>
-                        </li>
+                        <li><Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">User Dashboard</Link></li>
+                        <div className="h-px bg-gray-100 my-2 mx-4" />
+                        <li><button onClick={() => { logout(); setIsOpen(false); router.push("/user/login"); }} className="w-full text-left px-5 py-4 text-red-500 hover:bg-red-50 rounded-2xl transition">Sign Out</button></li>
                       </>
                     ) : (
                       <>
-                        <li><Link href="/user/login" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">User Login</Link></li>
-                        <li><Link href="/user/register" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-50 rounded-lg transition">Register</Link></li>
+                        <li><Link href="/user/login" onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Sign In</Link></li>
+                        <li><Link href="/user/register" onClick={() => setIsOpen(false)} className="block px-5 py-4 bg-black text-white text-center rounded-2xl mt-2 transition">Create Account</Link></li>
                       </>
                     )}
                   </ul>
@@ -122,69 +124,61 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Hamburger */}
-        <button className="md:hidden text-3xl text-gray-700" onClick={() => setIsMobileOpen(!isMobileOpen)}>
-          {isMobileOpen ? <HiX /> : <HiMenu />}
+        {/* 3. Mobile Hamburger */}
+        <button className="md:hidden text-4xl text-black" onClick={() => setIsMobileOpen(!isMobileOpen)}>
+          {isMobileOpen ? <HiX /> : <HiMenuAlt3 />}
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* 4. Mobile Menu Overlay (Fixed with all links) */}
       {isMobileOpen && (
-        <div className="h-[100vh] md:hidden fixed inset-0 top-[70px] bg-white z-40 px-6 py-6 flex flex-col space-y-4 animate-in slide-in-from-right">
-          <Link href="/" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Home</Link>
+        <div className="fixed h-screen inset-0 top-[85px] bg-white z-[90] px-10 py-8 flex flex-col space-y-6 overflow-y-auto animate-in slide-in-from-bottom duration-500">
+          <ul className="space-y-6">
+            <li><Link href="/" onClick={handleMobileLinkClick} className="text-3xl font-bold tracking-tighter text-gray-900">Home</Link></li>
+            
+            {/* Experiences Accordion */}
+            <li className="border-b border-gray-100 pb-4">
+              <button onClick={() => setMobileExpOpen(!mobileExpOpen)} className="flex items-center justify-between w-full text-3xl font-bold tracking-tighter text-gray-900">
+                Experiences <IoIosArrowDown className={`transition-transform duration-300 ${mobileExpOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileExpOpen && (
+                <ul className="mt-4 space-y-4 pl-4 text-lg font-medium text-gray-500">
+                  <li><Link href="/experiences/volunteer-programs" onClick={handleMobileLinkClick}>Volunteer Programs</Link></li>
+                  <li><Link href="/experiences/work-exchange" onClick={handleMobileLinkClick}>Work Exchange</Link></li>
+                  <li><Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link></li>
+                  <li><Link href="/programs" onClick={handleMobileLinkClick} className="text-yellow-600 font-bold">View All Programs</Link></li>
+                </ul>
+              )}
+            </li>
 
-          {/* Experiences */}
-          <div className="space-y-2 border-b pb-2">
-            <button
-              onClick={() => setExpOpen(!expOpen)}
-              className="flex justify-between w-full text-lg font-bold"
-            >
-              Experiences
-              <IoIosArrowDown className={`transition-transform ${expOpen ? "rotate-180" : ""}`} />
-            </button>
+            {/* Community Accordion */}
+            <li className="border-b border-gray-100 pb-4">
+              <button onClick={() => setMobileComOpen(!mobileComOpen)} className="flex items-center justify-between w-full text-3xl font-bold tracking-tighter text-gray-900">
+                Community <IoIosArrowDown className={`transition-transform duration-300 ${mobileComOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileComOpen && (
+                <ul className="mt-4 space-y-4 pl-4 text-lg font-medium text-gray-500">
+                  <li><Link href="/about" onClick={handleMobileLinkClick}>About Us</Link></li>
+                  <li><Link href="/blog" onClick={handleMobileLinkClick}>Journal</Link></li>
+                  <li><Link href="/contact" onClick={handleMobileLinkClick}>Contact</Link></li>
+                </ul>
+              )}
+            </li>
 
-            {expOpen && (
-              <div className="pl-4 flex flex-col space-y-2 text-gray-600 font-semibold">
-                <Link href="/experiences/volunteer-programs" onClick={handleMobileLinkClick}>Volunteer Programs</Link>
-                <Link href="/experiences/work-exchange" onClick={handleMobileLinkClick}>Work Exchange</Link>
-                <Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link>
-                <Link href="/experiences/cultural-experiences" onClick={handleMobileLinkClick}>Cultural Experiences</Link>
-                <Link href="/programs" onClick={handleMobileLinkClick}>See All Programs</Link>
-              </div>
-            )}
-          </div>
+            <li><Link href="/pricing" onClick={handleMobileLinkClick} className="text-3xl font-bold tracking-tighter text-gray-900">Pricing</Link></li>
+          </ul>
 
-          {/* Community */}
-          <div className="space-y-2 border-b pb-2">
-            <button
-              onClick={() => setCommunityOpen(!communityOpen)}
-              className="flex justify-between w-full text-lg font-bold"
-            >
-              Community
-              <IoIosArrowDown className={`transition-transform ${communityOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            {communityOpen && (
-              <div className="pl-4 flex flex-col space-y-2 text-gray-600 font-semibold">
-                <Link href="/about" onClick={handleMobileLinkClick}>About Us</Link>
-                <Link href="/blog" onClick={handleMobileLinkClick}>Blog</Link>
-                <Link href="/contact" onClick={handleMobileLinkClick}>Contact</Link>
-              </div>
-            )}
-          </div>
-
-          <Link href="/pricing" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Pricing</Link>
-
-          <div className="pt-4 space-y-4">
+          {/* Auth Actions */}
+          <div className="pt-8 border-t border-gray-100 flex flex-col gap-4">
             {isLoggedIn ? (
               <>
-                <Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-[#396a6b] text-white rounded-xl font-bold">My Dashboard</Link>
-                <button onClick={() => { logout(); setIsMobileOpen(false); router.push("/user/login"); }} className="w-full py-3 text-center border-2 border-red-500 text-red-500 rounded-xl font-bold">Logout</button>
+                <Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={handleMobileLinkClick} className="py-6 text-center bg-black text-white rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-xl">My Dashboard</Link>
+                <button onClick={() => { logout(); setIsMobileOpen(false); router.push("/user/login"); }} className="py-6 text-center border-2 border-red-500 text-red-500 rounded-[2rem] text-sm font-black uppercase tracking-widest">Sign Out</button>
               </>
             ) : (
               <>
-                <Link href="/user/login" onClick={handleMobileLinkClick} className="block w-full py-3 text-center border-2 border-indigo-600 text-indigo-600 rounded-xl font-bold">Login</Link>
-                <Link href="/user/register" onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-indigo-600 text-white rounded-xl font-bold">Register</Link>
+                <Link href="/user/login" onClick={handleMobileLinkClick} className="py-6 text-center border-2 border-black rounded-[2rem] text-sm font-black uppercase tracking-widest">Sign In</Link>
+                <Link href="/user/register" onClick={handleMobileLinkClick} className="py-6 text-center bg-yellow-400 text-black rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-xl">Join Nomad Yatri</Link>
               </>
             )}
           </div>
