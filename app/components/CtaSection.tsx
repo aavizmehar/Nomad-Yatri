@@ -65,7 +65,7 @@ const CTASection = () => {
             {/* IMAGE AREA - Reordered to appear top on mobile */}
             <div className="group relative order-1 min-h-[300px] overflow-hidden lg:order-2 lg:min-h-full">
               <Image
-                src="/featuredimgs/volunteerprograms.webp"
+                src="/featuredImgs/volunteerprograms.webp"
                 alt="Conscious travel in India"
                 fill
                 priority
