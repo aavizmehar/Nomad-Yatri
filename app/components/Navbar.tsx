@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [expOpen, setExpOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // Desktop profile dropdown
 
   const handleMobileLinkClick = () => {
@@ -57,8 +58,7 @@ const Navbar: React.FC = () => {
                 <li><Link href="/experiences/work-exchange" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Work Exchange</Link></li>
                 <li><Link href="/experiences/digital-nomad-stays" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Digital Nomad Stays</Link></li>
                 <li><Link href="/experiences/cultural-experiences" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">Cultural Experiences</Link></li>
-             <li>  <Link href="/programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">See All Programs</Link></li>
-         
+                <li>  <Link href="/programs" className="block px-4 py-2 hover:bg-gray-50 hover:text-[#d49159]">See All Programs</Link></li>
               </ul>
             </div>
           </div>
@@ -83,9 +83,8 @@ const Navbar: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-full shadow-md transition-all flex items-center justify-center ${
-                isLoggedIn ? "bg-[#396a6b] text-white" : "bg-indigo-600 text-white hover:bg-indigo-700"
-              }`}
+              className={`p-2 rounded-full shadow-md transition-all flex items-center justify-center ${isLoggedIn ? "bg-[#396a6b] text-white" : "bg-indigo-600 text-white hover:bg-indigo-700"
+                }`}
             >
               <UserProfileIcon />
               <IoIosArrowDown className={`ml-1 transition-transform ${isOpen ? "rotate-180" : ""}`} />
@@ -134,10 +133,16 @@ const Navbar: React.FC = () => {
         <div className="h-[100vh] md:hidden fixed inset-0 top-[70px] bg-white z-40 px-6 py-6 flex flex-col space-y-4 animate-in slide-in-from-right">
           <Link href="/" className="text-lg font-bold border-b pb-2" onClick={handleMobileLinkClick}>Home</Link>
 
-          <div className="space-y-2">
-            <button onClick={() => setExpOpen(!expOpen)} className="flex justify-between w-full text-lg font-bold">
-              Experiences <IoIosArrowDown className={expOpen ? "rotate-180" : ""} />
+          {/* Experiences */}
+          <div className="space-y-2 border-b pb-2">
+            <button
+              onClick={() => setExpOpen(!expOpen)}
+              className="flex justify-between w-full text-lg font-bold"
+            >
+              Experiences
+              <IoIosArrowDown className={`transition-transform ${expOpen ? "rotate-180" : ""}`} />
             </button>
+
             {expOpen && (
               <div className="pl-4 flex flex-col space-y-2 text-gray-600 font-semibold">
                 <Link href="/experiences/volunteer-programs" onClick={handleMobileLinkClick}>Volunteer Programs</Link>
@@ -145,6 +150,25 @@ const Navbar: React.FC = () => {
                 <Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link>
                 <Link href="/experiences/cultural-experiences" onClick={handleMobileLinkClick}>Cultural Experiences</Link>
                 <Link href="/programs" onClick={handleMobileLinkClick}>See All Programs</Link>
+              </div>
+            )}
+          </div>
+
+          {/* Community */}
+          <div className="space-y-2 border-b pb-2">
+            <button
+              onClick={() => setCommunityOpen(!communityOpen)}
+              className="flex justify-between w-full text-lg font-bold"
+            >
+              Community
+              <IoIosArrowDown className={`transition-transform ${communityOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {communityOpen && (
+              <div className="pl-4 flex flex-col space-y-2 text-gray-600 font-semibold">
+                <Link href="/about" onClick={handleMobileLinkClick}>About Us</Link>
+                <Link href="/blog" onClick={handleMobileLinkClick}>Blog</Link>
+                <Link href="/contact" onClick={handleMobileLinkClick}>Contact</Link>
               </div>
             )}
           </div>
@@ -160,7 +184,7 @@ const Navbar: React.FC = () => {
             ) : (
               <>
                 <Link href="/user/login" onClick={handleMobileLinkClick} className="block w-full py-3 text-center border-2 border-indigo-600 text-indigo-600 rounded-xl font-bold">Login</Link>
-                <Link href="/user/register" onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-indigo-600 text-white rounded-xl font-bold">Join Now</Link>
+                <Link href="/user/register" onClick={handleMobileLinkClick} className="block w-full py-3 text-center bg-indigo-600 text-white rounded-xl font-bold">Register</Link>
               </>
             )}
           </div>
