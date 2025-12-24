@@ -8,6 +8,7 @@ import FeaturedExperiences from "./featuredExperiences";
 import FeaturedInSection from "./FeaturedInSection";
 import WhyChooseNomadYatri from "./HomeWhyChoose";
 import HowItWorks from "./HowitWorks";
+import CTASection from "./CtaSection";
 const HomeContent: React.FC = () => {
   return (
     <div className="w-full">
@@ -107,32 +108,7 @@ const HomeContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="mt-24 bg-[#1a2627]">
-        <div className="container mx-auto px-6 py-20 max-w-5xl text-center">
-
-          <h2 className="text-3xl md:text-4xl font-semibold text-white">
-            Join India’s growing community of conscious travelers
-          </h2>
-
-          <p className="mt-6 text-white/80 max-w-3xl mx-auto text-lg leading-relaxed">
-            Nomad Yatri connects travelers, hosts, and communities through
-            meaningful experiences — from volunteering to skill-based stays.
-            Travel with intention, not impulse.
-          </p>
-
-          <PrimaryBtn
-            text="Create your free account"
-            action="user/register"
-            className=" rounded-md px-8 w-max m-auto py-4 text-lg rounded-xl transition"
-          />
-
-          <p className="mt-6 text-sm text-white/60">
-            Free to join • No hidden fees • Verified hosts
-          </p>
-
-        </div>
-      </section>
-
+    <CTASection/>
     </div>
   );
 };
