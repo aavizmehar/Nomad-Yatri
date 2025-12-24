@@ -6,7 +6,8 @@ export interface Program {
   subCategory?: string;
   location?: string;
   duration?: string;
-  programImages?: string[];
+  programImages?: string | string[] | null;
+  price?: number | string;
   maxVolunteers?: number;
   volunteersCount?: number;
   

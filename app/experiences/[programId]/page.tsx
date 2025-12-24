@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MapPin, Clock, Users, ArrowLeft, Star, 
-  CheckCircle2, Calendar, ShieldCheck, Sparkles 
+import {
+  MapPin, Clock, Users, ArrowLeft, Star,
+  CheckCircle2, Calendar, ShieldCheck, Sparkles
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,7 +24,13 @@ export default function ProgramDetailPage() {
 
   const fetchProgram = async () => {
     try {
-      const response = await dashboardApi.getProgram(params.programId as string);
+      const programId = Number(params.programId);
+
+      if (Number.isNaN(programId)) {
+        throw new Error("Invalid program ID");
+      }
+
+      const response = await dashboardApi.getProgram(programId);
       setProgram(response.data.program);
     } catch (error) {
       console.error('Error fetching program:', error);
@@ -34,14 +40,28 @@ export default function ProgramDetailPage() {
   };
 
   // 🛡️ Bulletproof image check for gallery
-  const getSafeImages = () => {
+const getSafeImages = () => {
     const fallback = "/featuredimgs/weekendtrips.webp";
-    if (!program?.programImages || (Array.isArray(program.programImages) && program.programImages.length === 0)) {
+    
+    if (!program?.programImages) {
       return [fallback];
     }
-    const images = Array.isArray(program.programImages) ? program.programImages : [program.programImages];
-    const filtered = images.filter((img: string) => typeof img === "string" && img.trim() !== "");
-    return filtered.length > 0 ? filtered : [fallback];
+
+    const images: string[] = (() => {
+      if (Array.isArray(program.programImages)) {
+        return program.programImages.filter(
+          (img: any): img is string => typeof img === "string" && img.trim() !== ""
+        );
+      }
+
+      if (typeof program.programImages === "string" && program.programImages.trim() !== "") {
+        return [program.programImages];
+      }
+
+      return [];
+    })();
+
+    return images.length > 0 ? images : [fallback];
   };
 
   if (loading) return (
@@ -65,10 +85,9 @@ export default function ProgramDetailPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      {/* 🧭 Minimal Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-50">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <button 
+          <button
             onClick={() => router.back()}
             className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-all"
           >
@@ -83,8 +102,7 @@ export default function ProgramDetailPage() {
 
       <main className="container mx-auto px-6 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          
-          {/* 🖼️ Left Column: Narrative & Gallery */}
+
           <div className="lg:col-span-8">
             <header className="mb-12">
               <div className="flex items-center gap-2 text-yellow-600 mb-4 font-bold text-[10px] uppercase tracking-[0.3em]">
@@ -96,7 +114,6 @@ export default function ProgramDetailPage() {
               </h1>
             </header>
 
-            {/* Premium Gallery */}
             <div className="space-y-6 mb-16">
               <div className="relative aspect-[16/9] w-full rounded-[1.5rem] overflow-hidden bg-gray-50 shadow-sm border border-gray-100">
                 <AnimatePresence mode="wait">
@@ -117,15 +134,14 @@ export default function ProgramDetailPage() {
                   </motion.div>
                 </AnimatePresence>
               </div>
-              
+
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative min-w-[140px] h-24 rounded-xl overflow-hidden transition-all duration-500 ${
-                      selectedImage === idx ? 'ring-2 ring-yellow-400 ring-offset-4 scale-95' : 'opacity-40 hover:opacity-100'
-                    }`}
+                    className={`relative min-w-[140px] h-24 rounded-xl overflow-hidden transition-all duration-500 ${selectedImage === idx ? 'ring-2 ring-yellow-400 ring-offset-4 scale-95' : 'opacity-40 hover:opacity-100'
+                      }`}
                   >
                     <Image src={img} alt="thumbnail" fill className="object-cover" />
                   </button>
@@ -133,7 +149,6 @@ export default function ProgramDetailPage() {
               </div>
             </div>
 
-            {/* Experience Content */}
             <section className="max-w-3xl">
               <div className="flex items-center gap-3 mb-8">
                 <Sparkles className="text-yellow-500" size={20} />
@@ -159,7 +174,6 @@ export default function ProgramDetailPage() {
               </div>
             </section>
 
-            {/* Host Section */}
             {program.Host && (
               <section className="pt-16 border-t border-gray-50">
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-8 text-gray-400">Your Guide</h3>
@@ -182,11 +196,10 @@ export default function ProgramDetailPage() {
             )}
           </div>
 
-          {/* 💳 Right Column: Sticky Booking Card */}
           <div className="lg:col-span-4">
             <div className="sticky top-28">
               <div className="bg-white border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10">
-         
+
 
                 <div className="space-y-4 mb-10">
                   {[
@@ -207,14 +220,14 @@ export default function ProgramDetailPage() {
                 <button className="w-full bg-yellow-400 hover:bg-black text-black hover:text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all duration-500 shadow-lg shadow-yellow-400/20 active:scale-95">
                   Request to Book
                 </button>
-                
+
                 <p className="text-center text-[9px] text-gray-400 mt-6 font-bold uppercase tracking-widest">
                   Secure checkout • Instant Confirmation
                 </p>
               </div>
             </div>
           </div>
-          
+
         </div>
       </main>
     </div>
