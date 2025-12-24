@@ -21,6 +21,7 @@ const volunteerRouter = require('./routes/volunteer.routes.js');
 const programPublicRouter = require('./routes/program.public.routes.js');
 const programHostRouter = require('./routes/program.host.routes.js');
 const adminRouter = require('./routes/admin.routes.js');
+const authRouter = require('./routes/auth.routes.js');
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/host', hostRouter);
@@ -28,6 +29,8 @@ app.use('/api/v1/volunteer', volunteerRouter);
 app.use('/api/v1/programs', programPublicRouter);
 app.use('/api/v1/host/programs', programHostRouter);
 app.use('/api/v1/admin', adminRouter);
+app.use('/auth', authRouter);
+
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
 });

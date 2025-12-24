@@ -50,10 +50,10 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!createdUser) {
       throw new ApiError(500, "something wrong in registering user");
     }
-      await sendAdminEmail(
-    "New User Registered",
-    `A new user with email <b>${email}</b> has joined as a <b>${role}</b>.`
-);
+    await sendAdminEmail(
+      "New User Registered",
+      `A new user with email <b>${email}</b> has joined as a <b>${role}</b>.`
+    );
     return res.status(201).json(
       new ApiResponse(
         200,
@@ -195,7 +195,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken},
+          { accessToken, refreshToken },
           "Access token refreshed successfully."
         )
       )
@@ -222,9 +222,18 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"))
 
 })
+
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200)
-    .json(new ApiResponse(200, req.user, "Current user fetched successfully"))
+  try {
+     const userId = req.user.id;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+    res.json({ user });
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
 })
 module.exports = {
   registerUser,

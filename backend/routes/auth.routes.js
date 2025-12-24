@@ -5,13 +5,12 @@ const { getLoginData } = require('../utils/auth.helper');
 
 router.get('/google', (req, res, next) => {
     const { role } = req.query;
-    // Encode role into state to carry it through the Google flow
     const state = role ? Buffer.from(JSON.stringify({ role })).toString('base64') : undefined;
 
     passport.authenticate('google', {
         scope: ['profile', 'email'],
         state: state,
-        session: false // Must be false for JWT
+        session: false
     })(req, res, next);
 });
 
@@ -24,8 +23,6 @@ router.get('/google/callback',
         try {
             const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(req.user.id);
 
-            const { redirectTo } = await getLoginData(req.user);
-
             const options = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -34,11 +31,10 @@ router.get('/google/callback',
 
             res.cookie("accessToken", accessToken, options);
             res.cookie("refreshToken", refreshToken, options);
-
-            res.redirect(`http://localhost:3000${redirectTo}`);
+            res.redirect(`${process.env.CORS_ORIGIN}/auth/callback?token=${accessToken}&role=${req.user.role}`);
         } catch (error) {
             console.error("LOG: Google Callback Error:", error);
-            res.redirect("http://localhost:3000/?error=auth_failed");
+            res.redirect(`${process.env.CORS_ORIGIN}/?error=auth_failed`);
         }
     }
 );

@@ -4,7 +4,7 @@ const { registerUser, loginUser, logoutUser, refreshAccessToken ,getCurrentUser}
 const {verifyJWT} = require("../middleware/auth.middleware")
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
-router.route("/current-user").get(verifyJWT, getCurrentUser)
+router.route("/me").get(verifyJWT, getCurrentUser)
 // secured routes
 router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)

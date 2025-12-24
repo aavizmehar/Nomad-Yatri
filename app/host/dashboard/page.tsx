@@ -57,13 +57,25 @@ export default function HostDashboard() {
     }
   };
 
-  useEffect(() => {
-    if (!token || role !== 'host') {
+ useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        credentials: 'include', 
+      });
+      if (!res.ok) {
+        router.replace('/user/login');
+        return;
+      }
+      const data = await res.json();
+      setHostName(data.user.name);
+    } catch (err) {
       router.replace('/user/login');
-    } else {
-      fetchHostProfile();
     }
-  }, [token, role]);
+  };
+  checkAuth();
+}, []);
+
 
   const handleLogout = () => {
     logout();

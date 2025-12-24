@@ -187,6 +187,31 @@ const UsersPage = () => {
                 )}
               </button>
             </form>
+{/* Divider */}
+<div className="relative my-6">
+  <div className="absolute inset-0 flex items-center">
+    <div className="w-full border-t border-gray-100"></div>
+  </div>
+  <div className="relative flex justify-center text-xs uppercase text-gray-400">
+    <span className="bg-white px-4">OR</span>
+  </div>
+</div>
+
+{/* Google Registration */}
+<button
+  onClick={() => {
+    // Optional: pass role in query string for Google registration
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google?role=${role}`;
+  }}
+  className="w-full border-2 border-gray-100 py-3.5 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 font-medium text-gray-600"
+>
+  <img
+    src="https://www.svgrepo.com/show/355037/google.svg"
+    className="w-5 h-5"
+    alt="Google"
+  />
+  Continue with Google
+</button>
 
             {/* Bottom Links */}
             <div className="mt-10 text-center">

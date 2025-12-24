@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext, FormEvent } from "react";
+import { useState, useEffect, useContext, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
@@ -45,9 +45,8 @@ const UserLoginClient = () => {
     }
   };
 
-  // ✅ Google OAuth (kept from local, fixed for prod)
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`;
   };
 
   return (
