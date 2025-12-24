@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import PrimaryBtn from "./PrimaryBtn";
 
 import { ArrowRight } from 'lucide-react';
 import FeaturedExperiences from "./featuredExperiences";
+import FeaturedInSection from "./FeaturedInSection";
 import WhyChooseNomadYatri from "./HomeWhyChoose";
 import HowItWorks from "./HowitWorks";
 const HomeContent: React.FC = () => {
@@ -41,7 +41,7 @@ const HomeContent: React.FC = () => {
 
         </div>
       </section>
-
+<FeaturedInSection/>
       <WhyChooseNomadYatri />
 
       <FeaturedExperiences />
