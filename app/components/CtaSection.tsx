@@ -7,17 +7,14 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 const CTASection = () => {
   return (
-    // Reduced padding on mobile (py-16) for better flow
     <section className="bg-white px-4 py-16 md:px-6 md:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1A2627] shadow-[0_40px_100px_-30px_rgba(26,38,39,0.5)]">
           
-          {/* Ambient glow - hidden on mobile to save GPU/Battery */}
           <div className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px] rounded-full bg-[#58a67d]/10 blur-[120px] hidden md:block" />
 
           <div className="flex flex-col lg:grid lg:grid-cols-2">
             
-            {/* CONTENT AREA - Reordered to appear first on mobile */}
             <div className="relative z-20 order-2 lg:order-1 px-6 py-12 md:px-16 md:py-20 lg:px-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -44,7 +41,6 @@ const CTASection = () => {
                   Nomad Yatri is a bridge between soulful explorers and communities that need them. Create your story today.
                 </p>
 
-                {/* THE BUTTON - Full width on mobile for better thumb reach */}
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                   <Link
                     href="/user/register"
@@ -62,7 +58,6 @@ const CTASection = () => {
               </motion.div>
             </div>
 
-            {/* IMAGE AREA - Reordered to appear top on mobile */}
             <div className="group relative order-1 min-h-[300px] overflow-hidden lg:order-2 lg:min-h-full">
               <Image
                 src="/featuredImgs/volunteerprograms.webp"
@@ -72,10 +67,8 @@ const CTASection = () => {
                 className="scale-110 object-cover transition-transform duration-[2s] ease-out group-hover:scale-100"
               />
 
-              {/* Mobile-specific Gradient: Darker at the bottom to blend into text area */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A2627] via-[#1A2627]/20 to-transparent lg:bg-gradient-to-r" />
               
-              {/* Texture - Lower opacity on mobile for clarity */}
               <div className="absolute inset-0 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-[0.02] md:opacity-[0.03]" />
             </div>
 
