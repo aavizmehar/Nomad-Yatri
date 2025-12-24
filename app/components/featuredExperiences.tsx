@@ -21,23 +21,13 @@ const experiences = [
     desc: "Co-living spaces with high-speed internet in beautiful remote locations."
   },
   { 
-    title: "Rural Homestays", 
-    link: "/experiences/rural-homestays",
+    title: "Cultural Experiences", 
+    link: "/experiences/cultural-experiences",
     image: "/featuredImgs/ruralhomestay.webp",
     desc: "Immerse yourself in local culture with authentic village stays."
   },
-  { 
-    title: "Eco Projects", 
-    link: "/eco-projects",
-    image: "/featuredImgs/ecoprojects.webp",
-    desc: "Contribute to reforestation, permaculture, and green building."
-  },
-  { 
-    title: "Weekend Trips", 
-    link: "/weekend-trips",
-    image: "/featuredImgs/weekendtrips.webp",
-    desc: "Quick getaways for nature lovers and adventure seekers."
-  },
+
+ 
 ];
 
 export default function FeaturedExperiences() {
