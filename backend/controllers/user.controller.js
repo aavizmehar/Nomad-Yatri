@@ -46,27 +46,41 @@ const registerUser = asyncHandler(async (req, res) => {
       password,
       role
     });
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.id);
     const createdUser = await User.findByPk(user.id, {
       attributes: { exclude: ['password', 'refreshToken'] }
     });
 
     if (!createdUser) {
-      throw new ApiError(500, "something wrong in registering user");
+      throw new ApiError(500, "Something went wrong while registering user");
     }
+    const options = {
+      httpOnly: true,
+      secure: true
+    };
     await sendAdminEmail(
       "New User Registered",
       `A new user with email <b>${email}</b> has joined as a <b>${role}</b>.`
     );
-    return res.status(201).json(
-      new ApiResponse(
-        200,
-        {
-          user: createdUser,
-          redirectTo: `/${createdUser.role}/dashboard`
-        },
-        "user registered successfully"
-      )
-    );
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiResponse(
+          201,
+          {
+            user: {
+              ...createdUser.toJSON(),
+              hasCompletedProfile: false
+            },
+            accessToken,
+            refreshToken,
+            redirectTo: `/${role}/addInfoPage`
+          },
+          "User registered and logged in successfully"
+        )
+      );
   } catch (err) {
     console.error(err);
     res.status(err.statusCode || 500).json({
