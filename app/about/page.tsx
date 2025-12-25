@@ -6,11 +6,29 @@ import { motion } from "framer-motion";
 import { ArrowRight, Globe2, ShieldCheck, HeartPulse, MapPin } from "lucide-react";
 
 const TEAM_MEMBERS = [
-  { name: "Aditya", role: "Founder & Strategy" },
-  { name: "Sandeep", role: "Operations Director" },
-  { name: "Priya", role: "NGO Relations Manager" },
-  { name: "Rahul", role: "Technical Lead" },
-  { name: "Ishani", role: "Community Engagement" },
+  {
+    name: "Abhishek Singh",
+    role: "Founder & Strategy",
+    image: null
+  },
+  {
+    name: "Vedika Tiwari",
+    role: "Property Listing Manager",
+    image: null
+  },
+  {
+    name: "Aaviz Mehar",
+    role: "Web Developer",
+    image: "/team/Aaviz.webp"
+  },
+  {
+    name: "Adrita Khan", role: "Social media manager",
+    image: "/team/Adrita.webp"
+  },
+  {
+    name: "Yavaneeka Swami", role: "Graphic designer",
+    image: "/team/Yavaneeka.webp"
+  },
 ];
 
 const FOUNDATION_POINTS = [
@@ -199,23 +217,42 @@ const AboutUsPage = () => {
       <section className="py-24">
         <div className="container mx-auto px-6 max-w-6xl text-center">
           <h2 className="text-3xl font-bold mb-16">The Core Team</h2>
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12">
             {TEAM_MEMBERS.map((member, i) => (
               <div key={i} className="space-y-4">
-                <div className="mx-auto w-32 h-32 bg-gray-100 rounded-full overflow-hidden border border-gray-100 p-1">
-                  <div className="w-full h-full bg-[#f0f2f2] rounded-full flex items-center justify-center text-[#314e4d] font-bold text-xl">
-                    {member.name[0]}
-                  </div>
+                <div className="mx-auto w-32 h-32 rounded-full overflow-hidden border border-gray-100 bg-[#f0f2f2] flex items-center justify-center">
+
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <span className="text-[#314e4d] font-bold text-xl">
+                      {member.name.charAt(0)}
+                    </span>
+                  )}
+
                 </div>
+
                 <div>
-                  <h4 className="font-bold text-sm text-[#314e4d]">{member.name}</h4>
-                  <p className="text-[11px] uppercase tracking-wider text-gray-400 font-bold">{member.role}</p>
+                  <h4 className="font-bold text-sm text-[#314e4d]">
+                    {member.name}
+                  </h4>
+                  <p className="text-[11px] uppercase tracking-wider text-gray-400 font-bold">
+                    {member.role}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       <section className="py-24 border-t border-gray-100">
         <div className="container mx-auto px-6 text-center">
