@@ -53,7 +53,6 @@ const UserLoginClient = () => {
     <div className="min-h-screen bg-white text-[#314e4d]">
       <main className="max-w-7xl mx-auto px-6 lg:px-16 py-12 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-        {/* LEFT SECTION */}
         <div className="space-y-6">
           <h1 className="text-5xl lg:text-6xl font-bold leading-[1.1]">
             Welcome to <br />
@@ -76,7 +75,6 @@ const UserLoginClient = () => {
           </div>
         </div>
 
-        {/* RIGHT SECTION */}
         <div className="flex justify-center lg:justify-end">
           <div className="w-full max-w-[440px] bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8 lg:p-12">
 
@@ -84,7 +82,7 @@ const UserLoginClient = () => {
 
             {error && (
               <div className="mb-6 p-4 text-sm text-red-700 bg-red-50 rounded-xl border border-red-100">
-                ⚠️ {error}
+                {error}
               </div>
             )}
 
@@ -134,17 +132,15 @@ const UserLoginClient = () => {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-100"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase text-gray-400">
                 <span className="bg-white px-4">OR</span>
-              </div>
+            
             </div>
-
-            {/* ✅ Google Login */}
+         
             <button
               onClick={handleGoogleLogin}
               className="w-full border-2 border-gray-100 py-3.5 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 font-medium text-gray-600"
@@ -168,8 +164,15 @@ const UserLoginClient = () => {
                 </Link>
               </p>
             </div>
-
-          </div>
+  </div>
+                 <div className="mt-2 text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-semibold text-[#58a67d] text-center hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>          </div>
         </div>
       </main>
     </div>

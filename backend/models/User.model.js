@@ -21,6 +21,14 @@ const User = sequelize.define('User', {
     allowNull: true,
     unique: true
   },
+   resetPasswordToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resetPasswordExpiry: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   password: { type: DataTypes.STRING },
   role: { type: DataTypes.ENUM('volunteer', 'host', 'admin'), defaultValue: 'volunteer' },
   refreshToken: {
@@ -28,12 +36,11 @@ const User = sequelize.define('User', {
   }
 }, { tableName: 'users', timestamps: true });
 
-
-User.beforeCreate(async function (user) {
-  // Only hash if there is a password and it's being changed/added
-  if (user.password && user.changed("password")) {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
+User.beforeSave(async (user, options) => {
+  if (user.changed('password')) {
+    console.log("Hasing password for user:", user.email); // Debug log
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
   }
 });
 User.prototype.isPasswordCorrect = async function (password) {

@@ -6,14 +6,13 @@ const sendAdminEmail = async (subject, htmlMessage) => {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT),
-      secure: false, // TLS false for port 587
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
     });
 
-    // Verify SMTP connection
     await transporter.verify();
     console.log("SMTP connection OK");
 

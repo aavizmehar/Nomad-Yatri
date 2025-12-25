@@ -3,8 +3,11 @@ const Host = require('../models/Host.model')
 const Volunteer = require('../models/Volunteer.model')
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
+const { Op } = require("sequelize");
+
 const asyncHandler = require("../utils/asyncHandler")
 const sendAdminEmail = require("../utils/mail.helper");
+const crypto = require("crypto");
 
 const jwt = require("jsonwebtoken")
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -71,8 +74,6 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   }
 });
-
-
 const loginUser = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -147,7 +148,6 @@ const loginUser = asyncHandler(async (req, res) => {
       .json({ error: err.message || "Internal Server Error" });
   }
 })
-
 const logoutUser = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
@@ -203,10 +203,48 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, err?.message || "invalid refresh token")
   }
 })
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    throw new ApiError(400, "Token and new password are required");
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpiry: { [Op.gt]: new Date() } // Use new Date() for compatibility
+    }
+  });
+
+  if (!user) {
+    throw new ApiError(400, "Token is invalid or has expired");
+  }
+
+  // 1. Set the new plain text password
+  user.password = newPassword; 
+  
+  // 2. Clear reset fields
+  user.resetPasswordToken = null;
+  user.resetPasswordExpiry = null;
+
+  // 3. Save the user. 
+  // Because we used 'beforeSave' in the model, it will now hash 'newPassword' 
+  // before hitting the database.
+  await user.save(); 
+
+  return res.json(new ApiResponse(200, {}, "Password reset successfully"));
+});
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const user = await User.findByPk(req.user?.id);
+  console.log(user)
   if (!user) {
     throw new ApiError(404, "User not found");
   }
@@ -222,7 +260,6 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"))
 
 })
-
 const getCurrentUser = asyncHandler(async (req, res) => {
   try {
      const userId = req.user.id;
@@ -235,6 +272,49 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 })
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  const user = await User.findOne({
+    where: { email: email.toLowerCase() }
+  });
+
+  if (!user) {
+    return res.json(
+      new ApiResponse(200, {}, "If the email exists, a reset link has been sent")
+    );
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpiry = Date.now() + 15 * 60 * 1000; // 15 mins
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${process.env.CORS_ORIGIN}/reset-password?token=${resetToken}`;
+
+  await sendAdminEmail(
+    "Password Reset Request",
+    `
+      <p>You requested a password reset.</p>
+      <p>Click below to reset your password:</p>
+      <a href="${resetUrl}" target="_blank">${resetUrl}</a>
+      <p>This link expires in 15 minutes.</p>
+    `
+  );
+
+  return res.json(
+    new ApiResponse(200, {}, "Password reset link sent to email")
+  );
+});
 module.exports = {
   registerUser,
   loginUser,
@@ -242,5 +322,7 @@ module.exports = {
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
-  generateAccessAndRefreshTokens
+  resetPassword,
+  generateAccessAndRefreshTokens,
+  forgotPassword
 };
