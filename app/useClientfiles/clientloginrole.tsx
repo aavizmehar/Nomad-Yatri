@@ -97,7 +97,7 @@ const UserLoginClient = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center ml-1">
                     <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Password</label>
-                    <Link href="/forgot-password" size="sm" className="text-[10px] font-black uppercase tracking-widest text-[#58a67d] hover:underline">Forgot?</Link>
+                    <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-[#58a67d] hover:underline">Forgot?</Link>
                 </div>
                 <div className="relative">
                   <input
