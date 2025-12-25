@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout(); 
     }
   } catch (err) {
-    console.error("Auth verification failed", err);
+    console.error("backend is unreachable", err);
     logout();
   } finally {
     setLoading(false);
