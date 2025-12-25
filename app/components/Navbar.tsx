@@ -14,8 +14,6 @@ const Navbar: React.FC = () => {
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Mobile Accordion States
   const [mobileExpOpen, setMobileExpOpen] = useState(false);
   const [mobileComOpen, setMobileComOpen] = useState(false);
 
@@ -32,51 +30,60 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <nav className="w-full bg-white/90 backdrop-blur-2xl border-b border-gray-100 fixed top-0 left-0 z-[100] transition-all">
-      <div className="container mx-auto flex items-center justify-between px-6 py-5">
+    <nav className="w-full bg-white/90 backdrop-blur-2xl border-b border-gray-100 fixed top-0 left-0 z-[100] transition-all duration-300">
+      <div className="container mx-auto flex items-center justify-between px-6 h-20">
         
-        {/* 1. Logo Section */}
-        <Link href="/" className="flex items-center gap-4 group">
-          <Image 
-            src="/nomadlogo.svg" 
-            height={55} 
-            width={55} 
-            alt="Nomad Yatri Logo" 
-            className="group-hover:rotate-[15deg] transition-transform duration-500" 
-          />
-          <div className="flex flex-col text-black">
-            <span className="text-2xl font-black tracking-widest uppercase leading-none">NOMAD</span>
-            <span className="text-[12px] font-bold text-gray-400 tracking-[0.5em] uppercase mt-1">YATRI</span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative shrink-0">
+            <Image
+              src="/logo.png"
+              height={70} 
+              width={70}
+              alt="Nomad Yatri Logo"
+              className="group-hover:rotate-[15deg] transition-transform duration-500"
+            />
+          </div>
+
+          <div className="flex flex-col items-center select-none">
+            <div className="flex items-baseline">
+              <span className="text-2xl md:text-3xl font-black tracking-tighter text-black transition-transform duration-300 group-hover:-translate-x-1">
+                NOMAD
+              </span>
+            </div>
+            <div className="w-full flex justify-between items-center -mt-1">
+              <div className="h-[1px] flex-1 bg-gray-200"></div>
+              <span className="px-2 text-[10px] md:text-xs font-black tracking-[0.4em] text-yellow-500 uppercase">
+                YATRI
+              </span>
+              <div className="h-[1px] flex-1 bg-gray-200"></div>
+            </div>
           </div>
         </Link>
 
-        {/* 2. Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-12">
-          <ul className="flex items-center space-x-10 text-[15px] font-bold uppercase tracking-wider text-gray-600">
+        <div className="hidden lg:flex items-center space-x-10">
+          <ul className="flex items-center space-x-8 text-[13px] font-bold uppercase tracking-widest text-gray-500">
             <li><Link href="/" className="hover:text-black transition-colors">Home</Link></li>
-            
-            {/* Experiences Dropdown */}
+
             <li className="relative group">
               <button className="flex items-center gap-2 hover:text-black transition-colors">
-                Experiences <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs" />
+                Experiences <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs text-yellow-500" />
               </button>
-              <div className="absolute top-full left-0 mt-4 w-72 bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
+              <div className="absolute top-full -left-4 mt-2 w-72 bg-white shadow-2xl rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
                 <ul className="text-sm font-bold tracking-wide">
                   <li><Link href="/experiences/volunteer-programs" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Volunteer Programs</Link></li>
                   <li><Link href="/experiences/work-exchange" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Work Exchange</Link></li>
                   <li><Link href="/experiences/digital-nomad-stays" className="block px-5 py-4 hover:bg-gray-50 hover:text-yellow-600 rounded-2xl transition">Digital Nomad Stays</Link></li>
                   <div className="h-px bg-gray-100 my-2 mx-4" />
-                  <li><Link href="/programs" className="block px-5 py-4 bg-yellow-400 text-black font-black text-center rounded-2xl">View All Programs</Link></li>
+                  <li><Link href="/programs" className="block px-5 py-4 bg-yellow-400 text-black font-black text-center rounded-2xl hover:bg-black hover:text-white transition-colors">View All Programs</Link></li>
                 </ul>
               </div>
             </li>
 
-            {/* Community Dropdown */}
             <li className="relative group">
               <button className="flex items-center gap-2 hover:text-black transition-colors">
-                Community <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs" />
+                Community <IoIosArrowDown className="group-hover:rotate-180 transition-transform text-xs text-yellow-500" />
               </button>
-              <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-2xl rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
+              <div className="absolute top-full -left-4 mt-2 w-56 bg-white shadow-2xl rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-50 p-3">
                 <ul className="text-sm font-bold tracking-wide">
                   <li><Link href="/about" className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">About Us</Link></li>
                   <li><Link href="/blog" className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Journal</Link></li>
@@ -88,22 +95,19 @@ const Navbar: React.FC = () => {
             <li><Link href="/pricing" className="hover:text-black transition-colors">Pricing</Link></li>
           </ul>
 
-          {/* Large Auth Button */}
-          <div className="relative border-l border-gray-200 pl-10">
+          <div className="relative border-l border-gray-100 pl-8">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`flex items-center gap-3 px-8 py-3.5 rounded-full transition-all duration-500 shadow-xl ${
+              className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 shadow-lg ${
                 isLoggedIn ? "bg-black text-white" : "bg-yellow-400 text-black hover:bg-black hover:text-white"
               }`}
             >
               <UserProfileIcon />
-              <span className="text-sm font-black uppercase tracking-widest">{isLoggedIn ? "Account" : "Join Now"}</span>
+              <span className="text-xs font-black uppercase tracking-widest">{isLoggedIn ? "Account" : "Join Now"}</span>
             </button>
 
             {isOpen && (
-              <>
-                <div className="fixed inset-0" onClick={() => setIsOpen(false)}></div>
-                <div className="absolute right-0 mt-5 w-64 bg-white border border-gray-50 shadow-2xl rounded-[2rem] p-4 z-50">
+               <div className="absolute right-0 mt-5 w-64 bg-white border border-gray-50 shadow-2xl rounded-[2rem] p-4 z-50 animate-in fade-in zoom-in duration-200">
                   <ul className="text-sm font-bold tracking-wide">
                     {isLoggedIn ? (
                       <>
@@ -118,14 +122,13 @@ const Navbar: React.FC = () => {
                       </>
                     )}
                   </ul>
-                </div>
-              </>
+               </div>
             )}
           </div>
         </div>
 
         {/* 3. Mobile Hamburger */}
-        <button className="md:hidden text-4xl text-black" onClick={() => setIsMobileOpen(!isMobileOpen)}>
+        <button className="lg:hidden text-3xl text-black" onClick={() => setIsMobileOpen(!isMobileOpen)}>
           {isMobileOpen ? <HiX /> : <HiMenuAlt3 />}
         </button>
       </div>
@@ -135,7 +138,6 @@ const Navbar: React.FC = () => {
         <div className="fixed h-screen inset-0 top-[85px] bg-white z-[90] px-10 py-8 flex flex-col space-y-6 overflow-y-auto animate-in slide-in-from-bottom duration-500">
           <ul className="space-y-6">
             <li><Link href="/" onClick={handleMobileLinkClick} className="text-3xl font-bold tracking-tighter text-gray-900">Home</Link></li>
-            
             {/* Experiences Accordion */}
             <li className="border-b border-gray-100 pb-4">
               <button onClick={() => setMobileExpOpen(!mobileExpOpen)} className="flex items-center justify-between w-full text-3xl font-bold tracking-tighter text-gray-900">
