@@ -61,7 +61,7 @@ export default function WorkExchangePage() {
       <section className="relative h-[55vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/featuredimgs/workexchange.webp" 
+            src="/featuredImgs/workexchange.webp" 
             alt="Work Exchange Experience" 
             className="w-full h-full object-cover"
           />

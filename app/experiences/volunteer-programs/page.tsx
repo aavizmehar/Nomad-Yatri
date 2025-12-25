@@ -56,7 +56,7 @@ export default function VolunteerProgramsPage() {
         {/* Background Image with optimized overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/featuredimgs/volunteerprograms.webp" 
+            src="/featuredImgs/volunteerprograms.webp" 
             alt="Volunteer Programs" 
             className="w-full h-full object-cover"
           />

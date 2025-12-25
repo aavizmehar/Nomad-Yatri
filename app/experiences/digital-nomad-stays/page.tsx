@@ -84,7 +84,7 @@ const DigitalNomadPage = () => {
       <section className="relative h-[65vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/featuredimgs/ecoprojects.webp" 
+            src="/featuredImgs/ecoprojects.webp" 
             alt="Work from India" 
             className="w-full h-full object-cover"
           />
@@ -202,7 +202,7 @@ const DigitalNomadPage = () => {
             <div className="relative">
               <div className="aspect-square bg-[#314e4d] rounded-[3rem] rotate-3 relative overflow-hidden shadow-2xl">
                  <Image 
-                    src="/featuredimgs/culturalstays.webp" 
+                    src="/featuredImgs/culturalstays.webp" 
                     alt="Community connection" 
                     fill 
                     className="object-cover -rotate-3 scale-110 opacity-60"

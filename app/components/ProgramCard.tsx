@@ -8,7 +8,7 @@ import { Program } from "@/types/program";
 
 export default function ProgramCard({ program }: { program: Program }) {
   const getImageSource = () => {
-    const fallback = "/featuredimgs/weekendtrips.webp";
+    const fallback = "/featuredImgs/weekendtrips.webp";
     if (Array.isArray(program.programImages) && program.programImages.length > 0) {
       const firstImg = program.programImages[0];
       return (typeof firstImg === "string" && firstImg.trim() !== "") ? firstImg : fallback;

@@ -41,7 +41,7 @@ export default function ProgramDetailPage() {
 
   // 🛡️ Bulletproof image check for gallery
 const getSafeImages = () => {
-    const fallback = "/featuredimgs/weekendtrips.webp";
+    const fallback = "/featuredImgs/weekendtrips.webp";
     
     if (!program?.programImages) {
       return [fallback];

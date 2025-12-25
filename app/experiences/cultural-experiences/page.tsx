@@ -56,7 +56,7 @@ export default function CulturalExperiencesPage() {
       <section className="relative h-[60vh] min-h-[450px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/featuredimgs/diginomad.webp" 
+            src="/featuredImgs/diginomad.webp" 
             alt="Indian Cultural Heritage" 
             className="w-full h-full object-cover"
           />

@@ -17,22 +17,22 @@ const FOUNDATION_POINTS = [
   {
     title: "The Traveler",
     desc: "Seeking meaningful depth beyond the tourist trail.",
-    img: "/featuredimgs/volunteerprograms.webp",
+    img: "/featuredImgs/volunteerprograms.webp",
   },
   {
     title: "The NGO",
     desc: "Requiring committed, skilled support for social impact.",
-    img: "/featuredimgs/weekendtrips.webp",
+    img: "/featuredImgs/weekendtrips.webp",
   },
   {
     title: "The Youth",
     desc: "Facing high costs to explore their own country.",
-    img: "/featuredimgs/ecoprojects.webp",
+    img: "/featuredImgs/ecoprojects.webp",
   },
   {
     title: "The Rural Host",
     desc: "Needing visibility and connection to the global community.",
-    img: "/featuredimgs/workexchange.webp",
+    img: "/featuredImgs/workexchange.webp",
   },
 ];
 
@@ -82,7 +82,7 @@ const AboutUsPage = () => {
             >
               <div className="relative aspect-[4/5] md:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-2xl shadow-black/5">
                 <Image
-                  src="/featuredimgs/volunteerprograms.webp"
+                  src="/featuredImgs/volunteerprograms.webp"
                   alt="A traveler engaging with local community members in rural India"
                   fill
                   className="object-cover"
@@ -105,13 +105,13 @@ const AboutUsPage = () => {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className="grid grid-cols-12 gap-3">
               <div className="col-span-12 h-64 relative rounded-2xl overflow-hidden shadow-sm">
-                <Image src="/featuredimgs/volunteerprograms.webp" alt="Volunteer impact" fill className="object-cover" />
+                <Image src="/featuredImgs/volunteerprograms.webp" alt="Volunteer impact" fill className="object-cover" />
               </div>
               <div className="col-span-7 h-48 relative rounded-2xl overflow-hidden shadow-sm">
-                <Image src="/featuredimgs/weekendtrips.webp" alt="Cultural exploration" fill className="object-cover" />
+                <Image src="/featuredImgs/weekendtrips.webp" alt="Cultural exploration" fill className="object-cover" />
               </div>
               <div className="col-span-5 h-48 relative rounded-2xl overflow-hidden shadow-sm">
-                <Image src="/featuredimgs/workexchange.webp" alt="Work exchange community" fill className="object-cover" />
+                <Image src="/featuredImgs/workexchange.webp" alt="Work exchange community" fill className="object-cover" />
               </div>
             </div>
 
