@@ -184,13 +184,29 @@ exports.addNewProgram = asyncHandler(async (req, res) => {
   }
 
   // Handle image uploads
-  const programImages = [];
-  if (req.files && req.files.length > 0) {
-    for (const file of req.files) {
-      const uploaded = await uploadOnCloudinary(file.path);
-      programImages.push(uploaded.url);
+ // Handle image uploads
+const programImages = [];
+if (req.files && req.files.length > 0) {
+  for (const file of req.files) {
+    // Check if buffer exists (memoryStorage uses .buffer, NOT .path)
+    if (!file.buffer) {
+      console.error("File buffer is missing for:", file.originalname);
+      continue;
+    }
+
+    try {
+      // Pass the BUFFER to your Cloudinary function
+      const uploaded = await uploadOnCloudinary(file.buffer); 
+      
+      if (uploaded && uploaded.url) {
+        programImages.push(uploaded.url);
+      }
+    } catch (uploadError) {
+      console.error("Cloudinary Upload Failed:", uploadError.message);
+      // Optional: stop the whole process or just skip this image
     }
   }
+}
 
   // Create program
   const program = await Program.create({
