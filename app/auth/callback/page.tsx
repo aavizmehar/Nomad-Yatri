@@ -16,9 +16,9 @@ const GoogleCallback = () => {
     if (token && role) {
       login(token, role);
       
-      router.push(`../${role}/dashboard`);
+      router.replace(`/${role}/dashboard`);
     } else {
-      router.push("/user/login?error=google_failed");
+      router.replace("/user/login?error=google_failed");
     }
   }, [searchParams, login, router]);
 

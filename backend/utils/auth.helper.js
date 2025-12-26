@@ -1,4 +1,4 @@
-const Host = require('../models/host.model');
+const Host = require('../models/Host.model');
 const Volunteer = require('../models/Volunteer.model');
 
 const getLoginData = async (user) => {
