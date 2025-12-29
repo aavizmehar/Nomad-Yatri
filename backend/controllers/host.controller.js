@@ -147,8 +147,14 @@ exports.editProfile = asyncHandler(async (req, res) => {
 
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
-      const uploaded = await uploadOnCloudinary(file.path);
-      newImages.push(uploaded.url);
+      try {
+        const uploaded = await uploadOnCloudinary(file.buffer);
+        if (uploaded && uploaded.secure_url) {
+           newImages.push(uploaded.secure_url);
+        }
+      } catch (err) {
+        console.error("Failed to upload image in editProfile", err);
+      }
     }
   }
 
