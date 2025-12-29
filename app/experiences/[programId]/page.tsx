@@ -10,6 +10,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { dashboardApi } from '@/lib/api/dashboard.api';
+import { volunteerApi } from '@/lib/api/volunteer.api';
 import { AuthContext } from '@/context/AuthContext'; // Import your AuthContext
 
 export default function ProgramDetailPage() {
@@ -23,13 +24,14 @@ export default function ProgramDetailPage() {
   const [program, setProgram] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [applying, setApplying] = useState(false);
 
   useEffect(() => {
     fetchProgram();
   }, [params.programId]);
 
   // --- Logic for Application ---
-  const handleApply = () => {
+  const handleApply = async () => {
     if (!isLoggedIn) {
       // Redirect to login and save current path to return later
       router.push(`/user/login?redirect=${pathname}`);
@@ -42,9 +44,17 @@ export default function ProgramDetailPage() {
       return;
     }
 
-    // If volunteer and logged in, proceed to application/booking
-    console.log("Proceeding to booking for program:", program.programId);
-    // router.push(`/apply/${program.programId}`);
+    try {
+      setApplying(true);
+      await volunteerApi.applyToProgram(program.programId);
+      alert("Application sent successfully!");
+      router.push('/volunteer/dashboard');
+    } catch (error: any) {
+      console.error("Booking error:", error);
+      alert(error.message || "Failed to book program");
+    } finally {
+      setApplying(false);
+    }
   };
 
   const fetchProgram = async () => {
@@ -184,7 +194,7 @@ export default function ProgramDetailPage() {
                 {/* --- Dynamic Button --- */}
                 <button 
                   onClick={handleApply}
-                  disabled={role === 'host'}
+                  disabled={role === 'host' || applying}
                   className={`w-full py-6 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all duration-500 shadow-lg active:scale-95 flex items-center justify-center gap-2
                     ${role === 'host' 
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none" 
@@ -192,7 +202,7 @@ export default function ProgramDetailPage() {
                   `}
                 >
                   {role === 'host' && <Lock size={14} />}
-                  {isLoggedIn ? (role === 'host' ? "Hosts Cannot Apply" : "Request to Book") : "Login to Book"}
+                  {isLoggedIn ? (role === 'host' ? "Hosts Cannot Apply" : (applying ? "Sending Request..." : "Request to Book")) : "Login to Book"}
                 </button>
 
                 {role === 'host' && (

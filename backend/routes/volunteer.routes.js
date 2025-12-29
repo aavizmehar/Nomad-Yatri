@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/multer.middleware");
 
 const {
   addOrUpdateProfile,
@@ -11,7 +12,7 @@ const {
 const {verifyJWT} = require("../middleware/auth.middleware");
 
 // Volunteer profile
-router.post("/profile", verifyJWT, addOrUpdateProfile);
+router.post("/profile", verifyJWT, upload.single('photo'), addOrUpdateProfile);
 router.get("/profile", verifyJWT, getProfile);
 
 // Applications

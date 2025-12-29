@@ -7,7 +7,7 @@ export const volunteerApi = {
   saveProfile: (data: any) =>
     http('/volunteer/profile', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     }),
 
   applyToProgram: (programId: number) =>

@@ -5,6 +5,7 @@ const User = require('../models/User.model');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
+const uploadOnCloudinary = require('../utils/cloudinary');
 
 // Add or update volunteer profile
 exports.addOrUpdateProfile = asyncHandler(async (req, res) => {
@@ -17,7 +18,20 @@ exports.addOrUpdateProfile = asyncHandler(async (req, res) => {
   // Check if user already has a volunteer profile
   let volunteer = await Volunteer.findOne({ where: { userId } });
 
-  const { name, age, country, skills, interests, languages, photo } = req.body;
+  let { name, age, country, skills, interests, languages, photo } = req.body;
+
+  // Handle photo upload if file exists
+  if (req.file) {
+    try {
+      const uploaded = await uploadOnCloudinary(req.file.buffer);
+      if (uploaded && uploaded.secure_url) {
+        photo = uploaded.secure_url;
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      // Optionally continue without photo or throw error
+    }
+  }
 
   if (!volunteer) {
     // Create new

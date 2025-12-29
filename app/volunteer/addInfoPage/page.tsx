@@ -16,11 +16,17 @@ export default function VolunteerAddInfoPage() {
     skills: '',
     interests: '',
     languages: '',
-    photo: '',
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPhotoFile(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e: any) => {
@@ -29,15 +35,25 @@ export default function VolunteerAddInfoPage() {
     setError('');
 
     try {
-      const payload = {
-        ...form,
-        age: Number(form.age),
-        skills: form.skills.split(',').map(s => s.trim()),
-        interests: form.interests.split(',').map(i => i.trim()),
-        languages: form.languages.split(',').map(l => l.trim()),
-      };
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('age', form.age);
+      formData.append('country', form.country);
+      
+      // Handle arrays
+      const skillsArray = form.skills.split(',').map(s => s.trim());
+      const interestsArray = form.interests.split(',').map(i => i.trim());
+      const languagesArray = form.languages.split(',').map(l => l.trim());
 
-      const res = await volunteerApi.saveProfile(payload);
+      skillsArray.forEach(s => formData.append('skills[]', s));
+      interestsArray.forEach(i => formData.append('interests[]', i));
+      languagesArray.forEach(l => formData.append('languages[]', l));
+
+      if (photoFile) {
+        formData.append('photo', photoFile);
+      }
+
+      const res = await volunteerApi.saveProfile(formData);
 
       if (res.success) {
         router.push('/volunteer/dashboard');
@@ -72,7 +88,16 @@ export default function VolunteerAddInfoPage() {
         <input name="skills" placeholder="Skills (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
         <input name="interests" placeholder="Interests (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
         <input name="languages" placeholder="Languages (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="photo" placeholder="Profile Photo URL" onChange={handleChange} className="w-full p-2 border rounded" />
+        
+        <div className="space-y-1">
+          <label className="text-sm text-gray-600">Profile Photo</label>
+          <input 
+            type="file" 
+            accept="image/*" 
+            onChange={handleFileChange} 
+            className="w-full p-2 border rounded"
+          />
+        </div>
 
         <button
           disabled={loading}
