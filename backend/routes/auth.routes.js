@@ -33,11 +33,9 @@ router.get('/google/callback',
             res.cookie("accessToken", accessToken, options);
             res.cookie("refreshToken", refreshToken, options);
 
-            // Redirect to frontend. Dashboard path depends on user role.
-            // Note: Use req.user.role if your strategy correctly saved/retrieved it.
-            const targetDashboard = req.user.role === 'host' ? '/host/dashboard' : '/volunteer/dashboard';
+            const callbackUrl = `${process.env.CORS_ORIGIN}/auth/callback?token=${accessToken}&role=${req.user.role}`;
             
-            res.redirect(`${process.env.CORS_ORIGIN}${targetDashboard}`);
+            res.redirect(callbackUrl);
             
         } catch (error) {
             console.error("LOG: Google Callback Error:", error);
