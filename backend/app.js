@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 require('./config/db');
 const cors = require('cors');
+const passport = require('passport');
 require('dotenv').config();
 require('./models/Association.model');
 var cookieParser = require('cookie-parser')
@@ -26,7 +27,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+app.use(passport.initialize());
 // routes
 const userRouter = require('./routes/user.routes.js');
 const hostRouter = require('./routes/host.routes.js');
@@ -44,7 +45,7 @@ app.use('/api/v1/programs', programPublicRouter);
 app.use('/api/v1/host/programs', programHostRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/contact', contactRouter);
-app.use('/auth', authRouter);
+app.use('/api/v1/auth', authRouter);
 
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
