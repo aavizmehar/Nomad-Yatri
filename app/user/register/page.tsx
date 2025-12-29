@@ -195,7 +195,7 @@ const UsersPage = () => {
 
             <button
               onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google?role=${role}`;
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?role=${role}`;
               }}
               className="w-full border-2 border-gray-100 py-3.5 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 font-medium text-gray-600"
             >
