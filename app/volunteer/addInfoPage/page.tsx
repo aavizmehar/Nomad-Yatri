@@ -7,6 +7,7 @@ import { volunteerApi } from '@/lib/api/volunteer.api';
 export default function VolunteerAddInfoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const [form, setForm] = useState({
     name: '',
@@ -25,6 +26,7 @@ export default function VolunteerAddInfoPage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
       const payload = {
@@ -39,9 +41,12 @@ export default function VolunteerAddInfoPage() {
 
       if (res.success) {
         router.push('/volunteer/dashboard');
+      } else {
+        setError(res.message || 'Failed to save profile');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setError(err.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -55,17 +60,23 @@ export default function VolunteerAddInfoPage() {
       >
         <h1 className="text-2xl font-bold text-center">Complete Your Profile</h1>
 
-        <input name="name" placeholder="Full Name" required onChange={handleChange} className="input" />
-        <input name="age" type="number" placeholder="Age" onChange={handleChange} className="input" />
-        <input name="country" placeholder="Country" onChange={handleChange} className="input" />
-        <input name="skills" placeholder="Skills (comma separated)" onChange={handleChange} className="input" />
-        <input name="interests" placeholder="Interests (comma separated)" onChange={handleChange} className="input" />
-        <input name="languages" placeholder="Languages (comma separated)" onChange={handleChange} className="input" />
-        <input name="photo" placeholder="Profile Photo URL" onChange={handleChange} className="input" />
+        {error && (
+          <div className="bg-red-50 text-red-600 p-3 rounded text-sm text-center border border-red-200">
+            {error}
+          </div>
+        )}
+
+        <input name="name" placeholder="Full Name" required onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="age" type="number" placeholder="Age" onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="country" placeholder="Country" onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="skills" placeholder="Skills (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="interests" placeholder="Interests (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="languages" placeholder="Languages (comma separated)" onChange={handleChange} className="w-full p-2 border rounded" />
+        <input name="photo" placeholder="Profile Photo URL" onChange={handleChange} className="w-full p-2 border rounded" />
 
         <button
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-md"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
           {loading ? 'Saving...' : 'Save & Continue'}
         </button>

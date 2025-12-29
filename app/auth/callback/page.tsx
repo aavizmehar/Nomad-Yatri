@@ -12,11 +12,12 @@ const GoogleCallback = () => {
   useEffect(() => {
     const token = searchParams.get("token");
     const role = searchParams.get("role");
+    const redirectPath = searchParams.get("redirect");
 
     if (token && role) {
       login(token, role);
       
-      router.replace(`/${role}/dashboard`);
+      router.replace(redirectPath || `/${role}/dashboard`);
     } else {
       router.replace("/user/login?error=google_failed");
     }

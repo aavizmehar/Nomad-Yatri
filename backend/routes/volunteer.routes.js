@@ -11,7 +11,7 @@ const {
 const {verifyJWT} = require("../middleware/auth.middleware");
 
 // Volunteer profile
-router.post("/", verifyJWT, addOrUpdateProfile);
+router.post("/profile", verifyJWT, addOrUpdateProfile);
 router.get("/profile", verifyJWT, getProfile);
 
 // Applications
