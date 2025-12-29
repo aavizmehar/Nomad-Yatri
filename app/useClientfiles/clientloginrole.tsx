@@ -42,7 +42,7 @@ const UserLoginClient = () => {
   };
 
   const handleGoogleLogin = () => {
-    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+    const serverUrl = process.env.NEXT_PUBLIC_API_URL;
     window.location.href = `${serverUrl}/auth/google`;
   };
 
