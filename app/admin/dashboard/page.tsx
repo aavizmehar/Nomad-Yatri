@@ -8,7 +8,9 @@ interface User {
   id: number;
   email: string;
   role: string;
-  Host?: { propertyName: string };
+  mobile?: string; // Added mobile
+  createdAt: string;
+  Host?: { propertyName: string; contact?: string }; // Added contact here
   Volunteer?: { name: string };
 }
 
@@ -25,6 +27,7 @@ interface Program {
   category: string;
   location: string;
   isActive: boolean;
+  createdAt: string;
 }
 
 interface Stats {
@@ -52,6 +55,11 @@ export default function AdminDashboard() {
     totalPrograms: 0,
   });
 
+  // Filter States
+  const [userRoleFilter, setUserRoleFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('DESC');
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,10 +78,22 @@ export default function AdminDashboard() {
       const headers = { Authorization: `Bearer ${token}` };
       const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
+      // Build query strings
+      const userParams = new URLSearchParams({
+        role: userRoleFilter,
+        sortBy: sortBy,
+        order: sortOrder
+      });
+
+      const programParams = new URLSearchParams({
+        sortBy: sortBy,
+        order: sortOrder
+      });
+
       const [resStats, resUsers, resPrograms] = await Promise.all([
         fetch(`${baseUrl}/admin/dashboard-stats`, { headers }),
-        fetch(`${baseUrl}/admin/users`, { headers }),
-        fetch(`${baseUrl}/admin/programs`, { headers }),
+        fetch(`${baseUrl}/admin/users?${userParams.toString()}`, { headers }),
+        fetch(`${baseUrl}/admin/programs?${programParams.toString()}`, { headers }),
       ]);
 
       const jsonStats = await resStats.json();
@@ -97,7 +117,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, userRoleFilter, sortBy, sortOrder]); // Re-fetch when filters change
 
   useEffect(() => {
     if (token && role === 'admin') {
@@ -112,9 +132,6 @@ export default function AdminDashboard() {
     router.replace('/user/login');
     return null;
   }
-
-  if (loading) return <p className="p-10 text-center">Loading Admin Data...</p>;
-  if (error) return <p className="p-10 text-center text-red-500">{error}</p>;
 
   // MATCHED WITH: router.route("/programs/:programId/toggle").patch(...)
   const handleToggleProgram = async (programId: number) => {
@@ -164,10 +181,19 @@ export default function AdminDashboard() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white p-6">
+      <aside className="w-64 bg-slate-900 text-white p-6 sticky top-0 h-screen">
         <h2 className="text-2xl font-bold mb-8">Admin Hub</h2>
         <nav className="space-y-4">
           <p className="opacity-50 text-sm uppercase">Management</p>
@@ -176,7 +202,7 @@ export default function AdminDashboard() {
         </nav>
       </aside>
 
-      <main className="flex-1 p-10">
+      <main className="flex-1 p-10 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-8 text-gray-800">System Dashboard</h1>
 
         <div className="grid grid-cols-3 gap-6 mb-10">
@@ -185,75 +211,146 @@ export default function AdminDashboard() {
           <StatBox title="Live Programs" count={stats.totalPrograms} />
         </div>
 
-        {/* USERS */}
-        <section className="bg-white rounded-xl shadow-sm overflow-hidden mb-10">
-          <div className="p-4 bg-gray-50 border-b font-bold">User Management</div>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-400 text-sm border-b">
-                <th className="p-4">Email</th>
-                <th className="p-4">Role</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.users.map((u, index) => (
-                <tr key={u.id ?? `user-${index}`} className="border-b hover:bg-gray-50">
-                  <td className="p-4">{u.email}</td>
-                  <td className="p-4 uppercase text-xs font-bold">{u.role}</td>
-                  <td className="p-4 text-right">
-                    <button
-                      onClick={() => handleDeleteUser(u.id)}
-                      className="text-red-500 hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        {/* Filters & Controls */}
+        <div className="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-wrap gap-4 items-center">
+          <span className="font-bold text-sm text-gray-500 uppercase">Filters:</span>
+          
+          <select 
+            className="border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            value={userRoleFilter}
+            onChange={(e) => setUserRoleFilter(e.target.value)}
+          >
+            <option value="all">All Roles</option>
+            <option value="host">Host</option>
+            <option value="volunteer">Volunteer</option>
+            <option value="admin">Admin</option>
+          </select>
 
-        {/* PROGRAMS */}
-        <section className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 bg-gray-50 border-b font-bold">Program Control</div>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-400 text-sm border-b">
-                <th className="p-4">Program</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.programs.map((p, index) => (
-                <tr key={p.id ?? `program-${index}`} className="border-b">
+          <select 
+            className="border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="DESC">Newest First</option>
+            <option value="ASC">Oldest First</option>
+          </select>
+        </div>
 
-                  <td className="p-4">{p.title}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${p.isActive
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
-                        }`}
-                    >
-                      {p.isActive ? 'Active' : 'Disabled'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <button
-                      onClick={() => handleToggleProgram(p.id)}
-                      className="text-blue-600 font-medium hover:underline"
-                    >
-                      {p.isActive ? 'Disable' : 'Enable'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        {loading ? (
+            <p className="text-center py-10">Refreshing Data...</p>
+        ) : error ? (
+            <p className="text-center text-red-500 py-10">{error}</p>
+        ) : (
+          <>
+            {/* USERS */}
+            <section className="bg-white rounded-xl shadow-sm overflow-hidden mb-10">
+              <div className="p-4 bg-gray-50 border-b font-bold flex justify-between items-center">
+                <span>User Management</span>
+                <span className="text-xs font-normal text-gray-500">Showing {data.users.length} users</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-gray-400 text-sm border-b">
+                      <th className="p-4">Created</th>
+                      <th className="p-4">Email</th>
+                      <th className="p-4">Mobile</th>
+                      <th className="p-4">Role</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.users.map((u, index) => (
+                      <tr key={u.id ?? `user-${index}`} className="border-b hover:bg-gray-50 transition-colors">
+                        <td className="p-4 text-sm text-gray-500">{formatDate(u.createdAt)}</td>
+                        <td className="p-4 font-medium">{u.email}</td>
+                        <td className="p-4 text-sm font-medium text-gray-600">
+                          {u.mobile || u.Host?.contact || 'N/A'}
+                        </td>
+                        <td className="p-4 uppercase text-xs font-bold">
+                          <span className={`px-2 py-1 rounded-full ${
+                            u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                            u.role === 'host' ? 'bg-blue-100 text-blue-700' :
+                            'bg-emerald-100 text-emerald-700'
+                          }`}>
+                            {u.role}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <button
+                            onClick={() => handleDeleteUser(u.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors text-sm font-medium"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {data.users.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="p-8 text-center text-gray-500">No users found matching filters.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* PROGRAMS */}
+            <section className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-4 bg-gray-50 border-b font-bold">Program Control</div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-gray-400 text-sm border-b">
+                      <th className="p-4">Created</th>
+                      <th className="p-4">Program</th>
+                      <th className="p-4">Host</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.programs.map((p, index) => (
+                      <tr key={p.id ?? `program-${index}`} className="border-b hover:bg-gray-50 transition-colors">
+                        <td className="p-4 text-sm text-gray-500">{formatDate(p.createdAt)}</td>
+                        <td className="p-4 font-medium">{p.title}</td>
+                        <td className="p-4 text-sm text-gray-500">{(p as any).Host?.propertyName || 'N/A'}</td>
+                        <td className="p-4">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-bold ${p.isActive
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700'
+                              }`}
+                          >
+                            {p.isActive ? 'Active' : 'Disabled'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <button
+                            onClick={() => handleToggleProgram(p.id)}
+                            className={`font-medium text-sm px-3 py-1 rounded-lg transition-colors ${
+                              p.isActive 
+                              ? 'text-orange-600 hover:bg-orange-50' 
+                              : 'text-green-600 hover:bg-green-50'
+                            }`}
+                          >
+                            {p.isActive ? 'Disable' : 'Enable'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {data.programs.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="p-8 text-center text-gray-500">No programs found.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
+        )}
       </main>
     </div>
   );

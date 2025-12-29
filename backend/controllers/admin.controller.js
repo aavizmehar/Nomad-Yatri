@@ -30,10 +30,19 @@ const getAdminStats = asyncHandler(async (req, res) => {
 
 // 2. Get All Users with Profiles
 const getAllUsers = asyncHandler(async (req, res) => {
+    const { role, sortBy = 'createdAt', order = 'DESC' } = req.query;
+    
+    const where = {};
+    if (role && role !== 'all') {
+        where.role = role;
+    }
+
     const users = await User.findAll({
+        where,
+        order: [[sortBy, order.toUpperCase()]],
         attributes: { exclude: ['password', 'refreshToken'] },
         include: [
-            { model: Host, attributes: ['propertyName', 'location'] },
+            { model: Host, attributes: ['propertyName', 'location', 'contact'] },
             { model: Volunteer, attributes: ['name'] }
         ]
     });
@@ -42,7 +51,10 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // 3. Get All Programs (Including Host details)
 const getAllProgramsAdmin = asyncHandler(async (req, res) => {
+    const { sortBy = 'createdAt', order = 'DESC' } = req.query;
+
     const programs = await Program.findAll({
+        order: [[sortBy, order.toUpperCase()]],
         include: {
             model: Host,
             attributes: ['propertyName', 'contact']
