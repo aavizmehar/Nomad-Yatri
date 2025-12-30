@@ -41,7 +41,7 @@ const UsersPage = () => {
       }
 
       if (login) {
-        login(data.data.user, data.data.accessToken);
+        login(data.data.accessToken,data.data.user.role);
       }
 
       router.push(data.data.redirectTo);

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { dashboardApi } from "@/lib/api/dashboard.api";
 
 // Define the shape of your form state
 interface FormState {
@@ -63,7 +64,7 @@ export default function HostAddInfoPage() {
     if (!form.contact) newErrors.contact = "Contact number is required";
     if (images.length === 0) newErrors.images = "At least one image is required";
 
-    setErrors(newErrors);
+  setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -74,12 +75,6 @@ export default function HostAddInfoPage() {
 
     if (!validate()) return;
 
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setGlobalError("Session expired. Please login again.");
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -87,26 +82,16 @@ export default function HostAddInfoPage() {
       Object.entries(form).forEach(([key, value]) => formData.append(key, value));
       images.forEach((img) => formData.append("propertyImages", img));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/host/addHostData`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-          credentials: "include",
-        }
-      );
+      const res = await dashboardApi.addHostProfile(formData);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || data.error || "Submission failed");
+      if (!res.success && res.message) {
+         throw new Error(res.message);
       }
 
       setSuccess("🎉 Host information added successfully!");
-      setTimeout(() => router.push("/host/dashboard"), 1500);
+      setTimeout(() => router.push("/host/dashboard"), 500);
     } catch (err: any) {
-      setGlobalError(err.message);
+      setGlobalError(err.message || "Submission failed");
     } finally {
       setLoading(false);
     }

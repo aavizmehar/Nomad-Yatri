@@ -4,7 +4,7 @@ import { useState, useContext, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthContext } from "../context/AuthContext";
-
+import { authApi } from "@/lib/api/auth.api";
 const UserLoginClient = () => {
   const router = useRouter();
   const { login } = useContext(AuthContext);
@@ -21,21 +21,12 @@ const UserLoginClient = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || data.message || "Login failed");
-
-      const { user, accessToken } = data.data;
+      const response = await authApi.login({ email, password });
+      const { user, accessToken, redirectTo } = response.data;
       login(accessToken, user.role);
-      router.push(data.data.redirectTo || "/dashboard");
+      router.push(redirectTo || "/dashboard");
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -50,7 +41,7 @@ const UserLoginClient = () => {
     <div className="min-h-screen bg-white text-black selection:bg-yellow-100">
       <main className="max-w-7xl mx-auto px-6 lg:px-16 py-12 lg:py-24 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
         
-         <div className="space-y-8">
+        <div className="space-y-8">
           <h1 className="text-6xl lg:text-8xl font-black leading-[0.8] tracking-tighter uppercase italic">
             WELCOME <br />
             <span className="text-[#58a67d] not-italic">BACK.</span>
@@ -96,8 +87,8 @@ const UserLoginClient = () => {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center ml-1">
-                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Password</label>
-                    <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-[#58a67d] hover:underline">Forgot?</Link>
+                  <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Password</label>
+                  <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-[#58a67d] hover:underline">Forgot?</Link>
                 </div>
                 <div className="relative">
                   <input

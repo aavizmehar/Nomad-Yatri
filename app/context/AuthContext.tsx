@@ -7,7 +7,7 @@ interface AuthContextType {
   role: string | null;
   loading: boolean; 
   login: (accessToken: string, role: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextType>({
   role: null,
   loading: true,
   login: () => {},
-  logout: () => {},
+  logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -23,44 +23,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const verifySession = useCallback(async () => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-      credentials: "include", 
-    });
-    
-    if (res.ok) {
-      const data = await res.json();
-      const userRole = data?.data?.user?.role; 
-      if (userRole) {
-        setIsLoggedIn(true);
-        setRole(userRole);
-        localStorage.setItem("role", userRole);
-      } else {
-        logout(); 
-      }
-    } else {
-      logout(); 
-    }
-  } catch (err) {
-    console.error("backend is unreachable", err);
-    logout();
-  } finally {
-    setLoading(false);
-  }
-}, []);
+  const clearLocalAuth = useCallback(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    setRole(null);
+  }, []);
 
+  const verifySession = useCallback(async () => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token || token === "[object Object]") {
+      clearLocalAuth();
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include", 
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        const userRole = data?.data?.user?.role; 
+        if (userRole) {
+          setIsLoggedIn(true);
+          setRole(userRole);
+          localStorage.setItem("role", userRole);
+        } else {
+          clearLocalAuth();
+        }
+      } else {
+        clearLocalAuth();
+      }
+    } catch (err) {
+      console.error("Backend unreachable during verification", err);
+      clearLocalAuth();
+    } finally {
+      setLoading(false);
+    }
+  }, [clearLocalAuth]);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("role");
-
     if (token) {
-      setIsLoggedIn(true);
-      setRole(userRole);
-      setLoading(false);
-    } else {
       verifySession();
+    } else {
+      setLoading(false);
     }
   }, [verifySession]);
 
@@ -71,11 +84,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setRole(userRole);
   };
 
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("role");
-    setIsLoggedIn(false);
-    setRole(null);
+  const logout = async () => {
+    const token = localStorage.getItem("accessToken");
+    
+    try {
+      if (token && token !== "[object Object]") {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          credentials: "include", 
+        });
+      }
+    } catch (error) {
+      console.warn("Server-side logout failed, clearing local session.");
+    } finally {
+      clearLocalAuth();
+      window.location.href = "/user/login";
+    }
   };
 
   return (
