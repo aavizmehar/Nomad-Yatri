@@ -3,7 +3,6 @@ const express = require('express');
 require('./config/db');
 const cors = require('cors');
 const passport = require('passport');
-require('dotenv').config();
 require('./models/Association.model');
 var cookieParser = require('cookie-parser')
 const allowedOrigins = [
