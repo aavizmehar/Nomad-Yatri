@@ -26,13 +26,38 @@ export default function ProgramDetailPage() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [applying, setApplying] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
   // Dialog State
   const { showDialog, DialogComponent } = useDialog();
 
   useEffect(() => {
-    fetchProgram();
-  }, [params.programId]);
+    const fetchProgramAndCheckStatus = async () => {
+      try {
+        setLoading(true);
+        const programId = Number(params.programId);
+        if (Number.isNaN(programId)) throw new Error("Invalid program ID");
+
+        // Fetch program details
+        const programResponse = await dashboardApi.getProgram(programId);
+        setProgram(programResponse.data.program);
+
+        // If user is a volunteer, check their application status
+        if (isLoggedIn && role === 'volunteer') {
+          const applicationsResponse = await volunteerApi.getMyApplications();
+          const applications = applicationsResponse.data.applications || [];
+          const alreadyApplied = applications.some((app: any) => app.programId === programId);
+          setHasApplied(alreadyApplied);
+        }
+      } catch (error) {
+        console.error('Error fetching program or application status:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgramAndCheckStatus();
+  }, [params.programId, isLoggedIn, role]);
 
   // --- Logic for Application ---
   const handleApply = async () => {
@@ -61,18 +86,6 @@ export default function ProgramDetailPage() {
     }
   };
 
-  const fetchProgram = async () => {
-    try {
-      const programId = Number(params.programId);
-      if (Number.isNaN(programId)) throw new Error("Invalid program ID");
-      const response = await dashboardApi.getProgram(programId);
-      setProgram(response.data.program);
-    } catch (error) {
-      console.error('Error fetching program:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getSafeImages = () => {
     const fallback = "/featuredImgs/weekendtrips.webp";
@@ -199,15 +212,19 @@ export default function ProgramDetailPage() {
                 {/* --- Dynamic Button --- */}
                 <button 
                   onClick={handleApply}
-                  disabled={role === 'host' || applying}
+                  disabled={role === 'host' || applying || hasApplied}
                   className={`w-full py-6 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all duration-500 shadow-lg active:scale-95 flex items-center justify-center gap-2
-                    ${role === 'host' 
+                    ${role === 'host' || hasApplied 
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none" 
                       : "bg-yellow-400 hover:bg-black text-black hover:text-white shadow-yellow-400/20"}
                   `}
                 >
                   {role === 'host' && <Lock size={14} />}
-                  {isLoggedIn ? (role === 'host' ? "Hosts Cannot Apply" : (applying ? "Sending Request..." : "Request to Book")) : "Login to Book"}
+                  {isLoggedIn ? 
+                    (role === 'host' ? "Hosts Cannot Apply" : 
+                      (hasApplied ? "Already Applied" : 
+                        (applying ? "Sending Request..." : "Request to Book"))) 
+                    : "Login to Book"}
                 </button>
 
                 {role === 'host' && (
