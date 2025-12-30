@@ -50,13 +50,13 @@ const Navbar: React.FC = () => {
   return (
     <nav className="w-full bg-white/90 backdrop-blur-2xl border-b border-gray-100 fixed top-0 left-0 z-[100] transition-all duration-300">
       <div className="container mx-auto flex items-center justify-between px-6 h-20">
-        
+
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative shrink-0">
             <Image
               src="/logo.png"
-              height={70} 
+              height={70}
               width={70}
               alt="Nomad Yatri Logo"
               className="group-hover:rotate-[15deg] transition-transform duration-500"
@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
         <div className="hidden lg:flex items-center space-x-10">
           <ul className="flex items-center space-x-8 text-[13px] font-bold uppercase tracking-widest text-gray-500">
             <li><Link href="/" className="hover:text-black transition-colors">Home</Link></li>
-            
+
             {/* Experiences Dropdown */}
             <li className="relative group">
               <button className="flex items-center gap-2 hover:text-black transition-colors">
@@ -120,31 +120,30 @@ const Navbar: React.FC = () => {
           <div className="relative border-l border-gray-100 pl-8" ref={dropdownRef}>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 shadow-lg ${
-                isLoggedIn ? "bg-black text-white" : "bg-yellow-400 text-black hover:bg-black hover:text-white"
-              }`}
+              className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 shadow-lg ${isLoggedIn ? "bg-black text-white" : "bg-yellow-400 text-black hover:bg-black hover:text-white"
+                }`}
             >
               <UserProfileIcon />
               <span className="text-xs font-black uppercase tracking-widest">{isLoggedIn ? "Account" : "Join Now"}</span>
             </button>
 
             {isOpen && (
-               <div className="absolute right-0 mt-5 w-64 bg-white border border-gray-50 shadow-2xl rounded-[2rem] p-4 z-50 animate-in fade-in zoom-in duration-200">
-                  <ul className="text-sm font-bold tracking-wide">
-                    {isLoggedIn ? (
-                      <>
-                        <li><Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">User Dashboard</Link></li>
-                        <div className="h-px bg-gray-100 my-2 mx-4" />
-                        <li><button onClick={() => { logout(); setIsOpen(false); router.push("/user/login"); }} className="w-full text-left px-5 py-4 text-red-500 hover:bg-red-50 rounded-2xl transition">Sign Out</button></li>
-                      </>
-                    ) : (
-                      <>
-                        <li><Link href="/user/login" onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Sign In</Link></li>
-                        <li><Link href="/user/register" onClick={() => setIsOpen(false)} className="block px-5 py-4 bg-black text-white text-center rounded-2xl mt-2 transition">Create Account</Link></li>
-                      </>
-                    )}
-                  </ul>
-               </div>
+              <div className="absolute right-0 mt-5 w-64 bg-white border border-gray-50 shadow-2xl rounded-[2rem] p-4 z-50 animate-in fade-in zoom-in duration-200">
+                <ul className="text-sm font-bold tracking-wide">
+                  {isLoggedIn ? (
+                    <>
+                      <li><Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">User Dashboard</Link></li>
+                      <div className="h-px bg-gray-100 my-2 mx-4" />
+                      <li><button onClick={() => { logout(); setIsOpen(false); router.push("/user/login"); }} className="w-full text-left px-5 py-4 text-red-500 hover:bg-red-50 rounded-2xl transition">Sign Out</button></li>
+                    </>
+                  ) : (
+                    <>
+                      <li><Link href="/user/login" onClick={() => setIsOpen(false)} className="block px-5 py-4 hover:bg-gray-50 rounded-2xl transition">Sign In</Link></li>
+                      <li><Link href="/user/register" onClick={() => setIsOpen(false)} className="block px-5 py-4 bg-black text-white text-center rounded-2xl mt-2 transition">Create Account</Link></li>
+                    </>
+                  )}
+                </ul>
+              </div>
             )}
           </div>
         </div>
@@ -160,9 +159,52 @@ const Navbar: React.FC = () => {
         <div className="fixed h-screen inset-0 top-[85px] bg-white z-[90] px-10 py-8 flex flex-col space-y-6 overflow-y-auto animate-in slide-in-from-bottom duration-500">
           <ul className="space-y-6">
             <li><Link href="/" onClick={handleMobileLinkClick} className="text-3xl font-bold tracking-tighter text-gray-900">Home</Link></li>
-            {/* ... other mobile links ... */}
+            {/* Experiences Accordion */}
+            <li className="border-b border-gray-100 pb-4">
+              <button onClick={() => setMobileExpOpen(!mobileExpOpen)} className="flex items-center justify-between w-full text-3xl font-bold tracking-tighter text-gray-900">
+                Experiences <IoIosArrowDown className={`transition-transform duration-300 ${mobileExpOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileExpOpen && (
+                <ul className="mt-4 space-y-4 pl-4 text-lg font-medium text-gray-500">
+                  <li><Link href="/experiences/volunteer-programs" onClick={handleMobileLinkClick}>Volunteer Programs</Link></li>
+                  <li><Link href="/experiences/work-exchange" onClick={handleMobileLinkClick}>Work Exchange</Link></li>
+                  <li><Link href="/experiences/digital-nomad-stays" onClick={handleMobileLinkClick}>Digital Nomad Stays</Link></li>
+                  <li><Link href="/programs" onClick={handleMobileLinkClick} className="text-yellow-600 font-bold">View All Programs</Link></li>
+                </ul>
+              )}
+            </li>
+
+            {/* Community Accordion */}
+            <li className="border-b border-gray-100 pb-4">
+              <button onClick={() => setMobileComOpen(!mobileComOpen)} className="flex items-center justify-between w-full text-3xl font-bold tracking-tighter text-gray-900">
+                Community <IoIosArrowDown className={`transition-transform duration-300 ${mobileComOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileComOpen && (
+                <ul className="mt-4 space-y-4 pl-4 text-lg font-medium text-gray-500">
+                  <li><Link href="/about" onClick={handleMobileLinkClick}>About Us</Link></li>
+                  <li><Link href="/blog" onClick={handleMobileLinkClick}>Journal</Link></li>
+                  <li><Link href="/contact" onClick={handleMobileLinkClick}>Contact</Link></li>
+                </ul>
+              )}
+            </li>
+
+            <li><Link href="/pricing" onClick={handleMobileLinkClick} className="text-3xl font-bold tracking-tighter text-gray-900">Pricing</Link></li>
           </ul>
-          {/* ... mobile auth actions ... */}
+
+          {/* Auth Actions */}
+          <div className="pt-8 border-t border-gray-100 flex flex-col gap-4">
+            {isLoggedIn ? (
+              <>
+                <Link href={role === "host" ? "/host/dashboard" : "/user/profile"} onClick={handleMobileLinkClick} className="py-6 text-center bg-black text-white rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-xl">My Dashboard</Link>
+                <button onClick={() => { logout(); setIsMobileOpen(false); router.push("/user/login"); }} className="py-6 text-center border-2 border-red-500 text-red-500 rounded-[2rem] text-sm font-black uppercase tracking-widest">Sign Out</button>
+              </>
+            ) : (
+              <>
+                <Link href="/user/login" onClick={handleMobileLinkClick} className="py-6 text-center border-2 border-black rounded-[2rem] text-sm font-black uppercase tracking-widest">Sign In</Link>
+                <Link href="/user/register" onClick={handleMobileLinkClick} className="py-6 text-center bg-yellow-400 text-black rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-xl">Join Nomad Yatri</Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </nav>
