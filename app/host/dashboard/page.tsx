@@ -9,6 +9,7 @@ import { Program } from '@/types/program';
 import { PROGRAM_CATEGORIES, CATEGORY_SUBCATEGORIES } from '@/constants/programCategories';
 import { AuthContext } from '@/context/AuthContext';
 import { dashboardApi } from '@/lib/api/dashboard.api';
+import { useDialog } from '@/hooks/useDialog';
 
 interface Application {
   applicationId: number;
@@ -39,6 +40,9 @@ export default function HostDashboard() {
   const [selectedVolunteer, setSelectedVolunteer] = useState<any>(null);
   const [isEditingProgram, setIsEditingProgram] = useState(false);
   const [editingProgramId, setEditingProgramId] = useState<number | null>(null);
+  
+  // Dialog State
+  const { showDialog, DialogComponent } = useDialog();
   
   // Data States
   const [hostProfile, setHostProfile] = useState<any>(null);
@@ -138,7 +142,10 @@ export default function HostDashboard() {
 
   const handleCreateOrUpdateProgram = async () => {
     try {
-      if (programImages.length === 0 && !isEditingProgram) { alert("Please upload at least one image"); return; }
+      if (programImages.length === 0 && !isEditingProgram) { 
+        showDialog("Missing Information", "Please upload at least one image", "warning"); 
+        return; 
+      }
       
       const fd = new FormData();
       Object.entries(formData).forEach(([key, value]) => fd.append(key, String(value)));
@@ -148,7 +155,7 @@ export default function HostDashboard() {
       if (isEditingProgram && editingProgramId) {
         response = await dashboardApi.updateProgram(editingProgramId, fd);
         if (response.success) {
-            alert("Program updated successfully!");
+            showDialog("Success", "Program updated successfully!", "success");
             setIsEditingProgram(false);
             setEditingProgramId(null);
         } else {
@@ -157,7 +164,7 @@ export default function HostDashboard() {
       } else {
         response = await dashboardApi.createProgram(fd);
         if (response.success) {
-            alert("Program created successfully!");
+            showDialog("Success", "Program created successfully!", "success");
         } else {
              throw new Error(response.message || "Failed to create program");
         }
@@ -168,7 +175,9 @@ export default function HostDashboard() {
       setProgramImages([]);
       setActiveTab("Manage Listings");
       fetchPrograms();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { 
+        showDialog("Error", err.message, "error"); 
+    }
   };
 
   const startEditProgram = (program: Program) => {
@@ -186,12 +195,24 @@ export default function HostDashboard() {
     setActiveTab('Post New Opportunity');
   };
 
-  const handleDeleteProgram = async (programId: number) => {
-    if (!confirm('Delete this program?')) return;
+  const executeDeleteProgram = async (programId: number) => {
     try {
       await dashboardApi.deleteProgram(programId);
       setPrograms(prev => prev.filter(p => p.programId !== programId));
-    } catch (err) { console.error(err); }
+      showDialog("Deleted", "Program has been deleted successfully", "success");
+    } catch (err: any) { 
+        console.error(err); 
+        showDialog("Error", "Failed to delete program", "error");
+    }
+  };
+
+  const confirmDeleteProgram = (programId: number) => {
+    showDialog(
+        "Delete Program?", 
+        "Are you sure you want to delete this program? This action cannot be undone.", 
+        "confirm", 
+        () => executeDeleteProgram(programId)
+    );
   };
 
   const handleUpdateProfile = async () => {
@@ -201,21 +222,29 @@ export default function HostDashboard() {
       profileImages.forEach(img => fd.append("propertyImages", img));
 
       await dashboardApi.updateHostProfile(fd);
-      alert("Profile updated successfully!");
+      showDialog("Success", "Profile updated successfully!", "success");
       fetchHostProfile();
     } catch (err: any) {
-      alert("Failed to update profile: " + err.message);
+      showDialog("Error", "Failed to update profile: " + err.message, "error");
     }
   };
 
-  const updateApplicationStatus = async (applicationId: number, status: "accepted" | "rejected") => {
-    const action = status === 'accepted' ? 'Accept' : 'Reject';
-    if (!confirm(`Are you sure you want to ${action} this application?`)) return;
-
+  const executeUpdateApplicationStatus = async (applicationId: number, status: "accepted" | "rejected") => {
     try {
       await dashboardApi.updateApplicationStatus(applicationId, status);
       fetchApplications();
+      showDialog("Success", `Application ${status} successfully`, "success");
     } catch (err) { console.error(err); }
+  };
+
+  const confirmUpdateApplicationStatus = (applicationId: number, status: "accepted" | "rejected") => {
+      const action = status === 'accepted' ? 'Accept' : 'Reject';
+      showDialog(
+          `${action} Application?`,
+          `Are you sure you want to ${action.toLowerCase()} this application?`,
+          "confirm",
+          () => executeUpdateApplicationStatus(applicationId, status)
+      );
   };
 
   const menuItems = [
@@ -227,7 +256,8 @@ export default function HostDashboard() {
 
   return (
     <div className="flex h-screen bg-[#F8FAFC] text-slate-900 overflow-hidden">
-      
+      <DialogComponent />
+
       {/* MOBILE OVERLAY */}
       {isMobileMenuOpen && (
         <div 
@@ -425,7 +455,7 @@ export default function HostDashboard() {
                             <FaEdit />
                           </button>
                           <button 
-                            onClick={() => handleDeleteProgram(p.programId)} 
+                            onClick={() => confirmDeleteProgram(p.programId)} 
                             className="w-10 h-10 flex items-center justify-center text-red-400 hover:bg-red-50 hover:text-red-600 rounded-full transition-all"
                           >
                             <FaTrash />
@@ -624,13 +654,13 @@ export default function HostDashboard() {
                     {app.status === 'pending' && (
                       <div className="flex gap-2 w-full sm:w-auto">
                         <button 
-                          onClick={() => updateApplicationStatus(app.applicationId, 'accepted')} 
+                          onClick={() => confirmUpdateApplicationStatus(app.applicationId, 'accepted')} 
                           className="flex-1 sm:flex-none bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95"
                         >
                           Accept
                         </button>
                         <button 
-                          onClick={() => updateApplicationStatus(app.applicationId, 'rejected')} 
+                          onClick={() => confirmUpdateApplicationStatus(app.applicationId, 'rejected')} 
                           className="flex-1 sm:flex-none bg-white text-red-500 border border-red-100 px-6 py-2.5 rounded-xl font-bold hover:bg-red-50 transition-all active:scale-95"
                         >
                           Reject

@@ -4,11 +4,15 @@ import { dashboardApi } from '@/lib/api/dashboard.api';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Program } from '@/types/program';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function MyProgramsPage() {
   // 2. Assign the Program type to the state
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Dialog State
+  const { showDialog, DialogComponent } = useDialog();
 
   useEffect(() => {
     fetchPrograms();
@@ -28,21 +32,28 @@ export default function MyProgramsPage() {
     }
   };
 
-  // 3. FIXED: Added type for programId parameter
-  const handleDelete = async (programId: number) => {
-    if (!confirm('Are you sure you want to delete this program?')) return;
-
+  const executeDelete = async (programId: number) => {
     try {
       const response = await dashboardApi.deleteProgram(programId);
       if (response.success) {
-        alert('Program deleted successfully');
+        showDialog("Success", 'Program deleted successfully', "success");
         // Refresh the list locally instead of a full fetch to be faster
         setPrograms(prev => prev.filter(p => p.programId !== programId));
       }
     } catch (error) {
       console.error('Error deleting program:', error);
-      alert('Failed to delete program');
+      showDialog("Error", 'Failed to delete program', "error");
     }
+  };
+
+  // 3. FIXED: Added type for programId parameter
+  const confirmDelete = (programId: number) => {
+    showDialog(
+        "Delete Program?",
+        "Are you sure you want to delete this program? This action cannot be undone.",
+        "confirm",
+        () => executeDelete(programId)
+    );
   };
 
   if (loading) {
@@ -55,6 +66,8 @@ export default function MyProgramsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 text-black">
+      <DialogComponent />
+
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Programs</h1>
@@ -126,7 +139,7 @@ export default function MyProgramsPage() {
                       Edit in Dashboard
                     </Link>
                     <button
-                      onClick={() => handleDelete(program.programId)}
+                      onClick={() => confirmDelete(program.programId)}
                       className="flex-1 bg-red-600 text-white py-2 rounded text-sm font-semibold hover:bg-red-700 transition"
                     >
                       Delete

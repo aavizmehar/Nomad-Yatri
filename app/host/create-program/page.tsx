@@ -6,6 +6,7 @@ import {
   PROGRAM_CATEGORIES,
   CATEGORY_SUBCATEGORIES
 } from '@/constants/programCategories';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function CreateProgramPage() {
   const router = useRouter();
@@ -21,6 +22,9 @@ export default function CreateProgramPage() {
   });
   const [images, setImages] = useState<File[]>([]); // Type added for File array
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Type added for strings
+
+  // Dialog State
+  const { showDialog, DialogComponent } = useDialog();
 
   // Type safe lookup for categories
   const categoryKey = formData.category as keyof typeof CATEGORY_SUBCATEGORIES;
@@ -75,12 +79,13 @@ export default function CreateProgramPage() {
       const response = await dashboardApi.createProgram(formDataToSend);
       
       if (response.success) {
-        alert('Program created successfully!');
-        router.push('/host/my-programs');
+        showDialog("Success", "Program created successfully!", "success", () => {
+             router.push('/host/my-programs');
+        });
       }
     } catch (error) {
       console.error('Error creating program:', error);
-      alert('Failed to create program. Please try again.');
+      showDialog("Error", 'Failed to create program. Please try again.', "error");
     } finally {
       setLoading(false);
     }
@@ -88,6 +93,8 @@ export default function CreateProgramPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 text-black">
+      <DialogComponent />
+
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-6">Create New Program</h1>

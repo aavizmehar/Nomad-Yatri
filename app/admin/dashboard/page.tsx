@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDialog } from '@/hooks/useDialog';
 
 // --- TYPES & INTERFACES ---
 interface User {
@@ -42,6 +43,9 @@ export default function AdminDashboard() {
   const [mounted, setMounted] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+
+  // Dialog State
+  const { showDialog, DialogComponent } = useDialog();
 
   const [data, setData] = useState<{ users: User[]; hosts: Host[]; programs: Program[] }>({
     users: [],
@@ -151,16 +155,15 @@ export default function AdminDashboard() {
             p.id === programId ? { ...p, isActive: !p.isActive } : p
           ),
         }));
+        showDialog("Success", "Program status updated successfully", "success");
       }
     } catch {
-      alert('Toggle failed');
+      showDialog("Error", 'Toggle failed', "error");
     }
   };
 
   // MATCHED WITH: router.route("/users/:id").delete(...)
-  const handleDeleteUser = async (userId: number) => {
-    if (!confirm('Are you sure? This will delete all associated profiles.')) return;
-
+  const executeDeleteUser = async (userId: number) => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}`,
@@ -175,10 +178,22 @@ export default function AdminDashboard() {
           ...prev,
           users: prev.users.filter(u => u.id !== userId),
         }));
+        showDialog("Success", "User deleted successfully", "success");
+      } else {
+        showDialog("Error", 'Delete failed', "error");
       }
     } catch {
-      alert('Delete failed');
+      showDialog("Error", 'Delete failed', "error");
     }
+  };
+
+  const confirmDeleteUser = (userId: number) => {
+    showDialog(
+      "Delete User?",
+      "Are you sure? This will delete all associated profiles.",
+      "confirm",
+      () => executeDeleteUser(userId)
+    );
   };
 
   const formatDate = (dateString: string) => {
@@ -192,6 +207,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
+      <DialogComponent />
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white p-6 sticky top-0 h-screen">
         <h2 className="text-2xl font-bold mb-8">Admin Hub</h2>
@@ -278,7 +294,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="p-4 text-right">
                           <button
-                            onClick={() => handleDeleteUser(u.id)}
+                            onClick={() => confirmDeleteUser(u.id)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors text-sm font-medium"
                           >
                             Delete

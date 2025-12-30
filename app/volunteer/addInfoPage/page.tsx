@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { volunteerApi } from '@/lib/api/volunteer.api';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function VolunteerAddInfoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { showDialog, DialogComponent } = useDialog();
 
   const [form, setForm] = useState({
     name: '',
@@ -56,13 +59,15 @@ export default function VolunteerAddInfoPage() {
       const res = await volunteerApi.saveProfile(formData);
 
       if (res.success) {
-        router.push('/volunteer/dashboard');
+        showDialog("Success", "Profile saved successfully!", "success", () => {
+             router.push('/volunteer/dashboard');
+        });
       } else {
-        setError(res.message || 'Failed to save profile');
+        showDialog("Error", res.message || 'Failed to save profile', "error");
       }
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'An unexpected error occurred');
+      showDialog("Error", err.message || 'An unexpected error occurred', "error");
     } finally {
       setLoading(false);
     }
@@ -70,17 +75,12 @@ export default function VolunteerAddInfoPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <DialogComponent />
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
       >
         <h1 className="text-2xl font-bold text-center">Complete Your Profile</h1>
-
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded text-sm text-center border border-red-200">
-            {error}
-          </div>
-        )}
 
         <input name="name" placeholder="Full Name" required onChange={handleChange} className="w-full p-2 border rounded" />
         <input name="age" type="number" placeholder="Age" onChange={handleChange} className="w-full p-2 border rounded" />
@@ -109,3 +109,4 @@ export default function VolunteerAddInfoPage() {
     </div>
   );
 }
+

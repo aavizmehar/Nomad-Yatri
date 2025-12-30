@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { dashboardApi } from '@/lib/api/dashboard.api';
 import { volunteerApi } from '@/lib/api/volunteer.api';
 import { AuthContext } from '@/context/AuthContext'; // Import your AuthContext
+import { useDialog } from '@/hooks/useDialog';
 
 export default function ProgramDetailPage() {
   const params = useParams();
@@ -26,6 +27,9 @@ export default function ProgramDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [applying, setApplying] = useState(false);
 
+  // Dialog State
+  const { showDialog, DialogComponent } = useDialog();
+
   useEffect(() => {
     fetchProgram();
   }, [params.programId]);
@@ -39,19 +43,19 @@ export default function ProgramDetailPage() {
     }
 
     if (role === 'host') {
-      // You can replace this with a toast notification
-      alert("Host accounts cannot apply for programs. Please use a volunteer account.");
+      showDialog("Account Type Error", "Host accounts cannot apply for programs. Please use a volunteer account.", "error");
       return;
     }
 
     try {
       setApplying(true);
       await volunteerApi.applyToProgram(program.programId);
-      alert("Application sent successfully!");
-      router.push('/volunteer/dashboard');
+      showDialog("Success", "Application sent successfully!", "success", () => {
+        router.push('/volunteer/dashboard');
+      });
     } catch (error: any) {
       console.error("Booking error:", error);
-      alert(error.message || "Failed to book program");
+      showDialog("Error", error.message || "Failed to book program", "error");
     } finally {
       setApplying(false);
     }
@@ -102,6 +106,7 @@ export default function ProgramDetailPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
+      <DialogComponent />
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-50">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <button onClick={() => router.back()} className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-all">
