@@ -88,10 +88,21 @@ const adminDeleteUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, null, "User deleted successfully"));
 });
 
+// 6. Delete a Program
+const adminDeleteProgram = asyncHandler(async (req, res) => {
+    const { programId } = req.params;
+    const program = await Program.findByPk(programId);
+    if (!program) throw new ApiError(404, "Program not found");
+
+    await program.destroy();
+    return res.status(200).json(new ApiResponse(200, null, "Program deleted successfully"));
+});
+
 module.exports = {
     getAdminStats,
     getAllUsers,
     getAllProgramsAdmin,
     toggleProgramVisibility,
-    adminDeleteUser
+    adminDeleteUser,
+    adminDeleteProgram
 };

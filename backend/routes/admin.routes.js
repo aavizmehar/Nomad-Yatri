@@ -5,7 +5,8 @@ const {
     getAllUsers,
     getAllProgramsAdmin,
     toggleProgramVisibility,
-    adminDeleteUser
+    adminDeleteUser,
+    adminDeleteProgram
 } = require('../controllers/admin.controller');
 
 const router = Router();
@@ -19,6 +20,7 @@ router.route("/dashboard-stats").get(getAdminStats);
 router.route("/users").get(getAllUsers);
 router.route("/users/:id").delete(adminDeleteUser);
 router.route("/programs").get(getAllProgramsAdmin);
+router.route("/programs/:programId").delete(adminDeleteProgram);
 router.route("/programs/:programId/toggle").patch(toggleProgramVisibility);
 
 module.exports = router;
