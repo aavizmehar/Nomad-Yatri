@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
         `;
 
         // Using your existing helper
-        await sendAdminEmail(subject, htmlBody);
+        sendAdminEmail(subject, htmlBody);
 
         res.status(200).json({ success: true, message: "Email dispatched" });
     } catch (error) {

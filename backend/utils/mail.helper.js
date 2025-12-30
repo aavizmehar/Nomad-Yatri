@@ -13,9 +13,6 @@ const sendAdminEmail = async (subject, htmlMessage) => {
       },
     });
 
-    await transporter.verify();
-    console.log("SMTP connection OK");
-
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("No ADMIN_EMAIL defined in .env");
     }
