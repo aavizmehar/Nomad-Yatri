@@ -9,10 +9,9 @@ interface User {
   id: number;
   email: string;
   role: string;
-  mobile?: string; // Added mobile
   createdAt: string;
   Host?: { propertyName: string; contact?: string }; // Added contact here
-  Volunteer?: { name: string };
+  Volunteer?: { name: string; contact?: string };
 }
 
 interface Host {
@@ -281,7 +280,7 @@ export default function AdminDashboard() {
                         <td className="p-4 text-sm text-gray-500">{formatDate(u.createdAt)}</td>
                         <td className="p-4 font-medium">{u.email}</td>
                         <td className="p-4 text-sm font-medium text-gray-600">
-                          {u.mobile || u.Host?.contact || 'N/A'}
+                          {u.Host?.contact || u.Volunteer?.contact || 'N/A'}
                         </td>
                         <td className="p-4 uppercase text-xs font-bold">
                           <span className={`px-2 py-1 rounded-full ${

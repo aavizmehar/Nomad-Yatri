@@ -43,7 +43,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
         attributes: { exclude: ['password', 'refreshToken'] },
         include: [
             { model: Host, attributes: ['propertyName', 'location', 'contact'] },
-            { model: Volunteer, attributes: ['name'] }
+            { model: Volunteer, attributes: ['name', 'contact'] }
         ]
     });
     return res.status(200).json(new ApiResponse(200, users, "Users and profiles fetched"));

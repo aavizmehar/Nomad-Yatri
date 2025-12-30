@@ -18,7 +18,7 @@ exports.addOrUpdateProfile = asyncHandler(async (req, res) => {
   // Check if user already has a volunteer profile
   let volunteer = await Volunteer.findOne({ where: { userId } });
 
-  let { name, age, country, skills, interests, languages, photo } = req.body;
+  let { name, age, country, skills, interests, languages, photo, contact } = req.body;
 
   // Handle photo upload if file exists
   if (req.file) {
@@ -43,7 +43,8 @@ exports.addOrUpdateProfile = asyncHandler(async (req, res) => {
       skills,
       interests,
       languages,
-      photo
+      photo,
+      contact
     });
   } else {
     // Update existing
@@ -54,7 +55,8 @@ exports.addOrUpdateProfile = asyncHandler(async (req, res) => {
       skills: skills || volunteer.skills,
       interests: interests || volunteer.interests,
       languages: languages || volunteer.languages,
-      photo: photo || volunteer.photo
+      photo: photo || volunteer.photo,
+      contact: contact || volunteer.contact
     });
   }
 

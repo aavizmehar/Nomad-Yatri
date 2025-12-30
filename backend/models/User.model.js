@@ -31,10 +31,6 @@ const User = sequelize.define('User', {
   },
   password: { type: DataTypes.STRING },
   role: { type: DataTypes.ENUM('volunteer', 'host', 'admin'), defaultValue: 'volunteer' },
-  mobile: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   refreshToken: {
     type: DataTypes.STRING
   }

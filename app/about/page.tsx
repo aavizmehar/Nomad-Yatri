@@ -14,7 +14,7 @@ const TEAM_MEMBERS = [
   {
     name: "Vedika Tiwari",
     role: "Property Listing Manager",
-    image: null
+    image: "/team/Vedika.png"
   },
   {
     name: "Aaviz Mehar",

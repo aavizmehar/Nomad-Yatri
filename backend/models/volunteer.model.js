@@ -18,6 +18,7 @@ const Volunteer = sequelize.define('Volunteer', {
     interests: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
     languages: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
     photo: DataTypes.STRING,
+    contact: { type: DataTypes.STRING, allowNull: true },
 },{tableName: 'volunteers',timestamps: true });
 
 module.exports = Volunteer;
