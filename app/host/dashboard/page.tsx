@@ -168,7 +168,7 @@ export default function HostDashboard() {
       description: program.description,
       category: program.category,
       subCategory: program.subCategory || '',
-      location: program.location,
+      location: program.location ||'',
       duration: program.duration || '',
       maxVolunteers: program.maxVolunteers || 0
     });
