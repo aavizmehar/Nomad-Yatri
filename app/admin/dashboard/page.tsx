@@ -22,7 +22,7 @@ interface Host {
 }
 
 interface Program {
-  id: number;
+  programId: number;
   title: string;
   category: string;
   location: string;
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
         setData(prev => ({
           ...prev,
           programs: prev.programs.map(p =>
-            p.id === programId ? { ...p, isActive: !p.isActive } : p
+            p.programId === programId ? { ...p, isActive: !p.isActive } : p
           ),
         }));
         showDialog("Success", "Program status updated successfully", "success");
@@ -195,6 +195,40 @@ export default function AdminDashboard() {
     );
   };
 
+  // MATCHED WITH: router.route("/programs/:programId").delete(...)
+  const executeDeleteProgram = async (programId: number) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/programs/${programId}`,
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.ok) {
+        setData(prev => ({
+          ...prev,
+          programs: prev.programs.filter(p => p.programId !== programId),
+        }));
+        showDialog("Success", "Program deleted successfully", "success");
+      } else {
+        showDialog("Error", 'Delete failed', "error");
+      }
+    } catch {
+      showDialog("Error", 'Delete failed', "error");
+    }
+  };
+
+  const confirmDeleteProgram = (programId: number) => {
+    showDialog(
+      "Delete Program?",
+      "Are you sure? This will permanently remove the program.",
+      "confirm",
+      () => executeDeleteProgram(programId)
+    );
+  };
+
   const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -206,7 +240,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <DialogComponent />
+      <DialogComponent/>
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white p-6 sticky top-0 h-screen">
         <h2 className="text-2xl font-bold mb-8">Admin Hub</h2>
@@ -327,7 +361,7 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {data.programs.map((p, index) => (
-                      <tr key={p.id ?? `program-${index}`} className="border-b hover:bg-gray-50 transition-colors">
+                      <tr key={p.programId ?? `program-${index}`} className="border-b hover:bg-gray-50 transition-colors">
                         <td className="p-4 text-sm text-gray-500">{formatDate(p.createdAt)}</td>
                         <td className="p-4 font-medium">{p.title}</td>
                         <td className="p-4 text-sm text-gray-500">{(p as any).Host?.propertyName || 'N/A'}</td>
@@ -341,9 +375,9 @@ export default function AdminDashboard() {
                             {p.isActive ? 'Active' : 'Disabled'}
                           </span>
                         </td>
-                        <td className="p-4 text-right">
+                        <td className="p-4 text-right flex justify-end gap-2">
                           <button
-                            onClick={() => handleToggleProgram(p.id)}
+                            onClick={() => handleToggleProgram(p.programId)}
                             className={`font-medium text-sm px-3 py-1 rounded-lg transition-colors ${
                               p.isActive 
                               ? 'text-orange-600 hover:bg-orange-50' 
@@ -351,6 +385,12 @@ export default function AdminDashboard() {
                             }`}
                           >
                             {p.isActive ? 'Disable' : 'Enable'}
+                          </button>
+                          <button
+                            onClick={() => confirmDeleteProgram(p.programId)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors text-sm font-medium"
+                          >
+                            Delete
                           </button>
                         </td>
                       </tr>
