@@ -120,10 +120,10 @@ export default function MyProgramsPage() {
                       View
                     </Link>
                     <Link
-                      href={`/host/edit-program/${program.programId}`}
+                      href="/host/dashboard"
                       className="flex-1 text-center bg-blue-600 text-white py-2 rounded text-sm font-semibold hover:bg-blue-700"
                     >
-                      Edit
+                      Edit in Dashboard
                     </Link>
                     <button
                       onClick={() => handleDelete(program.programId)}

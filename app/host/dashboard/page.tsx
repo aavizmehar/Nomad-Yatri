@@ -144,14 +144,23 @@ export default function HostDashboard() {
       Object.entries(formData).forEach(([key, value]) => fd.append(key, String(value)));
       programImages.forEach(img => fd.append("programImages", img));
 
+      let response;
       if (isEditingProgram && editingProgramId) {
-        await dashboardApi.updateProgram(editingProgramId, fd);
-        alert("Program updated successfully!");
-        setIsEditingProgram(false);
-        setEditingProgramId(null);
+        response = await dashboardApi.updateProgram(editingProgramId, fd);
+        if (response.success) {
+            alert("Program updated successfully!");
+            setIsEditingProgram(false);
+            setEditingProgramId(null);
+        } else {
+            throw new Error(response.message || "Failed to update program");
+        }
       } else {
-        await dashboardApi.createProgram(fd);
-        alert("Program created successfully!");
+        response = await dashboardApi.createProgram(fd);
+        if (response.success) {
+            alert("Program created successfully!");
+        } else {
+             throw new Error(response.message || "Failed to create program");
+        }
       }
 
       // Reset & Refresh

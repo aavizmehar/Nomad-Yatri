@@ -312,8 +312,14 @@ exports.editProgram = asyncHandler(async (req, res) => {
   let updatedImages = program.programImages || [];
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
-      const uploaded = await uploadOnCloudinary(file.path);
-      updatedImages.push(uploaded.url);
+      if (!file.buffer) {
+        console.error("File buffer is missing for:", file.originalname);
+        continue;
+      }
+      const uploaded = await uploadOnCloudinary(file.buffer);
+      if (uploaded && uploaded.url) {
+        updatedImages.push(uploaded.url);
+      }
     }
   }
 
