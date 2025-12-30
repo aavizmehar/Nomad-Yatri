@@ -30,7 +30,8 @@ passport.use(
           defaults: {
             google_id: profile.id,
             role: signupRole,
-          },
+            password: null
+          }
         });
 
         if (!user.google_id) {
