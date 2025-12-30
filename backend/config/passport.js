@@ -19,11 +19,21 @@ passport.use(
         let signupRole = "volunteer";
 
         if (req.query.state) {
-          const state = JSON.parse(
-            Buffer.from(req.query.state, "base64").toString()
-          );
-          signupRole = state.role || "volunteer";
+          try {
+            const state = JSON.parse(
+              Buffer.from(req.query.state, "base64").toString()
+            );
+            // Validate role
+            const validRoles = ['volunteer', 'host'];
+            if (state.role && validRoles.includes(state.role.toLowerCase())) {
+                signupRole = state.role.toLowerCase();
+            }
+          } catch (parseError) {
+            console.error("LOG: Error parsing state in Google Strategy:", parseError.message);
+          }
         }
+
+        console.log(`LOG: Google Login Attempt - Email: ${email}, Role: ${signupRole}`);
 
         let [user] = await User.findOrCreate({
           where: { email },
@@ -41,6 +51,7 @@ passport.use(
 
         return done(null, user);
       } catch (err) {
+        console.error("LOG: Google Strategy Error:", err);
         return done(err, null);
       }
     }

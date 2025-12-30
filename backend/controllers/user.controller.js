@@ -13,6 +13,9 @@ const jwt = require("jsonwebtoken")
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(500, "User not found")
+    }
     const refreshToken = user.generateRefreshToken()
     const accessToken = user.generateAccessToken()
 
@@ -21,7 +24,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
     return { accessToken, refreshToken }
   } catch (err) {
-    throw new ApiError(500, "Something wrong in generatng tokens")
+    throw new ApiError(500, "Something wrong in generating tokens")
   }
 }
 const registerUser = asyncHandler(async (req, res) => {
@@ -241,8 +244,8 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 
   // 1. Set the new plain text password
-  user.password = newPassword; 
-  
+  user.password = newPassword;
+
   // 2. Clear reset fields
   user.resetPasswordToken = null;
   user.resetPasswordExpiry = null;
@@ -250,7 +253,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   // 3. Save the user. 
   // Because we used 'beforeSave' in the model, it will now hash 'newPassword' 
   // before hitting the database.
-  await user.save(); 
+  await user.save();
 
   return res.json(new ApiResponse(200, {}, "Password reset successfully"));
 });
@@ -276,7 +279,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 const getCurrentUser = asyncHandler(async (req, res) => {
   try {
-     const userId = req.user.id;
+    const userId = req.user.id;
     const user = await User.findByPk(userId);
     if (!user) {
       throw new ApiError(404, "User not found");

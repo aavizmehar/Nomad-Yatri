@@ -23,8 +23,22 @@ router.get('/google/callback',
     }),
     async (req, res) => {
         try {
+            if (!req.user || !req.user.id) {
+                console.error("ERROR: No user or user ID found in request after Google authentication");
+                const origin = process.env.CORS_ORIGIN || "https://www.nomadyatri.com";
+                return res.redirect(`${origin}/user/login?error=no_user`);
+            }
+
+            console.log(`LOG: Google Auth Success. User ID: ${req.user.id}, Email: ${req.user.email}`);
+
             // req.user is populated by your Passport Strategy
-            const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(req.user.id);
+            const tokens = await generateAccessAndRefreshTokens(req.user.id);
+            if (!tokens || !tokens.accessToken) {
+                console.error("ERROR: Token generation returned null or missing accessToken for User ID:", req.user.id);
+                throw new Error("TOKEN_GENERATION_FAILED");
+            }
+
+            const { accessToken, refreshToken } = tokens;
 
             const options = {
                 httpOnly: true,
@@ -36,22 +50,34 @@ router.get('/google/callback',
             res.cookie("refreshToken", refreshToken, options);
 
             // Determine redirect path based on profile completion
-            let redirectPath = '/dashboard'; // default
-            if (req.user.role === 'host') {
-                const hostProfile = await Host.findOne({ where: { userId: req.user.id } });
-                redirectPath = hostProfile ? '/host/dashboard' : '/host/addInfoPage';
-            } else if (req.user.role === 'volunteer') {
-                const volunteerProfile = await Volunteer.findOne({ where: { userId: req.user.id } });
-                redirectPath = volunteerProfile ? '/volunteer/dashboard' : '/volunteer/addInfoPage';
+            let redirectPath = '/dashboard'; 
+            const userRole = req.user.role || 'volunteer';
+
+            try {
+                if (userRole === 'host') {
+                    const hostProfile = await Host.findOne({ where: { userId: req.user.id } });
+                    redirectPath = hostProfile ? '/host/dashboard' : '/host/addInfoPage';
+                } else if (userRole === 'volunteer') {
+                    const volunteerProfile = await Volunteer.findOne({ where: { userId: req.user.id } });
+                    redirectPath = volunteerProfile ? '/volunteer/dashboard' : '/volunteer/addInfoPage';
+                }
+            } catch (profileError) {
+                console.error("LOG: Non-fatal error checking profile status:", profileError.message);
             }
 
-            const callbackUrl = `${process.env.CORS_ORIGIN}/auth/callback?token=${accessToken}&role=${req.user.role}&redirect=${encodeURIComponent(redirectPath)}`;
+            const origin = process.env.CORS_ORIGIN || "https://www.nomadyatri.com";
+            // Ensure origin doesn't have trailing slash for consistency
+            const cleanOrigin = origin.replace(/\/$/, "");
+            const callbackUrl = `${cleanOrigin}/auth/callback?token=${accessToken}&role=${userRole}&redirect=${encodeURIComponent(redirectPath)}`;
             
+            console.log("LOG: Redirecting to frontend callback:", callbackUrl);
             res.redirect(callbackUrl);
             
         } catch (error) {
-            console.error("LOG: Google Callback Error:", error);
-            res.redirect(`${process.env.CORS_ORIGIN}/user/login?error=server_error`);
+            console.error("LOG: Google Callback Exception:", error.message);
+            console.error(error.stack);
+            const origin = process.env.CORS_ORIGIN || "https://www.nomadyatri.com";
+            res.redirect(`${origin}/user/login?error=server_error&code=${error.message === 'TOKEN_GENERATION_FAILED' ? 'token_fail' : 'internal'}`);
         }
     }
 );
