@@ -34,6 +34,4 @@ const connectDb = async () => {
   }
 };
 
-connectDb();
-
-module.exports = sequelize;
+module.exports = { sequelize, connectDb };

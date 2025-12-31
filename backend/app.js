@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-require('./config/db');
+const { connectDb } = require('./config/db');
+connectDb();
 const cors = require('cors');
 const passport = require('passport');
 require('./models/Association.model');
