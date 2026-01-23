@@ -68,7 +68,7 @@ exports.getProgramById = asyncHandler(async (req, res) => {
     include: [
       {
         model: Host,
-        attributes: ['hostId', 'name', 'propertyName', 'location', 'propertyImages']
+        attributes: ['hostId', 'name', 'propertyName', 'location', 'propertyImages', 'contact']
       }
     ]
   });

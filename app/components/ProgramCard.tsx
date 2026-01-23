@@ -53,6 +53,10 @@ export default function ProgramCard({ program }: { program: Program }) {
             </span>
           </div>
 
+
+          {/* Premium Footer */}
+          <div className="mt-auto flex items-center justify-between">
+          <div>
           {/* Elegant Title */}
           <h3 className="text-xl font-medium text-gray-900 leading-[1.2] mb-4 group-hover:text-yellow-600 transition-colors duration-300">
             {program.title}
@@ -61,16 +65,7 @@ export default function ProgramCard({ program }: { program: Program }) {
           {/* Clean Description */}
           <p className="text-gray-400 text-[13px] leading-relaxed line-clamp-2 mb-8 font-light">
             {program.description}
-          </p>
-
-          {/* Premium Footer */}
-          <div className="mt-auto flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Starting at</span>
-              <span className="text-lg font-light text-gray-900 italic">
-                ₹{program.price || '5,499'}
-              </span>
-            </div>
+          </p></div>
 
             {/* Circle Action Button */}
             <div className="relative w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 bg-gray-50 group-hover:bg-yellow-400 group-hover:border-yellow-400 transition-all duration-500">

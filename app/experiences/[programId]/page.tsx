@@ -5,7 +5,7 @@ import { useParams, useRouter, usePathname } from 'next/navigation'; // Added us
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Clock, Users, ArrowLeft, Star,
-  CheckCircle2, Calendar, ShieldCheck, Sparkles, Lock
+  CheckCircle2, Calendar, ShieldCheck, Sparkles, Lock,Mail
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -127,7 +127,7 @@ export default function ProgramDetailPage() {
             Back to Explore
           </button>
           <div className="px-4 py-1.5 bg-yellow-400 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
-            {program.category || "Expedition"}
+            {program.category || "Not specified"}
           </div>
         </div>
       </nav>
@@ -137,10 +137,10 @@ export default function ProgramDetailPage() {
           <div className="lg:col-span-8">
             <header className="mb-12">
               <div className="flex items-center gap-2 text-yellow-600 mb-4 font-bold text-[10px] uppercase tracking-[0.3em]">
-                <MapPin size={14} /> {program.location}
+                <MapPin size={14} /> {program.location || "Not specified"}
               </div>
               <h1 className="text-4xl md:text-6xl font-medium text-gray-900 leading-[1.1] mb-8 tracking-tight">
-                {program.title}
+                {program.title || "Untitled Program"}
               </h1>
             </header>
 
@@ -168,7 +168,7 @@ export default function ProgramDetailPage() {
                 <Sparkles className="text-yellow-500" size={20} />
                 <h2 className="text-2xl font-bold tracking-tight m-0 uppercase text-[12px] tracking-[0.2em]">The Experience</h2>
               </div>
-              <p className="text-xl font-light text-gray-500 leading-relaxed mb-12 whitespace-pre-line">{program.description}</p>
+              <p className="text-xl font-light text-gray-500 leading-relaxed mb-12 whitespace-pre-line">{program.description || "No description available."}</p>
               
               <div className="grid md:grid-cols-2 gap-8 mb-20">
                 <div className="flex gap-5 p-8 border border-gray-100 rounded-[2rem] hover:border-yellow-200 transition-colors">
@@ -195,9 +195,9 @@ export default function ProgramDetailPage() {
               <div className="bg-white border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10">
                 <div className="space-y-4 mb-10">
                   {[
-                    { icon: Clock, label: "Duration", val: program.duration || '12 Days' },
-                    { icon: Users, label: "Group Size", val: 'Max 12 People' },
-                    { icon: Calendar, label: "Next Date", val: 'Dec 28, 2025' }
+                    { icon: Clock, label: "Duration", val: program.duration || 'N/A' },
+                    { icon: Users, label: "Group Size", val: `Max ${program.maxVolunteers || 'N/A'} People` },
+                    { icon: Calendar, label: "Next Date", val: new Date(program.createdAt).toLocaleDateString() || 'N/A' }
                   ].map((stat, i) => (
                     <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50">
                       <div className="flex items-center gap-3">
@@ -209,6 +209,16 @@ export default function ProgramDetailPage() {
                   ))}
                 </div>
 
+                {program.Host?.contact && (
+                  <div className="mt-8 mb-8 pt-8 border-t border-gray-100">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Contact Host</h3>
+                    <a href={`mailto:${program.Host.contact}`} className="flex items-center gap-2 text-gray-900 hover:text-yellow-600 transition-colors">
+                      <Mail size={20} />
+                      <span className="text-base font-medium">{program.Host.contact}</span>
+                    </a>
+                  </div>
+                )}
+                
                 {/* --- Dynamic Button --- */}
                 <button 
                   onClick={handleApply}
